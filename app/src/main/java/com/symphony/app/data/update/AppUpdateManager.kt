@@ -111,7 +111,7 @@ class AppUpdateManager @Inject constructor(
     }
 
     fun getCurrentVersion(): String = try {
-        context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: "5.0.0"
+        context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: "1.1"
     } catch (_: Exception) {
         "5.0.0"
     }
@@ -154,7 +154,7 @@ class AppUpdateManager @Inject constructor(
                 val body = response.body?.string().orEmpty()
                 val json = JSONObject(body)
                 val tagName = json.optString("tag_name", "")
-                val releaseUrl = json.optString("html_url", "https://github.com/Clash-Projects/SYMPHONY-native/releases")
+                val releaseUrl = json.optString("html_url", "https://github.com/smrutiranjandev0p/SYMPHONY/releases")
                 val releaseNotes = json.optString("body", "")
                 val releaseTitle = json.optString("name", "")
                 val publishedAt = json.optString("published_at", "")
@@ -246,7 +246,7 @@ class AppUpdateManager @Inject constructor(
     /** The release page, for the dialog's GitHub button. */
     fun openReleasePage(context: Context) {
         val targetUrl = _updateInfo.value.releaseUrl.ifBlank {
-            "https://github.com/Clash-Projects/SYMPHONY-native/releases"
+            "https://github.com/smrutiranjandev0p/SYMPHONY/releases"
         }
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(targetUrl)).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
