@@ -50,9 +50,7 @@ Automix transitions, lossless addons, and Bit-Perfect USB DAC output).
     dynamic-icon `<activity-alias>` launcher entries; `MainActivity` class is a
     legacy alias) wraps `SYMPHONYNavHost` (`ui/navigation/NavGraph.kt`, routes in
     `ui/navigation/Screen.kt`) inside the mini/full player overlay `PlayerHost`.
-  - `MainShell` (`ui/shell/MainShell.kt`) hosts a 3-tab `HorizontalPager`
-    (`FEED` -> `FeedScreen`, `STATS` -> `HomeScreen`, `PLAYLISTS` ->
-    `PlaylistScreen`); detail/search/settings/auth screens push on top.
+  - `MainShell` (`ui/shell/MainShell.kt`) hosts a 4-tab `HorizontalPager`: `FLOW` -> `FlowScreen`, `HOME` -> `HomeScreen`, `STATISTICS` -> `ListeningStatsScreen`, and `PLAYLISTS` -> `PlaylistScreen` (labelled Library); detail/search/settings/auth screens push on top.
 - **`data/`** — Room (`local/db/AppDatabase.kt`), DataStore prefs, repositories,
   and domain packages: `music/`, `ytmusic/`, `playlist/`, `spotify/`,
   `download/`, `localmusic/`, `lyrics/`, `canvas/`, `lossless/`, `addon/`,
