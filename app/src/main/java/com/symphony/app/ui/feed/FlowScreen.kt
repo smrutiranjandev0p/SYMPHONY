@@ -56,6 +56,7 @@ import com.symphony.app.data.music.HomeShelfItem
 import com.symphony.app.data.music.YouTubeMusicTrack
 import com.symphony.app.playback.toPlayableTrack
 import com.symphony.app.ui.player.LocalMusicPlayer
+import com.symphony.app.ui.player.LocalExpandPlayer
 import com.symphony.app.ui.player.PlayerViewModel
 import com.symphony.app.ui.common.TrackContextMenuSheet
 import com.symphony.app.ui.common.TrackMenuCapabilities
@@ -76,6 +77,7 @@ fun FlowScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val musicPlayer = LocalMusicPlayer.current
+    val expandPlayer = LocalExpandPlayer.current
     val playerViewModel: PlayerViewModel = hiltViewModel()
     val likedKeys by playerViewModel.likedTrackKeys.collectAsStateWithLifecycle()
     var menuTrack by remember { mutableStateOf<YouTubeMusicTrack?>(null) }
@@ -132,6 +134,7 @@ fun FlowScreen(
                 onToggleLike = { playerViewModel.toggleLiked(tracks[page].toPlayableTrack()) },
                 onOpenArtist = playerViewModel::openArtist,
                 onOpenMenu = { menuTrack = tracks[page] },
+                onOpenLyrics = expandPlayer,
             )
         }
         menuTrack?.let { track ->
@@ -161,6 +164,7 @@ private fun FlowPage(
     onToggleLike: () -> Unit,
     onOpenArtist: (String) -> Unit,
     onOpenMenu: () -> Unit,
+    onOpenLyrics: () -> Unit,
 ) {
     val scheme = MaterialTheme.colorScheme
     Box(Modifier.fillMaxSize()) {
@@ -231,8 +235,8 @@ private fun FlowPage(
                 Surface(shape = CircleShape, color = scheme.surface.copy(alpha = 0.30f), onClick = onOpenMenu, modifier = Modifier.size(52.dp)) {
                     Box(contentAlignment = Alignment.Center) { Icon(Icons.Filled.MoreVert, "More options", tint = scheme.onPrimary, modifier = Modifier.size(26.dp)) }
                 }
-                Surface(shape = CircleShape, color = scheme.surface.copy(alpha = 0.30f), onClick = { onOpenMenu() }, modifier = Modifier.size(52.dp)) {
-                    Box(contentAlignment = Alignment.Center) { Icon(Icons.Filled.FormatQuote, "Lyrics and track tools", tint = scheme.onPrimary, modifier = Modifier.size(26.dp)) }
+                Surface(shape = CircleShape, color = scheme.surface.copy(alpha = 0.30f), onClick = onOpenLyrics, modifier = Modifier.size(52.dp)) {
+                    Box(contentAlignment = Alignment.Center) { Icon(Icons.Filled.FormatQuote, "Open player lyrics", tint = scheme.onPrimary, modifier = Modifier.size(26.dp)) }
                 }
             }
         }
