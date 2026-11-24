@@ -5,10 +5,6 @@
 
 <div align="center">
 
-  <img src="assets/SYMPHONY_banner_v2_1440p.png" alt="SYMPHONY — Your music, in motion" width="100%" />
-
-  <br />
-
   <h1>SYMPHONY</h1>
   <p><strong>YOUR MUSIC. IN MOTION.</strong></p>
   <p><em>A more expressive way to discover, collect and experience music.</em></p>
@@ -218,17 +214,10 @@ See the [LICENSE](LICENSE) file for the license and distribution terms.
 
 <div align="center">
 
-  <img src="assets/symphony_logo.svg" alt="SYMPHONY logo" width="72" />
-
-  <h3>SYMPHONY</h3>
-  <strong>PRESS PLAY. FOLLOW THE FLOW.</strong>
-
-  <br /><br />
+  **SYMPHONY** · **PRESS PLAY. FOLLOW THE FLOW.**
 
   <sub>Made for the moments between the first note and the last.</sub>
 
-  <br />
-
-  <a href="https://github.com/smrutiranjandev0p/SYMPHONY">Explore the repository ↗</a>
+  [Explore the repository ↗](https://github.com/smrutiranjandev0p/SYMPHONY)
 
 </div>
