@@ -5,7 +5,7 @@
 SYMPHONY is a native Android music player built around a focused listening experience: **Flow · Home · Statistics · Library**. It brings music discovery, streaming and local playback, playlists, lyrics, audio controls and a customisable visual experience into one app.
 
 <p align="left">
-  <img alt="Version 1.1" src="https://img.shields.io/badge/version-1.1-9B8CFF?style=for-the-badge&labelColor=111827" />
+  <img alt="Version 1.2" src="https://img.shields.io/badge/version-1.2-9B8CFF?style=for-the-badge&labelColor=111827" />
   <img alt="Android" src="https://img.shields.io/badge/platform-Android-3DDC84?style=for-the-badge&logo=android&logoColor=white" />
   <img alt="Kotlin" src="https://img.shields.io/badge/Kotlin-Jetpack%20Compose-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white" />
   <img alt="License" src="https://img.shields.io/badge/license-see%20LICENSE-64748B?style=for-the-badge" />
@@ -22,15 +22,15 @@ SYMPHONY is a native Android music player built around a focused listening exper
 | **Statistics** | Listening activity and playback insights |
 | **Library** | Your saved music, playlists, favourites, downloads and local collection |
 
-The app also includes a full player and mini-player, playback queue, lyrics, search, service connections, widgets and a broad set of audio and appearance controls. Availability can vary by device, music source and connected service.
+Flow uses an artwork-first layout with a centred, direct play/pause control, larger inset-aware search/settings actions, floating heart particles and no duplicate global mini-player overlay while the Flow tab is active. The app also includes a full player and a mini-player on the other tabs, playback queue, lyrics, search, service connections, widgets and a broad set of audio and appearance controls. Availability can vary by device, music source and connected service.
 
 ## Visual identity
 
 SYMPHONY uses a dark, cinematic visual language with artwork-led surfaces, expressive motion and optional Liquid Glass styling.
 
-**Glass Wave** is the refreshed signature app icon introduced with version 1.1: a glass-effect treble clef over a blue–violet–rose audio waveform, framed by a midnight-blue crystal surface.
+**Glass Wave** is the default signature app icon for the 1.2 release line: a glass-effect treble clef over a blue–violet–rose audio waveform, framed by a midnight-blue crystal surface.
 
-The Appearance settings include selectable launcher icon editions:
+The adaptive launcher icon now points to the Glass Wave foreground for both standard and round launcher masks. The Appearance settings also include selectable launcher icon editions:
 - **Glass Wave** — refreshed signature identity
 - **Desktop**
 - **Pure White**
@@ -127,9 +127,9 @@ SYMPHONY/
 
 ## Versioning
 
-The refreshed release line starts at **1.1**. Android's internal `versionCode` remains monotonic for upgrade compatibility; the user-facing version is `versionName`.
+The refreshed release line started at **1.1** and advances to **1.2**. Android internal `versionCode` remains monotonic for upgrade compatibility; the user-facing version is `versionName`. Android's internal `versionCode` remains monotonic for upgrade compatibility; the user-facing version is `versionName`.
 
-See [CHANGELOG.md](CHANGELOG.md) for the version 1.1 starting point and subsequent changes.
+See [CHANGELOG.md](CHANGELOG.md) for the 1.2 Flow redesign and the 1.1 release baseline.
 
 ## Project principles
 
