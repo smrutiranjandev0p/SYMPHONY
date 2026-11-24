@@ -292,11 +292,12 @@ fun MainShell(
     val ytConnection by mainShellViewModel.ytConnection.collectAsStateWithLifecycle()
     val settings by mainShellViewModel.settings.collectAsStateWithLifecycle(initialValue = null)
     var promptDismissedThisSession by rememberSaveable { mutableStateOf(false) }
-    val shouldShowLoginPrompt = settings != null &&
+    val shouldShowLoginPrompt = settings?.let { currentSettings ->
         !ytConnection.isConnected &&
-        currentSettings.enabledHttpAddons.isEmpty() &&
-        !currentSettings.suppressYouTubeLoginPrompt &&
-        !promptDismissedThisSession
+            currentSettings.enabledHttpAddons.isEmpty() &&
+            !currentSettings.suppressYouTubeLoginPrompt &&
+            !promptDismissedThisSession
+    } == true
 
     if (shouldShowLoginPrompt) {
         var dontShowAgain by remember { mutableStateOf(false) }
