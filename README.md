@@ -22,7 +22,7 @@ SYMPHONY is a native Android music player built around a focused listening exper
 | **Statistics** | Listening activity and playback insights |
 | **Library** | Your saved music, playlists, favourites, downloads and local collection |
 
-Flow uses an artwork-first layout with a centred, direct play/pause control, larger inset-aware search/settings actions, floating heart particles and no duplicate global mini-player overlay while the Flow tab is active. The app also includes a full player and a mini-player on the other tabs, playback queue, lyrics, search, service connections, widgets and a broad set of audio and appearance controls. Availability can vary by device, music source and connected service.
+Flow uses an artwork-first layout with a centred, direct play/pause control, larger inset-aware search/settings actions, floating heart particles and no duplicate global mini-player overlay while the Flow tab is active. It also offers an optional **Party Torch** mode: after explicit camera and microphone permission, the phone flash reacts to detected audio peaks while music plays; pulses are rate-limited and the torch turns off when playback pauses or Flow is left. The app also includes a full player and a mini-player on the other tabs, playback queue, lyrics, search, service connections, widgets and a broad set of audio and appearance controls. Availability can vary by device, music source and connected service.
 
 ## Visual identity
 
