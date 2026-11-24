@@ -17,7 +17,9 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dashboard
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.FormatQuote
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
@@ -30,6 +32,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,12 +43,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
@@ -51,6 +58,10 @@ import com.symphony.app.data.music.HomeShelfItem
 import com.symphony.app.data.music.YouTubeMusicTrack
 import com.symphony.app.playback.toPlayableTrack
 import com.symphony.app.ui.player.LocalMusicPlayer
+import com.symphony.app.ui.player.PlayerViewModel
+import com.symphony.app.ui.common.TrackContextMenuSheet
+import com.symphony.app.ui.common.TrackMenuCapabilities
+import com.symphony.app.ui.common.TrackMenuTarget
 
 /**
  * Artwork-first discovery home. It deliberately reuses FeedViewModel's live
@@ -67,6 +78,9 @@ fun FlowScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val musicPlayer = LocalMusicPlayer.current
+    val playerViewModel: PlayerViewModel = hiltViewModel()
+    val likedKeys by playerViewModel.likedTrackKeys.collectAsStateWithLifecycle()
+    var menuTrack by remember { mutableStateOf<YouTubeMusicTrack?>(null) }
     val playback by musicPlayer.stateWithoutProgress.collectAsStateWithLifecycle()
     val tracks = remember(state.feedData) {
         buildList {
@@ -116,6 +130,20 @@ fun FlowScreen(
                 track = tracks[page],
                 isPlaying = playback.current?.videoId == tracks[page].videoId && playback.isPlaying,
                 onTogglePlayback = musicPlayer::togglePlayPause,
+                isLiked = tracks[page].toPlayableTrack().let { playerViewModel.likedTrackKeys.value.let { keys -> com.symphony.app.data.playlist.isLikedIn(it, keys) } },
+                onToggleLike = { playerViewModel.toggleLiked(tracks[page].toPlayableTrack()) },
+                onOpenArtist = playerViewModel::openArtist,
+                onOpenMenu = { menuTrack = tracks[page] },
+            )
+        }
+        menuTrack?.let { track ->
+            TrackContextMenuSheet(
+                target = TrackMenuTarget.Track(track.title, track.artist, "https://music.youtube.com/watch?v=${track.videoId}"),
+                capabilities = TrackMenuCapabilities(showDeleteScrobble = false, showRecommendationExclusion = true),
+                playableTrack = track.toPlayableTrack(),
+                playbackSourceLabel = "Flow",
+                onDismiss = { menuTrack = null },
+                onPlayInSYMPHONY = { musicPlayer.play(track.toPlayableTrack(), sourceLabel = "Flow") },
             )
         }
         FlowTopBar(
@@ -131,6 +159,10 @@ private fun FlowPage(
     track: YouTubeMusicTrack,
     isPlaying: Boolean,
     onTogglePlayback: () -> Unit,
+    isLiked: Boolean,
+    onToggleLike: () -> Unit,
+    onOpenArtist: (String) -> Unit,
+    onOpenMenu: () -> Unit,
 ) {
     val scheme = MaterialTheme.colorScheme
     Box(Modifier.fillMaxSize()) {
@@ -189,11 +221,16 @@ private fun FlowPage(
                     }
                 }
                 Spacer(Modifier.width(8.dp))
-                IconButton(onClick = { }) {
-                    Icon(Icons.Filled.FavoriteBorder, "Like", tint = scheme.onPrimary)
+                Surface(shape = CircleShape, color = scheme.surface.copy(alpha = 0.30f), onClick = onToggleLike, modifier = Modifier.size(52.dp)) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(if (isLiked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder, "${if (isLiked) "Unlike" else "Like"}", tint = if (isLiked) Color(0xFFFF6B81) else scheme.onPrimary, modifier = Modifier.size(26.dp))
+                    }
                 }
-                IconButton(onClick = { }) {
-                    Icon(Icons.Filled.MoreVert, "More options", tint = scheme.onPrimary)
+                Surface(shape = CircleShape, color = scheme.surface.copy(alpha = 0.30f), onClick = onOpenMenu, modifier = Modifier.size(52.dp)) {
+                    Box(contentAlignment = Alignment.Center) { Icon(Icons.Filled.MoreVert, "More options", tint = scheme.onPrimary, modifier = Modifier.size(26.dp)) }
+                }
+                Surface(shape = CircleShape, color = scheme.surface.copy(alpha = 0.30f), onClick = { onOpenMenu() }, modifier = Modifier.size(52.dp)) {
+                    Box(contentAlignment = Alignment.Center) { Icon(Icons.Filled.FormatQuote, "Lyrics and track tools", tint = scheme.onPrimary, modifier = Modifier.size(26.dp)) }
                 }
             }
         }
