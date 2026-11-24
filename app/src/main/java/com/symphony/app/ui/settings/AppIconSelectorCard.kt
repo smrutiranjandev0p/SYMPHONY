@@ -115,7 +115,6 @@ internal fun AppIconSelectorCard(
                                 .clip(RoundedCornerShape(24.dp)),
                             contentAlignment = Alignment.Center,
                         ) {
-                            androidx.compose.foundation.background
                             Surface(
                                 modifier = Modifier.matchParentSize(),
                                 color = colorResource(icon.backgroundRes),
