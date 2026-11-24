@@ -189,7 +189,7 @@ abstract class PrepareNativeBridgeTask : DefaultTask() {
 
 android {
     namespace = "com.symphony.app"
-    compileSdk = 37
+    compileSdk = 36
 
     val localProps = Properties().apply {
         val localPropsFile = rootProject.file("local.properties")
