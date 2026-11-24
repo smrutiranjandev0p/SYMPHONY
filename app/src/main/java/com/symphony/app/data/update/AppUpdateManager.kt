@@ -126,7 +126,7 @@ class AppUpdateManager @Inject constructor(
             }
             try {
                 val request = Request.Builder()
-                    .url("https://api.github.com/repos/Clash-Projects/LastWave-Native/releases/latest")
+                    .url("https://api.github.com/repos/smrutiranjandev0p/SYMPHONY/releases/latest")
                     .header("Accept", "application/vnd.github.v3+json")
                     .header("User-Agent", "SYMPHONY-Android")
                     .build()
@@ -137,10 +137,15 @@ class AppUpdateManager @Inject constructor(
 
                 if (!response.isSuccessful) {
                     val code = response.code
+                    val statusMessage = when (code) {
+                        404 -> "No SYMPHONY release published yet"
+                        403 -> "GitHub rate limit reached. Try again later"
+                        else -> "Could not check SYMPHONY updates (HTTP $code)"
+                    }
                     _updateInfo.update {
                         it.copy(
                             isChecking = false,
-                            message = if (!isSilent) "Could not check updates (HTTP $code)" else null,
+                            message = if (!isSilent) statusMessage else null,
                         )
                     }
                     return@launch
