@@ -14,11 +14,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.FormatQuote
@@ -151,7 +151,6 @@ fun FlowScreen(
             )
         }
         FlowTopBar(
-            onOpenDashboard = onOpenDashboard,
             onOpenSearch = onOpenSearch,
             onOpenSettings = onOpenSettings,
         )
@@ -214,32 +213,21 @@ private fun FlowPage(
                 modifier = Modifier.clickable { track.artist.takeIf(String::isNotBlank)?.let(onOpenArtist) },
             )
             if (!track.album.isNullOrBlank()) Text(track.album, style = MaterialTheme.typography.bodyMedium, color = scheme.onPrimary.copy(alpha = 0.88f), maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Surface(
-                    shape = CircleShape,
-                    color = scheme.primary,
-                    onClick = onTogglePlayback,
-                    modifier = Modifier.size(56.dp),
-                ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(18.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Surface(shape = CircleShape, color = scheme.surface.copy(alpha = 0.34f), onClick = onToggleLike, modifier = Modifier.size(54.dp)) {
                     Box(contentAlignment = Alignment.Center) {
-                        Icon(
-                            imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
-                            contentDescription = if (isPlaying) "Pause" else "Play",
-                            tint = scheme.onPrimary,
-                        )
+                        Icon(if (isLiked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder, "${if (isLiked) "Unlike" else "Like"}", tint = if (isLiked) Color(0xFFFF6B81) else scheme.onPrimary, modifier = Modifier.size(27.dp))
                     }
                 }
-                Spacer(Modifier.width(8.dp))
-                Surface(shape = CircleShape, color = scheme.surface.copy(alpha = 0.30f), onClick = onToggleLike, modifier = Modifier.size(52.dp)) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Icon(if (isLiked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder, "${if (isLiked) "Unlike" else "Like"}", tint = if (isLiked) Color(0xFFFF6B81) else scheme.onPrimary, modifier = Modifier.size(26.dp))
-                    }
+                Surface(shape = CircleShape, color = scheme.surface.copy(alpha = 0.34f), onClick = onOpenMenu, modifier = Modifier.size(54.dp)) {
+                    Box(contentAlignment = Alignment.Center) { Icon(Icons.Filled.MoreVert, "More options", tint = scheme.onPrimary, modifier = Modifier.size(27.dp)) }
                 }
-                Surface(shape = CircleShape, color = scheme.surface.copy(alpha = 0.30f), onClick = onOpenMenu, modifier = Modifier.size(52.dp)) {
-                    Box(contentAlignment = Alignment.Center) { Icon(Icons.Filled.MoreVert, "More options", tint = scheme.onPrimary, modifier = Modifier.size(26.dp)) }
-                }
-                Surface(shape = CircleShape, color = scheme.surface.copy(alpha = 0.30f), onClick = onOpenLyrics, modifier = Modifier.size(52.dp)) {
-                    Box(contentAlignment = Alignment.Center) { Icon(Icons.Filled.FormatQuote, "Open lyrics", tint = scheme.onPrimary, modifier = Modifier.size(26.dp)) }
+                Surface(shape = CircleShape, color = scheme.surface.copy(alpha = 0.34f), onClick = onOpenLyrics, modifier = Modifier.size(54.dp)) {
+                    Box(contentAlignment = Alignment.Center) { Icon(Icons.Filled.FormatQuote, "Open lyrics", tint = scheme.onPrimary, modifier = Modifier.size(27.dp)) }
                 }
             }
         }
@@ -248,36 +236,34 @@ private fun FlowPage(
 
 @Composable
 private fun FlowTopBar(
-    onOpenDashboard: () -> Unit,
     onOpenSearch: () -> Unit,
     onOpenSettings: () -> Unit,
 ) {
+    val foreground = MaterialTheme.colorScheme.onPrimary
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 18.dp),
+            .statusBarsPadding()
+            .padding(horizontal = 18.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Surface(
-            shape = CircleShape,
-            color = MaterialTheme.colorScheme.scrim.copy(alpha = 0.28f),
-        ) {
-            IconButton(onClick = onOpenDashboard) {
-                Icon(Icons.Filled.Dashboard, "Open dashboard", tint = MaterialTheme.colorScheme.onPrimary)
-            }
-        }
         Text(
             text = "FLOW",
-            modifier = Modifier.weight(1f).padding(start = 16.dp),
-            color = MaterialTheme.colorScheme.onPrimary,
-            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.weight(1f),
+            color = foreground,
+            style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Black,
         )
-        IconButton(onClick = onOpenSearch) {
-            Icon(Icons.Filled.Search, "Search", tint = MaterialTheme.colorScheme.onPrimary)
+        Surface(shape = CircleShape, color = MaterialTheme.colorScheme.scrim.copy(alpha = 0.42f), onClick = onOpenSearch, modifier = Modifier.size(52.dp)) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(Icons.Filled.Search, "Search", tint = foreground, modifier = Modifier.size(27.dp))
+            }
         }
-        IconButton(onClick = onOpenSettings) {
-            Icon(Icons.Filled.Settings, "Settings", tint = MaterialTheme.colorScheme.onPrimary)
+        Spacer(Modifier.width(12.dp))
+        Surface(shape = CircleShape, color = MaterialTheme.colorScheme.scrim.copy(alpha = 0.42f), onClick = onOpenSettings, modifier = Modifier.size(52.dp)) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(Icons.Filled.Settings, "Settings", tint = foreground, modifier = Modifier.size(27.dp))
+            }
         }
     }
 }
@@ -317,7 +303,7 @@ private fun FlowFloatingHearts() {
                 targetValue = 1f,
                 animationSpec = androidx.compose.animation.core.infiniteRepeatable(
                     animation = androidx.compose.animation.core.tween(
-                        durationMillis = 2100,
+                        durationMillis = 2900,
                         delayMillis = delayMs,
                         easing = androidx.compose.animation.core.LinearEasing,
                     ),
@@ -329,7 +315,7 @@ private fun FlowFloatingHearts() {
                 color = Color(0xFFFF6B81),
                 fontSize = (20 + index * 4).sp,
                 modifier = Modifier.graphicsLayer {
-                    translationY = -progress * 132.dp.toPx()
+                    translationY = -progress * 285.dp.toPx()
                     translationX = (index - 1) * 18.dp.toPx() + kotlin.math.sin(progress * Math.PI * 2).toFloat() * 10.dp.toPx()
                     alpha = (1f - progress).coerceIn(0f, 1f)
                     scaleX = 0.75f + progress * 0.35f
