@@ -58,9 +58,7 @@ representative at an online or offline event.
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported to the project maintainers via the Telegram channel at
-https://t.me/clashprojects or community group at https://t.me/clashdiscussion.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported privately to the project maintainer through the GitHub profile: https://github.com/smrutiranjandev0p.
 All reports will be reviewed and investigated promptly and fairly.
 
 All community leaders are obligated to respect the privacy and security of the
