@@ -2174,223 +2174,34 @@ fun SettingsScreen(
 
                     SettingsTab.ABOUT -> {
                         item {
-                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    SectionLabel(stringResource(R.string.settings_section_language))
-                    SettingsGroup(rowCount = 1) { _, position ->
-                        SettingsActionCard(
-                            icon = Icons.Filled.Language,
-                            iconContainer = MaterialTheme.colorScheme.primaryContainer,
-                            iconTint = MaterialTheme.colorScheme.onPrimaryContainer,
-                            title = stringResource(R.string.settings_language_title),
-                            subtitle = currentLanguage.nativeDisplayName(),
-                            onClick = { showLanguageDialog = true },
-                            position = position,
-                            isHighlighted = (highlightedSettingId == "about.language"),
-                        )
-                    }
-                }
-            }
-
-                        item {
-                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    SectionLabel(stringResource(R.string.settings_section_about))
-                    SettingsGroup(rowCount = 4) { index, position ->
-                        when (index) {
-                            0 -> SettingsActionCard(
-                                icon = Icons.AutoMirrored.Filled.Send,
-                                iconContainer = MaterialTheme.colorScheme.primaryContainer,
-                                iconTint = MaterialTheme.colorScheme.onPrimaryContainer,
-                                title = stringResource(R.string.settings_updates_support),
-                                subtitle = stringResource(R.string.set_tg_sub),
-                                onClick = {
-                                    if (!openTelegramChannel(context, "clashprojects")) {
-                                        viewModel.showToast(context.getString(R.string.toast_no_browser_tg))
-                                    }
-                                },
-                                position = position,
-                                isHighlighted = (highlightedSettingId == "about.telegram_support"),
-                            )
-                            1 -> SettingsActionCard(
-                                icon = Icons.Filled.Group,
-                                iconContainer = MaterialTheme.colorScheme.tertiaryContainer,
-                                iconTint = MaterialTheme.colorScheme.onTertiaryContainer,
-                                title = stringResource(R.string.set_discord_support),
-                                subtitle = stringResource(R.string.set_discord_support_sub),
-                                onClick = {
-                                    val discordIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://discord.gg/TMCEPSUNk2"))
-                                    if (!startActivitySafely(context, discordIntent)) {
-                                        viewModel.showToast(context.getString(R.string.toast_no_browser))
-                                    }
-                                },
-                                position = position,
-                                isHighlighted = (highlightedSettingId == "about.discord_support"),
-                            )
-                            2 -> SettingsActionCard(
-                                icon = Icons.Filled.AutoAwesome,
-                                iconContainer = MaterialTheme.colorScheme.primaryContainer,
-                                iconTint = MaterialTheme.colorScheme.onPrimaryContainer,
-                                title = stringResource(R.string.settings_more_from_us),
-                                subtitle = stringResource(R.string.set_more_apps_sub),
-                                onClick = {
-                                    if (!openTelegramChannel(context, "MaterialYouApp")) {
-                                        viewModel.showToast(context.getString(R.string.toast_no_browser_tg))
-                                    }
-                                },
-                                position = position,
-                                isHighlighted = (highlightedSettingId == "about.more_apps"),
-                            )
-                            3 -> SettingsActionCard(
-                                icon = Icons.Filled.Code,
-                                iconContainer = MaterialTheme.colorScheme.secondaryContainer,
-                                iconTint = MaterialTheme.colorScheme.onSecondaryContainer,
-                                title = stringResource(R.string.settings_diagnostics),
-                                subtitle = stringResource(R.string.settings_diagnostics_sub),
-                                onClick = { viewModel.exportDiagnostics() },
-                                position = position,
-                                isHighlighted = (highlightedSettingId == "about.diagnostics"),
-                            )
-                        }
-                    }
-                    Spacer(Modifier.height(4.dp))
-
-                    // Prominent Update Available Banner Card (if newer version detected)
-                    if (updateInfo.isUpdateAvailable) {
-                        Surface(
-                            shape = CardOuterShape,
-                            color = MaterialTheme.colorScheme.primaryContainer,
-                            shadowElevation = 3.dp,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(CardOuterShape)
-                                .clickable { viewModel.openUpdate(context) },
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(14.dp),
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(46.dp)
-                                        .background(MaterialTheme.colorScheme.primary, CircleShape),
-                                    contentAlignment = Alignment.Center,
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Filled.CloudDownload,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onPrimary,
-                                        modifier = Modifier.size(24.dp),
-                                    )
-                                }
-                                Column(modifier = Modifier.weight(1f)) {
-                                    Text(
-                                        text = "Update Available!",
-                                        style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    )
-                                    Text(
-                                        text = "Version ${updateInfo.latestVersion} is ready to install",
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.85f),
-                                    )
-                                }
-                                Surface(
-                                    shape = RoundedCornerShape(14.dp),
-                                    color = MaterialTheme.colorScheme.primary,
-                                ) {
-                                    Text(
-                                        text = "Update",
-                                        style = MaterialTheme.typography.labelMedium,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.onPrimary,
-                                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                                SectionLabel("Updates")
+                                SettingsGroup(rowCount = 1) { _, position ->
+                                    SettingsActionCard(
+                                        icon = Icons.Filled.CloudDownload,
+                                        iconContainer = if (updateInfo.isUpdateAvailable) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer,
+                                        iconTint = if (updateInfo.isUpdateAvailable) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSecondaryContainer,
+                                        title = if (updateInfo.isUpdateAvailable) "Update Ready (${updateInfo.latestVersion})" else "Check for Updates",
+                                        subtitle = when {
+                                            updateInfo.isChecking -> "Checking for updates..."
+                                            updateInfo.isUpdateAvailable -> {
+                                                val fileName = updateInfo.downloadFileName
+                                                if (!fileName.isNullOrBlank()) "Tap to download $fileName" else "Tap to download the latest version"
+                                            }
+                                            !updateInfo.message.isNullOrBlank() -> updateInfo.message.orEmpty()
+                                            else -> "Current version: ${appVersionName(context)}"
+                                        },
+                                        onClick = {
+                                            if (updateInfo.isUpdateAvailable) viewModel.openUpdate(context)
+                                            else viewModel.checkForUpdates()
+                                        },
+                                        position = position,
+                                        isHighlighted = (highlightedSettingId == "about.check_updates"),
                                     )
                                 }
                             }
                         }
-                        Spacer(Modifier.height(8.dp))
                     }
-
-                    AboutCard(
-                        versionName = appVersionName(context),
-                        appIcon = theme?.appIcon ?: AppIcon.DEFAULT,
-                    )
-
-                    SettingsGroup(rowCount = 3) { index, position ->
-                        when (index) {
-                            0 -> SettingsActionCard(
-                                icon = Icons.Filled.CloudDownload,
-                                iconContainer = if (updateInfo.isUpdateAvailable) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer,
-                                iconTint = if (updateInfo.isUpdateAvailable) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSecondaryContainer,
-                                title = if (updateInfo.isUpdateAvailable) "Update Ready (${updateInfo.latestVersion})" else "Check for Updates",
-                                subtitle = when {
-                                    updateInfo.isChecking -> "Checking GitHub releases..."
-                                    updateInfo.isUpdateAvailable -> {
-                                        val fileName = updateInfo.downloadFileName
-                                        if (!fileName.isNullOrBlank()) "Tap to download $fileName" else "Tap to download new version"
-                                    }
-                                    !updateInfo.message.isNullOrBlank() -> updateInfo.message.orEmpty()
-                                    else -> "Current version: ${appVersionName(context)}"
-                                },
-                                onClick = {
-                                    if (updateInfo.isUpdateAvailable) {
-                                        viewModel.openUpdate(context)
-                                    } else {
-                                        viewModel.checkForUpdates()
-                                    }
-                                },
-                                position = position,
-                                isHighlighted = (highlightedSettingId == "about.check_updates"),
-                            )
-                            1 -> SettingsActionCard(
-                                icon = Icons.Filled.Code,
-                                iconContainer = MaterialTheme.colorScheme.secondaryContainer,
-                                iconTint = MaterialTheme.colorScheme.onSecondaryContainer,
-                                title = stringResource(R.string.settings_source_code),
-                                subtitle = "github.com/Clash-Projects/SYMPHONY-native",
-                                onClick = {
-                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Clash-Projects/SYMPHONY-native"))
-                                    if (!startActivitySafely(context, intent)) {
-                                        viewModel.showToast(context.getString(R.string.toast_no_browser_plain))
-                                    }
-                                },
-                                position = position,
-                                isHighlighted = (highlightedSettingId == "about.source_code"),
-                            )
-                            else -> SettingsActionCard(
-                                icon = Icons.Filled.Download,
-                                iconContainer = MaterialTheme.colorScheme.secondaryContainer,
-                                iconTint = MaterialTheme.colorScheme.onSecondaryContainer,
-                                title = stringResource(R.string.settings_desktop_app),
-                                subtitle = "github.com/Clash-Projects/SYMPHONY-Desktop",
-                                onClick = {
-                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Clash-Projects/SYMPHONY-Desktop"))
-                                    if (!startActivitySafely(context, intent)) {
-                                        viewModel.showToast(context.getString(R.string.toast_no_browser_plain))
-                                    }
-                                },
-                                position = position,
-                                isHighlighted = (highlightedSettingId == "about.desktop_app"),
-                            )
-                        }
-                    }
-
-                    Spacer(Modifier.height(14.dp))
-                    SectionLabel("More from us")
-                    Spacer(Modifier.height(8.dp))
-                    MoreFromUsCard(
-                        onOpenUrl = { url ->
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                            if (!startActivitySafely(context, intent)) {
-                                viewModel.showToast(context.getString(R.string.toast_no_browser_plain))
-                            }
-                        }
-                    )
-                }
-            }
                     }
                 }
             }
