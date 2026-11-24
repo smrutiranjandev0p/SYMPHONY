@@ -140,9 +140,9 @@ import com.symphony.app.ui.common.AmbientAnimationsGate
 import com.symphony.app.ui.common.ExpressiveMotion
 import com.symphony.app.ui.common.PredictiveBackScreen
 import com.symphony.app.ui.common.adaptiveContentWidth
-import com.symphony.app.ui.feed.FeedScreen
 import com.symphony.app.ui.feed.FlowScreen
 import com.symphony.app.ui.home.HomeScreen
+import com.symphony.app.ui.stats.ListeningStatsScreen
 import com.symphony.app.ui.player.LocalChromeCollapse
 import com.symphony.app.ui.player.collapsedNavPill
 import com.symphony.app.ui.player.collapsingNavBar
@@ -202,9 +202,9 @@ class MainShellViewModel @Inject constructor(
 }
 
 private enum class MainTab(val labelRes: Int) {
-    FEED(com.symphony.app.R.string.nav_feed),
     FLOW(com.symphony.app.R.string.nav_flow),
     HOME(com.symphony.app.R.string.nav_home),
+    STATISTICS(com.symphony.app.R.string.nav_statistics),
     PLAYLISTS(com.symphony.app.R.string.nav_playlists),
 }
 
@@ -264,7 +264,6 @@ fun MainShell(
 ) {
     val tabs = MainTab.entries
     val pagerState = rememberPagerState(pageCount = { tabs.size })
-    val feedTapEvents = remember { kotlinx.coroutines.flow.MutableSharedFlow<Unit>(extraBufferCapacity = 1) }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     // Drive the dock selection from an explicit tab index instead of
@@ -390,7 +389,7 @@ fun MainShell(
     LaunchedEffect(chromeCollapse, pagerState.settledPage) { chromeCollapse?.expand() }
 
     Box(Modifier.fillMaxSize()) {
-        val feedIndex = tabs.indexOf(MainTab.FEED)
+        val homeIndex = tabs.indexOf(MainTab.HOME)
         // Composing Stats and Playlists on the launch frame (plus their own
         // loads recomposing them) froze the Feed's first load for seconds on
         // slower phones. Add them once the user leaves the Feed, then keep every
@@ -398,7 +397,7 @@ fun MainShell(
         // frame already composes all of them and a dock jump back to Feed never
         // disposes and rebuilds it.
         var composeAllTabs by remember { mutableStateOf(false) }
-        val allTabs = composeAllTabs || selectedTabIndex != feedIndex || pagerState.isScrollInProgress
+        val allTabs = composeAllTabs || selectedTabIndex != homeIndex || pagerState.isScrollInProgress
         if (allTabs) LaunchedEffect(Unit) { composeAllTabs = true }
         HorizontalPager(
             state = pagerState,
@@ -421,35 +420,15 @@ fun MainShell(
             }
             AmbientAnimationsGate(visible = { pageShown }) {
                 PredictiveBackScreen(
-                    enabled = isCurrent && tabs[page] != MainTab.FEED,
-                    onBack = { scope.launch { pagerState.animateScrollToPage(feedIndex) } },
+                    enabled = isCurrent && tabs[page] != MainTab.HOME,
+                    onBack = { scope.launch { pagerState.animateScrollToPage(homeIndex) } },
                 ) {
                     when (tabs[page]) {
-                        MainTab.FEED -> FeedScreen(
-                                onOpenSettings = { showAccountMenu = true },
-                                onOpenSearch = onOpenSearch,
-                                onOpenFlow = {
-                                    scope.launch { pagerState.animateScrollToPage(tabs.indexOf(MainTab.FLOW)) }
-                                },
-                                onOpenDiscover = onOpenDiscover,
-                                onOpenGenres = onOpenGenres,
-                                onOpenPlaylist = onOpenPlaylist,
-                                onOpenFeedPlaylist = onOpenFeedPlaylist,
-                                onOpenGenerator = onOpenGenerator,
-                                onOpenFriends = onOpenFriends,
-                                onOpenFriendProfile = onOpenFriendProfile,
-                                onOpenNewReleases = onOpenNewReleases,
-                                onOpenDownloads = onOpenDownloads,
-                                onOpenPodcasts = onOpenPodcasts,
-                                onOpenPodcastShow = onOpenPodcastShow,
-                                onOpenYouTubeLogin = onOpenYouTubeLogin,
-                                feedTapEvents = feedTapEvents,
-                            )
                         MainTab.FLOW -> FlowScreen(
                             onOpenSettings = { showAccountMenu = true },
                             onOpenSearch = onOpenSearch,
                             onOpenDashboard = {
-                                scope.launch { pagerState.animateScrollToPage(tabs.indexOf(MainTab.FEED)) }
+                                scope.launch { pagerState.animateScrollToPage(homeIndex) }
                             },
                         )
                         MainTab.HOME -> HomeScreen(
@@ -457,10 +436,15 @@ fun MainShell(
                             onOpenSearch = onOpenSearch,
                             onOpenDiscover = onOpenDiscover,
                             onOpenGenres = onOpenGenres,
-                            onOpenListeningStats = onOpenListeningStats,
+                            onOpenListeningStats = {
+                                scope.launch { pagerState.animateScrollToPage(tabs.indexOf(MainTab.STATISTICS)) }
+                            },
                             onOpenFriends = onOpenFriends,
                             onOpenDownloads = onOpenDownloads,
                             avatarUrl = ytConnection.photoUrl.takeIf { ytConnection.isConnected },
+                        )
+                        MainTab.STATISTICS -> ListeningStatsScreen(
+                            onBack = { scope.launch { pagerState.animateScrollToPage(homeIndex) } },
                         )
                         MainTab.PLAYLISTS -> PlaylistScreen(
                             onOpenPlaylist = onOpenPlaylist,
@@ -484,49 +468,25 @@ fun MainShell(
         val navHaptic = androidx.compose.ui.platform.LocalHapticFeedback.current
         val currentOnSelect by androidx.compose.runtime.rememberUpdatedState { index: Int ->
             navHaptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.SegmentTick)
-            if (tabs[index] == MainTab.FEED) {
-                val wasOnDetail = onReturnToHome()
-                if (wasOnDetail) {
-                    if (selectedTabIndex != feedIndex) selectedTabIndex = feedIndex
-                    scope.launch { pagerState.scrollToPage(feedIndex) }
-                    return@rememberUpdatedState
-                }
-                if (pagerState.currentPage != feedIndex) {
-                    if (selectedTabIndex != feedIndex) selectedTabIndex = feedIndex
-                    scope.launch { pagerState.scrollToPage(feedIndex) }
-                    return@rememberUpdatedState
-                }
-                feedTapEvents.tryEmit(Unit)
-            } else {
-                if (index != selectedTabIndex) selectedTabIndex = index
-                scope.launch { pagerState.animateScrollToPage(index) }
-            }
+            if (index != selectedTabIndex) selectedTabIndex = index
+            scope.launch { pagerState.animateScrollToPage(index) }
             Unit
         }
         val currentOnOpenGenerator by androidx.compose.runtime.rememberUpdatedState(onOpenGenerator)
 
-        // A scrub commits once on release. It must never use Feed's re-tap
-        // refresh action, or enqueue a page animation at every crossed tab.
+        // A scrub commits once on release; every destination is a normal tab.
         fun selectLiquidTab(index: Int, refreshIfSelected: Boolean) {
             navHaptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.SegmentTick)
-            val isFeed = tabs[index] == MainTab.FEED
-            val returnedFromDetail = isFeed && onReturnToHome()
             val alreadySettled = selectedTabIndex == index &&
                 pagerState.settledPage == index && !pagerState.isScrollInProgress
-            if (refreshIfSelected && isFeed && alreadySettled && !returnedFromDetail) {
-                feedTapEvents.tryEmit(Unit)
-                return
-            }
+            if (alreadySettled) return
             val request = ++liquidNavigationRequest
             liquidNavigationJob?.cancel()
             selectedTabIndex = index
             liquidNavigationJob = scope.launch {
                 try {
-                    if (returnedFromDetail) pagerState.scrollToPage(index)
-                    else pagerState.animateScrollToPage(index)
+                    pagerState.animateScrollToPage(index)
                 } finally {
-                    // A previous canceled request must not reset a newer target.
-                    // Also reconcile when a content swipe interrupts this request.
                     if (request == liquidNavigationRequest) {
                         selectedTabIndex = pagerState.settledPage
                     }
@@ -1226,9 +1186,9 @@ private fun FloatingNavItem(
 }
 
 private fun MainTab.icon(): ImageVector = when (this) {
-    MainTab.FEED -> Icons.Filled.AutoAwesome
     MainTab.FLOW -> Icons.Filled.Headphones
     MainTab.HOME -> Icons.Filled.Home
+    MainTab.STATISTICS -> Icons.Filled.Leaderboard
     MainTab.PLAYLISTS -> Icons.AutoMirrored.Filled.QueueMusic
 }
 
