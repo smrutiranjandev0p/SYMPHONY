@@ -38,6 +38,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -64,6 +65,9 @@ import com.symphony.app.ui.player.PlayerViewModel
 import com.symphony.app.ui.common.TrackContextMenuSheet
 import com.symphony.app.ui.common.TrackMenuCapabilities
 import com.symphony.app.ui.common.TrackMenuTarget
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.snapshotFlow
 
 /**
  * Artwork-first discovery home. It deliberately reuses FeedViewModel's live
@@ -114,29 +118,38 @@ fun FlowScreen(
 
     val pagerState = rememberPagerState(pageCount = { tracks.size })
 
-    // Keep the visual Flow page in lockstep with the real playback queue.
-    // Auto-advance changes the current media item without a user swipe; mirror
-    // that transition in the pager instead of leaving the previous artwork up.
+    // Keep the visual Flow page in lockstep with automatic queue advances.
+    var autoAdvanceTarget by remember { mutableStateOf<Int?>(null) }
+    val currentPlaybackId by rememberUpdatedState(playback.current?.videoId)
     LaunchedEffect(playback.current?.videoId, tracks) {
         val currentId = playback.current?.videoId ?: return@LaunchedEffect
         val currentIndex = tracks.indexOfFirst { it.videoId == currentId }
         if (currentIndex >= 0 && currentIndex != pagerState.currentPage) {
+            autoAdvanceTarget = currentIndex
             pagerState.animateScrollToPage(currentIndex)
         }
     }
 
-    // A user swipe selects a different recommendation. If the player already
-    // advanced to that item, do not rebuild/restart the queue a second time.
-    LaunchedEffect(pagerState.settledPage, tracks, playback.current?.videoId) {
-        val track = tracks.getOrNull(pagerState.settledPage) ?: return@LaunchedEffect
-        if (track.videoId != playback.current?.videoId) {
-            musicPlayer.playQueue(
-                tracks = tracks.map(YouTubeMusicTrack::toPlayableTrack),
-                startIndex = pagerState.settledPage,
-                sourceLabel = "Flow",
-                enableRadioContinuation = true,
-            )
-        }
+    // Only a user-selected settled page starts a different queue item.
+    // Programmatic auto-advance scrolls are consumed by autoAdvanceTarget.
+    LaunchedEffect(pagerState, tracks) {
+        snapshotFlow { pagerState.settledPage }
+            .distinctUntilChanged()
+            .collect { page ->
+                if (autoAdvanceTarget == page) {
+                    autoAdvanceTarget = null
+                } else {
+                    val track = tracks.getOrNull(page) ?: return@collect
+                    if (track.videoId != currentPlaybackId) {
+                        musicPlayer.playQueue(
+                            tracks = tracks.map(YouTubeMusicTrack::toPlayableTrack),
+                            startIndex = page,
+                            sourceLabel = "Flow",
+                            enableRadioContinuation = true,
+                        )
+                    }
+                }
+            }
     }
 
     Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
