@@ -1,32 +1,24 @@
 # Security Policy
 
-## Supported Versions
+## Supported versions
 
-Security fixes are provided for the latest stable release of SYMPHONY.
+Security fixes are intended for the latest stable public release of SYMPHONY. Install the latest release when reporting or investigating an issue.
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 5.0.x   | Yes                |
-| < 5.0.0 | No                 |
+## Reporting a vulnerability
 
-## Reporting a Vulnerability
+Please do not publish exploitable vulnerability details in a public issue.
 
-If you discover a security vulnerability in SYMPHONY, please report it privately rather than creating a public issue.
+Use GitHub's private vulnerability reporting for this repository when it is enabled. Otherwise, contact the repository maintainer privately through:
 
-### How to Report
-* Reach out privately to the maintainers on Telegram:
-  * Channel: https://t.me/clashprojects
-  * Discussion Group: https://t.me/clashdiscussion
-* Alternatively, submit a private security advisory through the GitHub repository.
-* Include:
-  * Description of the vulnerability
-  * Affected versions and components
-  * Steps to reproduce or proof-of-concept
-  * Potential impact assessment
+https://github.com/smrutiranjandev0p
 
-### Response Timeline
-* **Initial acknowledgment:** Within 48 hours.
-* **Assessment & mitigation plan:** Within 5 business days.
-* **Public disclosure:** Coordinated after a patched release is published.
+Include as much of the following as you can:
 
-Thank you for helping keep SYMPHONY secure for all users.
+- A clear description of the issue and its potential impact.
+- The affected SYMPHONY version, Android version and device (if relevant).
+- Steps to reproduce or a proof of concept.
+- Any suggested mitigation.
+
+Please allow the maintainer reasonable time to investigate and prepare a fix before sharing technical details publicly.
+
+Thank you for helping keep SYMPHONY and its users safe.
