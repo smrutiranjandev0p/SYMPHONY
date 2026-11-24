@@ -1,69 +1,89 @@
 # Contributing to SYMPHONY
 
-Thank you for your interest in contributing to SYMPHONY. This document outlines the development workflow, code standards, and submission guidelines.
+Thank you for your interest in SYMPHONY. Bug reports, thoughtful feedback, documentation improvements and code contributions are welcome.
 
-## Code of Conduct
+## Before you contribute
 
-All contributors are expected to adhere to the [Code of Conduct](CODE_OF_CONDUCT.md). Please report unacceptable behavior to maintainers.
+Please read:
 
-## Getting Started
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Design guidelines](DESIGN.md) for UI and interaction changes
+- [Project instructions](AGENTS.md) for repository-specific development rules
+- [Security policy](SECURITY.md) before reporting a vulnerability
+
+## Getting started
 
 ### Prerequisites
-* Android Studio Ladybug or newer
-* JDK 17 (Temurin recommended)
-* Android SDK (API 35) & NDK 26+
-* Git
 
-### Cloning the Repository
+- Android Studio (current stable version recommended)
+- JDK 17
+- Android SDK Platform 37
+- Android SDK Build-Tools and the NDK/CMake versions required by the project
+- Git
+
+The app's default minimum Android version is Android 10 (API 29). The project also has a legacy build configuration; check the current Gradle configuration before changing supported Android versions.
+
+### Clone this repository
+
 ```bash
-git clone https://github.com/Clash-Projects/SYMPHONY-native.git
-cd SYMPHONY-native
+git clone https://github.com/smrutiranjandev0p/SYMPHONY.git
+cd SYMPHONY
 ```
 
-### Community & Questions
-For real-time development discussion and support:
-* Telegram Channel: https://t.me/clashprojects
-* Discussion Group: https://t.me/clashdiscussion
+### Build a debug APK
 
-### Local Configuration
-Copy `.env.example` to `.env` to supply build-time environment properties:
-```bash
-cp .env.example .env
+Windows PowerShell:
+
+```powershell
+.\gradlew.bat assembleDebug
 ```
 
-## Architecture Overview
+macOS / Linux:
 
-SYMPHONY is built using modern Android architecture patterns:
-* **UI Layer:** Jetpack Compose, Material 3, Navigation Compose.
-* **Audio Engine:** ExoPlayer / Media3 with Jellyfin FFmpeg software decoders and custom C++ DSP processing (`AudioEngine.cpp`).
-* **Dependency Injection:** Dagger Hilt.
-* **Storage & Caching:** Room Database, DataStore Preferences.
-* **Networking:** Retrofit, OkHttp 4, Kotlinx Serialization.
+```bash
+./gradlew assembleDebug
+```
 
-## Development Guidelines
+The debug APK is generated under `app/build/outputs/apk/debug/`.
 
-### Branching Strategy
-* `main` contains the latest stable development code.
-* Create feature or bugfix branches from `main` using descriptive names:
-  * `feat/your-feature-name`
-  * `fix/issue-description`
+### Run tests
 
-### Code Style & Quality
-* Follow official Kotlin coding conventions and Android Architecture recommendations.
-* Keep composables focused, stateless where possible, and extract complex state into ViewModels.
-* Ensure all native C++ code respects 16KB memory page alignment constraints for Android 15+.
-* Avoid embedding hardcoded API secrets or URLs directly in source files.
-
-### Testing
-Run local unit tests before opening a pull request:
 ```bash
 ./gradlew testDebugUnitTest
 ```
 
-## Submitting a Pull Request
+Use the Gradle wrapper committed with the repository. Do not commit generated APKs, signing keys, passwords, API tokens, local environment files or other secrets.
 
-1. Push your branch to your fork.
-2. Open a Pull Request against the `main` branch.
-3. Provide a concise summary of changes, problem analysis, and testing steps in the PR description.
-4. Ensure continuous integration checks pass.
-5. Address reviewer feedback promptly.
+## Development workflow
+
+- The `main` branch is the primary development branch.
+- Create a focused branch for each change, for example:
+  - `feat/flow-lyrics-toggle`
+  - `fix/player-like-action`
+  - `docs/update-contributing-guide`
+- Keep pull requests small and focused.
+- Follow Kotlin conventions and the existing Compose, ViewModel, repository and playback patterns.
+- For UI changes, follow [DESIGN.md](DESIGN.md) and check loading, empty, error and long-content states.
+- Avoid unrelated formatting changes and do not introduce third-party support links or services that are not part of SYMPHONY.
+
+## Opening an issue or pull request
+
+For bugs, include:
+
+1. SYMPHONY version and Android version/device.
+2. What you expected to happen.
+3. What actually happened.
+4. Reproduction steps and relevant logs or screenshots (remove personal data and secrets).
+
+For pull requests, include:
+
+1. A concise description of the change and its motivation.
+2. The relevant issue, if one exists.
+3. Tests/build tasks run and their results.
+4. Screenshots or a short recording for UI changes.
+
+Open issues and pull requests in this repository:
+
+https://github.com/smrutiranjandev0p/SYMPHONY/issues
+
+Please be respectful, constructive and mindful that SYMPHONY is maintained as an independent project.
