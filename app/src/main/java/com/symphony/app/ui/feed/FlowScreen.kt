@@ -247,13 +247,14 @@ private fun FlowPage(
                 Surface(shape = CircleShape, color = scheme.surface.copy(alpha = 0.34f), onClick = onOpenLyrics, modifier = Modifier.size(54.dp)) {
                     Box(contentAlignment = Alignment.Center) { Icon(Icons.Filled.FormatQuote, "Open lyrics", tint = scheme.onPrimary, modifier = Modifier.size(27.dp)) }
                 }
-                FlowPartyTorch(
-                    enabled = partyTorchEnabled,
-                    isPlaying = isPlaying,
-                    audioSessionId = audioSessionId,
-                    onEnabledChange = onPartyTorchEnabledChange,
-                )
             }
+            FlowPartyTorch(
+                enabled = partyTorchEnabled,
+                isPlaying = isPlaying,
+                audioSessionId = audioSessionId,
+                onEnabledChange = onPartyTorchEnabledChange,
+                modifier = Modifier.padding(top = 8.dp),
+            )
         }
         Surface(
             shape = CircleShape,
