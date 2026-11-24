@@ -75,7 +75,6 @@ import com.symphony.app.ui.common.TrackMenuTarget
 fun FlowScreen(
     onOpenSettings: () -> Unit,
     onOpenSearch: () -> Unit,
-    onOpenDashboard: () -> Unit,
     viewModel: FeedViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
