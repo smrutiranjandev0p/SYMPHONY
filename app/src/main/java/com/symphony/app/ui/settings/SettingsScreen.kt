@@ -2209,7 +2209,6 @@ fun SettingsScreen(
         }
         }
     }
-    }
 
     // -- Custom color wheel dialog (par 8.4) --
     if (state.showColorWheel) {
