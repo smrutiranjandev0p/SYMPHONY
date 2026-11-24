@@ -189,6 +189,7 @@ abstract class PrepareNativeBridgeTask : DefaultTask() {
 
 android {
     namespace = "com.symphony.app"
+    // Android 17 / API 37.0; CI installs the 37.0 SDK package and aliases it for AGP.
     compileSdk = 37
 
     val localProps = Properties().apply {
