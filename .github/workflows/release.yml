@@ -4,13 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       tag_name:
-        description: 'Git Tag (e.g., 5.2.2)'
+        description: 'Git Tag (e.g., 1.1)'
         required: true
-        default: '5.2.2'
+        default: '1.1'
       release_name:
-        description: 'Release Title (e.g., SYMPHONY 5.2.2)'
+        description: 'Release Title (e.g., SYMPHONY 1.1)'
         required: true
-        default: 'SYMPHONY 5.2.2'
+        default: 'SYMPHONY 1.1'
       release_notes:
         description: 'Changelog / Release Notes'
         required: false
