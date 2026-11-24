@@ -203,7 +203,8 @@ class MainShellViewModel @Inject constructor(
 
 private enum class MainTab(val labelRes: Int) {
     FEED(com.symphony.app.R.string.nav_feed),
-    STATS(com.symphony.app.R.string.nav_stats),
+    FLOW(com.symphony.app.R.string.nav_flow),
+    HOME(com.symphony.app.R.string.nav_home),
     PLAYLISTS(com.symphony.app.R.string.nav_playlists),
 }
 
@@ -274,7 +275,6 @@ fun MainShell(
     // the FAB draw over the pill. Updating immediately on tap and syncing from
     // settledPage on swipe keeps one clean transition.
     var selectedTabIndex by remember { mutableIntStateOf(pagerState.currentPage) }
-    var showFlowHome by rememberSaveable { mutableStateOf(true) }
     var liquidNavigationJob by remember { mutableStateOf<Job?>(null) }
     var liquidNavigationRequest by remember { mutableIntStateOf(0) }
     LaunchedEffect(pagerState.settledPage, pagerState.isScrollInProgress, liquidNavigationJob) {
@@ -425,17 +425,12 @@ fun MainShell(
                     onBack = { scope.launch { pagerState.animateScrollToPage(feedIndex) } },
                 ) {
                     when (tabs[page]) {
-                        MainTab.FEED -> if (showFlowHome) {
-                            FlowScreen(
+                        MainTab.FEED -> FeedScreen(
                                 onOpenSettings = { showAccountMenu = true },
                                 onOpenSearch = onOpenSearch,
-                                onOpenDashboard = { showFlowHome = false },
-                            )
-                        } else {
-                            FeedScreen(
-                                onOpenSettings = { showAccountMenu = true },
-                                onOpenSearch = onOpenSearch,
-                                onOpenFlow = { showFlowHome = true },
+                                onOpenFlow = {
+                                    scope.launch { pagerState.animateScrollToPage(tabs.indexOf(MainTab.FLOW)) }
+                                },
                                 onOpenDiscover = onOpenDiscover,
                                 onOpenGenres = onOpenGenres,
                                 onOpenPlaylist = onOpenPlaylist,
@@ -450,8 +445,14 @@ fun MainShell(
                                 onOpenYouTubeLogin = onOpenYouTubeLogin,
                                 feedTapEvents = feedTapEvents,
                             )
-                        }
-                        MainTab.STATS -> HomeScreen(
+                        MainTab.FLOW -> FlowScreen(
+                            onOpenSettings = { showAccountMenu = true },
+                            onOpenSearch = onOpenSearch,
+                            onOpenDashboard = {
+                                scope.launch { pagerState.animateScrollToPage(tabs.indexOf(MainTab.FEED)) }
+                            },
+                        )
+                        MainTab.HOME -> HomeScreen(
                             onOpenSettings = { showAccountMenu = true },
                             onOpenSearch = onOpenSearch,
                             onOpenDiscover = onOpenDiscover,
@@ -1225,8 +1226,9 @@ private fun FloatingNavItem(
 }
 
 private fun MainTab.icon(): ImageVector = when (this) {
-    MainTab.FEED -> Icons.Filled.Home
-    MainTab.STATS -> Icons.Filled.Leaderboard
+    MainTab.FEED -> Icons.Filled.AutoAwesome
+    MainTab.FLOW -> Icons.Filled.Headphones
+    MainTab.HOME -> Icons.Filled.Home
     MainTab.PLAYLISTS -> Icons.AutoMirrored.Filled.QueueMusic
 }
 
