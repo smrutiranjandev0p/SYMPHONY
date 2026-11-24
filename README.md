@@ -1,90 +1,234 @@
-# SYMPHONY
+<!--
+  SYMPHONY · README
+  Keep this page aligned with shipped functionality and the current app version.
+-->
 
-### Your music, in motion.
+<div align="center">
 
-**SYMPHONY** is a native Android music experience for discovering, collecting and listening without losing the feeling of the music. It pairs a rich local-and-streaming library with an artwork-first interface, deep audio controls and an immersive vertical **Flow**.
+  <img src="assets/SYMPHONY_banner_v2_1440p.png" alt="SYMPHONY — Your music, in motion" width="100%" />
 
-> A colourful, expressive music player built around the next song—not the next menu.
+  <br />
 
-## The experience
+  <h1>SYMPHONY</h1>
+  <p><strong>YOUR MUSIC. IN MOTION.</strong></p>
+  <p><em>A more expressive way to discover, collect and experience music.</em></p>
 
-| Space | What it does |
-| --- | --- |
-| **Flow** | A full-screen, vertical music stream. Swipe up or down to move through recommendations; each settled card starts its track. |
-| **Dashboard** | A familiar home for quick picks, charts, new finds and recently played music. |
-| **Library** | Keep playlists, favourites, downloads and local device music close. |
-| **Player** | Large artwork, queue-aware playback, lyrics and the controls that matter. |
-| **Listen deeper** | Equaliser, AutoEQ, lossless options, sleep timer, listening history and more. |
+  <p>
+    <a href="https://github.com/smrutiranjandev0p/SYMPHONY">
+      <img alt="GitHub repository" src="https://img.shields.io/badge/GitHub-SYMPHONY-111111?style=for-the-badge&logo=github&logoColor=white" />
+    </a>
+    <img alt="Version 5.2.1" src="https://img.shields.io/badge/version-5.2.1-CCFF00?style=for-the-badge&labelColor=111111" />
+    <img alt="Platform Android" src="https://img.shields.io/badge/platform-Android-111111?style=for-the-badge&logo=android&logoColor=CCFF00" />
+    <img alt="Built with Kotlin" src="https://img.shields.io/badge/Kotlin-Compose-111111?style=for-the-badge&logo=kotlin&logoColor=CCFF00" />
+  </p>
 
-## Flow: music that moves with you
+  <p>
+    <a href="#experience-the-flow">Experience</a> ·
+    <a href="#the-symphony-experience">Features</a> ·
+    <a href="#technology-stack">Technology</a> ·
+    <a href="#get-started">Get started</a> ·
+    <a href="#project-map">Project map</a>
+  </p>
 
-Flow is SYMPHONY's front door. Each screen is a complete track moment: artwork fills the display, essential controls remain within one-hand reach and a vertical swipe advances to the next recommendation. It uses the app's existing playback queue, so playback, the mini-player and the full player stay in sync.
+</div>
+
+---
+
+## The feeling behind SYMPHONY
+
+Music deserves more than a list of tracks.
+
+**SYMPHONY** is a native Android music experience designed around discovery, artwork and uninterrupted listening. It brings a rich local-and-streaming library together with an expressive player, deep audio controls and an immersive vertical discovery experience called **Flow**.
+
+Think less navigating through menus. More getting lost in the next song.
+
+<div align="center">
+
+  **DISCOVER  /  FEEL  /  REPEAT**
+
+  <sub>A colourful, artwork-first music player built around the next song—not the next menu.</sub>
+
+</div>
+
+## Experience the Flow
+
+Flow is SYMPHONY's immersive, full-screen music stream. Every screen is a complete track moment: artwork takes centre stage, essential controls stay within one-hand reach, and a vertical swipe moves through recommendations.
 
 ```text
-Swipe up / down  →  settle on a track  →  queue updates  →  music starts
+       SWIPE
+         ↓
+   ┌─────────────┐
+   │   NEXT      │
+   │   TRACK     │
+   │             │
+   │   ARTWORK   │
+   │             │
+   │  NOW PLAYING│
+   └─────────────┘
+         ↓
+   QUEUE UPDATES
+         ↓
+     MUSIC PLAYS
 ```
 
-The original Dashboard is still available from Flow whenever you want to browse instead of drift.
+Flow uses the app's playback queue, keeping playback, the mini-player and the full player in sync. The Dashboard remains available whenever you want to browse instead of drift.
 
-## Built for serious listening
+## The SYMPHONY experience
 
-- YouTube Music browsing and streaming
-- Local music, offline downloads and playlist support
-- Full player, mini-player, queue, shuffle and repeat
-- Lyrics, including synchronised lyrics where available
-- Favourites, history, sleep timer and search
-- Spotify import, Last.fm scrobbling and listening statistics
-- Google Cast, Android Auto, home-screen widgets and lock-screen controls
-- Parametric EQ, AutoEQ, Automix and USB DAC audio capabilities
+<table>
+  <tr>
+    <td width="50%">
+      <h3>◉ Flow</h3>
+      <p>Full-screen vertical discovery. Move through recommendations with a swipe and let the next track take over.</p>
+    </td>
+    <td width="50%">
+      <h3>⌂ Dashboard</h3>
+      <p>Your familiar listening home for quick picks, charts, new finds and recently played music.</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <h3>▤ Library</h3>
+      <p>Keep playlists, favourites, downloads and music stored on your device close at hand.</p>
+    </td>
+    <td width="50%">
+      <h3>♫ Player</h3>
+      <p>Large artwork, queue-aware playback, lyrics and essential controls in one focused space.</p>
+    </td>
+  </tr>
+</table>
 
-## Design language
+### Made for the way you listen
 
-SYMPHONY is intentionally its own thing: dark, cinematic surfaces; vivid album art; translucent controls; and motion that makes music feel present. The UI is built with Jetpack Compose and Material 3, following an artwork-first, responsive, one-hand-friendly approach.
+- **Discover & search** — YouTube Music browsing and streaming.
+- **Your collection** — Local music, offline downloads, playlists and favourites.
+- **Playback control** — Full player, mini-player, queue, shuffle and repeat.
+- **Lyrics** — Lyrics, including synchronised lyrics where available.
+- **Listening history** — Recently played tracks, history and sleep timer.
+- **Connect your services** — Spotify import and Last.fm scrobbling.
+- **Listen anywhere** — Google Cast, Android Auto, home-screen widgets and lock-screen controls.
+- **Shape your sound** — Parametric EQ, AutoEQ, Automix and USB DAC audio capabilities.
 
-## Technology
+> Feature availability can depend on the device, connected service, source and current implementation.
 
-- **Kotlin** + **Jetpack Compose** + **Material 3**
-- **Media3 / ExoPlayer** for playback
-- **Hilt**, **Room**, **DataStore**, **Coroutines** and **Retrofit**
-- Native C++/Oboe audio pipeline for advanced playback features
+## A design language with a pulse
 
-## Getting started
+SYMPHONY is intentionally its own thing: dark, cinematic surfaces, vivid album art, translucent controls and motion that makes music feel present.
+
+The interface is built with **Jetpack Compose** and **Material 3**, with an artwork-first, responsive and one-hand-friendly approach. The goal is simple: keep the music in focus and the controls close.
+
+## Technology stack
+
+| Layer | Technologies |
+| --- | --- |
+| Language & UI | Kotlin, Jetpack Compose, Material 3 |
+| Playback | AndroidX Media3 / ExoPlayer |
+| Architecture & dependency injection | Hilt, Coroutines |
+| Local data | Room, DataStore |
+| Networking | Retrofit, OkHttp |
+| Native audio | C++, Oboe, CMake |
+| Music extraction | InnerTubeX with NewPipe Extractor fallback |
+
+## Get started
 
 ### Requirements
 
-- Android Studio with JDK 17
+- Android Studio
+- JDK 17
 - Android SDK 37
-- An Android device or emulator running Android 10 (API 29) or newer
+- Android 10 (API 29) or newer device / emulator
 
-### Build
+### Clone the repository
+
+```bash
+git clone https://github.com/smrutiranjandev0p/SYMPHONY.git
+cd SYMPHONY
+```
+
+### Build a debug APK
+
+**Windows (PowerShell):**
 
 ```powershell
 .\gradlew.bat assembleDebug
 ```
 
-The debug APK is produced under `app\build\outputs\apk\debug\`.
+**macOS / Linux:**
 
-## Project structure
-
-```text
-app/src/main/java/com/symphony/app/
-├── ui/          # Compose screens, Flow, player and navigation
-├── playback/    # Player service, queue, sessions and audio controls
-├── data/        # Local database, preferences and music sources
-├── widget/      # Home-screen widgets
-├── diagnostics/ # Logs and crash diagnostics
-└── ...
-audio/           # Native USB audio driver module
+```bash
+./gradlew assembleDebug
 ```
 
-## Status
+The debug APK is generated at:
 
-SYMPHONY is actively evolving. The Flow home experience, playback, lyrics, favourites, history, queue foundations, sleep timer and lock-screen metadata are in place. Persistent playlist improvements, richer artist/album pages, broader DSP work and device-level background-playback verification continue next.
+```text
+app/build/outputs/apk/debug/
+```
+
+> [!IMPORTANT]
+> Release builds require the project's release-signing configuration. Keep signing keys, passwords, API tokens and other secrets out of source control. Use local properties or environment variables for private build configuration.
+
+## Project map
+
+```text
+SYMPHONY/
+├── app/
+│   └── src/main/
+│       ├── java/com/symphony/app/
+│       │   ├── ui/           # Compose screens, Flow, player and navigation
+│       │   ├── playback/     # Player service, queue and audio controls
+│       │   ├── data/         # Database, preferences and music sources
+│       │   ├── widget/       # Home-screen widgets
+│       │   └── diagnostics/  # Logs and crash diagnostics
+│       └── cpp/              # Native audio / bridge code
+├── audio/
+│   └── decent-usb-audio-driver/
+├── assets/                   # SYMPHONY visual identity
+├── docs/                     # Project notes and technical documentation
+├── gradle/
+├── build.gradle.kts
+├── settings.gradle.kts
+└── README.md
+```
+
+## Project status
+
+SYMPHONY is actively evolving. The current project description identifies the Flow home experience, playback, lyrics, favourites, history, queue foundations, sleep timer and lock-screen metadata as implemented.
+
+Ongoing work includes persistent playlist improvements, richer artist and album pages, broader DSP work and device-level background-playback verification.
 
 ## Contributing
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md) and the repository's [AGENTS.md](AGENTS.md) before making changes. Keep the experience fast, expressive and focused on the music.
+Contributions, thoughtful feedback and bug reports are welcome.
+
+Before making changes, please read:
+
+- [Contribution guidelines](CONTRIBUTING.md)
+- [Project instructions](AGENTS.md)
+- [Design guidelines](DESIGN.md)
+- [Changelog](CHANGELOG.md)
+
+Keep the experience fast, expressive and focused on the music.
+
+## License
+
+See the [LICENSE](LICENSE) file for the license and distribution terms.
 
 ---
 
-**SYMPHONY** — press play, then follow the flow.
+<div align="center">
+
+  <img src="assets/symphony_logo.svg" alt="SYMPHONY logo" width="72" />
+
+  <h3>SYMPHONY</h3>
+  <strong>PRESS PLAY. FOLLOW THE FLOW.</strong>
+
+  <br /><br />
+
+  <sub>Made for the moments between the first note and the last.</sub>
+
+  <br />
+
+  <a href="https://github.com/smrutiranjandev0p/SYMPHONY">Explore the repository ↗</a>
+
+</div>
