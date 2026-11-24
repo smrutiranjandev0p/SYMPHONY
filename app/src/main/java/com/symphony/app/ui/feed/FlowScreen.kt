@@ -230,6 +230,22 @@ private fun FlowPage(
                 }
             }
         }
+        Surface(
+            shape = CircleShape,
+            color = scheme.primary.copy(alpha = 0.96f),
+            shadowElevation = 20.dp,
+            onClick = onTogglePlayback,
+            modifier = Modifier.align(Alignment.Center).size(88.dp),
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                    contentDescription = if (isPlaying) "Pause" else "Play",
+                    tint = scheme.onPrimary,
+                    modifier = Modifier.size(42.dp),
+                )
+            }
+        }
     }
 }
 
