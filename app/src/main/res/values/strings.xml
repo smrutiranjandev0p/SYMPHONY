@@ -47,7 +47,8 @@
 
     <!-- Bottom navigation -->
     <string name="nav_feed">Feed</string>
-    <string name="nav_stats">Stats</string>
+    <string name="nav_flow">Flow</string>
+    <string name="nav_home">Home</string>
     <string name="nav_playlists">Library</string>
     <string name="nav_create_playlist">Create / Generate Playlist</string>
     <string name="nav_generator">Generator</string>
