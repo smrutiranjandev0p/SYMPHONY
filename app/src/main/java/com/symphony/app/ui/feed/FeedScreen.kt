@@ -195,6 +195,7 @@ private fun LazyListScope.feedSectionItem(
 fun FeedScreen(
     onOpenSettings: () -> Unit,
     onOpenSearch: () -> Unit,
+    onOpenFlow: () -> Unit = {},
     onOpenDiscover: () -> Unit,
     onOpenGenres: () -> Unit = {},
     onOpenFeedPlaylist: (String) -> Unit,
@@ -1646,6 +1647,9 @@ fun FeedScreen(
                 containerColor = if (isPodcastsActive) Color.Transparent else Color.Unspecified,
                 backdrop = if (useFeedGlass) feedBackdrop else null,
                 actions = {
+                    IconButton(onClick = onOpenFlow) {
+                        Icon(Icons.Filled.GraphicEq, "Open Flow")
+                    }
                     HeaderActionIcon(Icons.Filled.Search, "Search", onOpenSearch)
                     IconButton(onClick = onOpenSettings) {
                         com.symphony.app.ui.home.ProfileAvatar(avatarUrl = state.avatarUrl, modifier = Modifier.size(38.dp))

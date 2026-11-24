@@ -141,6 +141,7 @@ import com.symphony.app.ui.common.ExpressiveMotion
 import com.symphony.app.ui.common.PredictiveBackScreen
 import com.symphony.app.ui.common.adaptiveContentWidth
 import com.symphony.app.ui.feed.FeedScreen
+import com.symphony.app.ui.feed.FlowScreen
 import com.symphony.app.ui.home.HomeScreen
 import com.symphony.app.ui.player.LocalChromeCollapse
 import com.symphony.app.ui.player.collapsedNavPill
@@ -278,6 +279,7 @@ fun MainShell(
     // the FAB draw over the pill. Updating immediately on tap and syncing from
     // settledPage on swipe keeps one clean transition.
     var selectedTabIndex by remember { mutableIntStateOf(pagerState.currentPage) }
+    var showFlowHome by rememberSaveable { mutableStateOf(true) }
     var liquidNavigationJob by remember { mutableStateOf<Job?>(null) }
     var liquidNavigationRequest by remember { mutableIntStateOf(0) }
     LaunchedEffect(pagerState.settledPage, pagerState.isScrollInProgress, liquidNavigationJob) {
@@ -445,23 +447,32 @@ fun MainShell(
                     onBack = { scope.launch { pagerState.animateScrollToPage(feedIndex) } },
                 ) {
                     when (tabs[page]) {
-                        MainTab.FEED -> FeedScreen(
-                            onOpenSettings = { showAccountMenu = true },
-                            onOpenSearch = onOpenSearch,
-                            onOpenDiscover = onOpenDiscover,
-                            onOpenGenres = onOpenGenres,
-                            onOpenPlaylist = onOpenPlaylist,
-                            onOpenFeedPlaylist = onOpenFeedPlaylist,
-                            onOpenGenerator = onOpenGenerator,
-                            onOpenFriends = onOpenFriends,
-                            onOpenFriendProfile = onOpenFriendProfile,
-                            onOpenNewReleases = onOpenNewReleases,
-                            onOpenDownloads = onOpenDownloads,
-                            onOpenPodcasts = onOpenPodcasts,
-                            onOpenPodcastShow = onOpenPodcastShow,
-                            onOpenYouTubeLogin = onOpenYouTubeLogin,
-                            feedTapEvents = feedTapEvents,
-                        )
+                        MainTab.FEED -> if (showFlowHome) {
+                            FlowScreen(
+                                onOpenSettings = { showAccountMenu = true },
+                                onOpenSearch = onOpenSearch,
+                                onOpenDashboard = { showFlowHome = false },
+                            )
+                        } else {
+                            FeedScreen(
+                                onOpenSettings = { showAccountMenu = true },
+                                onOpenSearch = onOpenSearch,
+                                onOpenFlow = { showFlowHome = true },
+                                onOpenDiscover = onOpenDiscover,
+                                onOpenGenres = onOpenGenres,
+                                onOpenPlaylist = onOpenPlaylist,
+                                onOpenFeedPlaylist = onOpenFeedPlaylist,
+                                onOpenGenerator = onOpenGenerator,
+                                onOpenFriends = onOpenFriends,
+                                onOpenFriendProfile = onOpenFriendProfile,
+                                onOpenNewReleases = onOpenNewReleases,
+                                onOpenDownloads = onOpenDownloads,
+                                onOpenPodcasts = onOpenPodcasts,
+                                onOpenPodcastShow = onOpenPodcastShow,
+                                onOpenYouTubeLogin = onOpenYouTubeLogin,
+                                feedTapEvents = feedTapEvents,
+                            )
+                        }
                         MainTab.STATS -> HomeScreen(
                             onOpenSettings = { showAccountMenu = true },
                             onOpenSearch = onOpenSearch,
