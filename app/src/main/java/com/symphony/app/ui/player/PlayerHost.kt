@@ -343,6 +343,10 @@ val LocalExpandPlayer = staticCompositionLocalOf<() -> Unit> {
     error("Expand player is only available inside PlayerHost")
 }
 
+val LocalOpenPlayerLyrics = staticCompositionLocalOf<() -> Unit> {
+    error("Player lyrics are only available inside PlayerHost")
+}
+
 val LocalAddToPlaylist = staticCompositionLocalOf<(PlayableTrack) -> Unit> {
     error("Add-to-playlist is only available inside PlayerHost")
 }
@@ -555,6 +559,11 @@ fun PlayerHost(
     CompositionLocalProvider(
         LocalMusicPlayer provides viewModel.player,
         LocalExpandPlayer provides expandPlayer,
+        LocalOpenPlayerLyrics provides {
+            expandPlayer()
+            playerLyrics = true
+            currentTab = FullPlayerTab.NOW_PLAYING
+        },
         LocalAddToPlaylist provides requestAddToPlaylist,
         LocalMiniPlayerScrollClearance provides if (state.current != null && !settings.buttonNowPlayingEnabled && !hideMiniPlayer) 98.dp else 0.dp,
         LocalMiniPlayerSnackbarClearance provides if (miniPlayerVisible) {
