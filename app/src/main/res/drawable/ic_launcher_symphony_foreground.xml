@@ -4,20 +4,19 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- SYMPHONY Obsidian Wave: sculpted silver rhythm bars with a lime signal ribbon. -->
-    <path
-        android:fillColor="#E7ECE8"
-        android:pathData="M24,43 A5,5 0 0 1 34,43 L34,65 A5,5 0 0 1 24,65 Z" />
-    <path
-        android:fillColor="#E7ECE8"
-        android:pathData="M41,27 A5,5 0 0 1 51,27 L51,81 A5,5 0 0 1 41,81 Z" />
-    <path
-        android:fillColor="#E7ECE8"
-        android:pathData="M58,34 A5,5 0 0 1 68,34 L68,74 A5,5 0 0 1 58,74 Z" />
-    <path
-        android:fillColor="#E7ECE8"
-        android:pathData="M75,44 A5,5 0 0 1 85,44 L85,64 A5,5 0 0 1 75,64 Z" />
-    <path
-        android:fillColor="#C9FB00"
-        android:pathData="M20,56 C29,43 35,44 43,56 C51,69 58,69 66,52 C74,36 81,40 89,54 L89,64 C81,51 76,49 69,64 C58,85 48,83 39,66 C32,53 28,53 20,68 Z" />
+    <!-- SYMPHONY Prism Glass: a refractive crystal disc with a luminous audio signature. -->
+    <path android:fillColor="#334D6678" android:pathData="M54,12 A42,42 0 1,0 54,96 A42,42 0 1,0 54,12 Z"/>
+    <path android:fillColor="#1CFFFFFF" android:pathData="M54,16 A38,38 0 1,0 54,92 A38,38 0 1,0 54,16 Z"/>
+    <path android:fillColor="#FF18232F" android:pathData="M54,19 A35,35 0 1,0 54,89 A35,35 0 1,0 54,19 Z"/>
+    <path android:fillColor="#FF263F50" android:pathData="M54,22 A32,32 0 1,0 54,86 A32,32 0 1,0 54,22 Z"/>
+    <!-- soft glass reflection -->
+    <path android:fillColor="#33FFFFFF" android:pathData="M29,34 C38,20 57,17 72,25 C57,23 43,29 35,42 C31,49 28,56 27,63 C22,54 23,43 29,34 Z"/>
+    <path android:fillColor="#66FFFFFF" android:pathData="M32,28 C43,20 59,19 70,25 C57,22 44,27 36,36 Z"/>
+    <!-- luminous audio bars -->
+    <path android:fillColor="#FFB7F4EE" android:pathData="M28,47 A5,5 0 0,1 38,47 L38,61 A5,5 0 0,1 28,61 Z"/>
+    <path android:fillColor="#FFFFFFFF" android:pathData="M43,34 A5.5,5.5 0 0,1 54,34 L54,74 A5.5,5.5 0 0,1 43,74 Z"/>
+    <path android:fillColor="#FFB7F4EE" android:pathData="M59,41 A5,5 0 0,1 69,41 L69,67 A5,5 0 0,1 59,67 Z"/>
+    <path android:fillColor="#FF78D9D0" android:pathData="M74,49 A4.5,4.5 0 0,1 83,49 L83,59 A4.5,4.5 0 0,1 74,59 Z"/>
+    <!-- tiny specular highlight -->
+    <path android:fillColor="#99FFFFFF" android:pathData="M75,31 A3,3 0 1,0 81,31 A3,3 0 1,0 75,31 Z"/>
 </vector>
