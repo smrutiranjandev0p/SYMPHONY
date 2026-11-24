@@ -67,7 +67,7 @@ Flow is SYMPHONY's immersive, full-screen music stream. Every screen is a comple
      MUSIC PLAYS
 ```
 
-Flow uses the app's playback queue, keeping playback, the mini-player and the full player in sync. The Dashboard remains available whenever you want to browse instead of drift.
+Flow uses the app's playback queue, keeping playback, the mini-player and the full player in sync. The Home screen remains available whenever you want to browse instead of drift.
 
 ## The SYMPHONY experience
 
@@ -78,8 +78,8 @@ Flow uses the app's playback queue, keeping playback, the mini-player and the fu
       <p>Full-screen vertical discovery. Move through recommendations with a swipe and let the next track take over.</p>
     </td>
     <td width="50%">
-      <h3>⌂ Dashboard</h3>
-      <p>Your familiar listening home for quick picks, charts, new finds and recently played music.</p>
+      <h3>⌂ Home</h3>
+      <p>Your listening home for quick picks, charts, new finds and recently played music.</p>
     </td>
   </tr>
   <tr>
@@ -88,8 +88,8 @@ Flow uses the app's playback queue, keeping playback, the mini-player and the fu
       <p>Keep playlists, favourites, downloads and music stored on your device close at hand.</p>
     </td>
     <td width="50%">
-      <h3>♫ Player</h3>
-      <p>Large artwork, queue-aware playback, lyrics and essential controls in one focused space.</p>
+      <h3>▥ Statistics</h3>
+      <p>Your listening history, trends and playback insights in a dedicated space.</p>
     </td>
   </tr>
 </table>
@@ -200,8 +200,9 @@ Contributions, thoughtful feedback and bug reports are welcome.
 Before making changes, please read:
 
 - [Contribution guidelines](CONTRIBUTING.md)
-- [Project instructions](AGENTS.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
 - [Design guidelines](DESIGN.md)
+- [Security policy](SECURITY.md)
 - [Changelog](CHANGELOG.md)
 
 Keep the experience fast, expressive and focused on the music.
