@@ -173,16 +173,16 @@ private fun FlowPage(
             model = track.artworkUrl,
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize().alpha(0.52f),
+            modifier = Modifier.fillMaxSize().alpha(0.78f),
         )
         Box(
             Modifier
                 .fillMaxSize()
                 .background(
                     Brush.verticalGradient(
-                        0f to scheme.scrim.copy(alpha = 0.35f),
+                        0f to scheme.scrim.copy(alpha = 0.22f),
                         0.48f to Color.Transparent,
-                        1f to scheme.scrim.copy(alpha = 0.94f),
+                        1f to scheme.scrim.copy(alpha = 0.78f),
                     ),
                 ),
         )
