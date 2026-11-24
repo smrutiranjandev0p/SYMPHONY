@@ -67,7 +67,7 @@ import com.symphony.app.ui.common.TrackMenuCapabilities
 import com.symphony.app.ui.common.TrackMenuTarget
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.snapshotFlow
+import androidx.compose.runtime.snapshotFlow
 
 /**
  * Artwork-first discovery home. It deliberately reuses FeedViewModel's live
