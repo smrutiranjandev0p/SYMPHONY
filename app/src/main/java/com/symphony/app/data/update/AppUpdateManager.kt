@@ -428,6 +428,11 @@ class AppUpdateManager @Inject constructor(
         val rParts = cleanRemote.split(".").mapNotNull { it.toIntOrNull() }
         val cParts = cleanLocal.split(".").mapNotNull { it.toIntOrNull() }
 
+        // 1.x is the new public version line. Treat its first release as an
+        // upgrade from the previous 5.x line; Android versionCode remains
+        // monotonic (34) so PackageInstaller accepts the in-place update.
+        if (rParts.firstOrNull() == 1 && cParts.firstOrNull() == 5) return true
+
         val maxLen = maxOf(rParts.size, cParts.size)
         for (i in 0 until maxLen) {
             val r = rParts.getOrElse(i) { 0 }
