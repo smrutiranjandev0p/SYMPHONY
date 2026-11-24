@@ -126,7 +126,7 @@ class AppUpdateManager @Inject constructor(
             }
             try {
                 val request = Request.Builder()
-                    .url("https://api.github.com/repos/Clash-Projects/SYMPHONY-native/releases/latest")
+                    .url("https://api.github.com/repos/Clash-Projects/LastWave-Native/releases/latest")
                     .header("Accept", "application/vnd.github.v3+json")
                     .header("User-Agent", "SYMPHONY-Android")
                     .build()
