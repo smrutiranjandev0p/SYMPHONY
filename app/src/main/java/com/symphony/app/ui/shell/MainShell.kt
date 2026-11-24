@@ -147,6 +147,7 @@ import com.symphony.app.ui.player.LocalChromeCollapse
 import com.symphony.app.ui.player.collapsedNavPill
 import com.symphony.app.ui.player.collapsingNavBar
 import com.symphony.app.ui.player.LocalMiniPlayerScrollClearance
+import com.symphony.app.ui.player.LocalFlowTabActive
 import com.symphony.app.ui.playlist.PlaylistScreen
 import androidx.compose.foundation.shape.CornerBasedShape
 import com.kyant.backdrop.drawBackdrop
@@ -274,6 +275,10 @@ fun MainShell(
     // the FAB draw over the pill. Updating immediately on tap and syncing from
     // settledPage on swipe keeps one clean transition.
     var selectedTabIndex by remember { mutableIntStateOf(pagerState.currentPage) }
+    val flowTabActive = LocalFlowTabActive.current
+    androidx.compose.runtime.SideEffect {
+        flowTabActive?.value = selectedTabIndex == tabs.indexOf(MainTab.FLOW)
+    }
     var liquidNavigationJob by remember { mutableStateOf<Job?>(null) }
     var liquidNavigationRequest by remember { mutableIntStateOf(0) }
     LaunchedEffect(pagerState.settledPage, pagerState.isScrollInProgress, liquidNavigationJob) {
@@ -428,9 +433,6 @@ fun MainShell(
                         MainTab.FLOW -> FlowScreen(
                             onOpenSettings = { showAccountMenu = true },
                             onOpenSearch = onOpenSearch,
-                            onOpenDashboard = {
-                                scope.launch { pagerState.animateScrollToPage(homeIndex) }
-                            },
                         )
                         MainTab.HOME -> HomeScreen(
                             onOpenSettings = { showAccountMenu = true },
