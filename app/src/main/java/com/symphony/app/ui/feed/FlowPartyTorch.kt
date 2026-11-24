@@ -72,7 +72,7 @@ internal fun FlowPartyTorch(
             result[Manifest.permission.CAMERA] == true &&
                 result[Manifest.permission.RECORD_AUDIO] == true
         permissionDenied = !permissionGranted
-        if (!permissionGranted) onEnabledChange(false)
+        onEnabledChange(permissionGranted)
     }
     val mainHandler = remember { Handler(Looper.getMainLooper()) }
 
