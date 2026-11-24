@@ -55,6 +55,8 @@ import coil.compose.AsyncImage
 import com.symphony.app.data.music.HomeShelfItem
 import com.symphony.app.data.music.YouTubeMusicTrack
 import com.symphony.app.playback.toPlayableTrack
+import com.symphony.app.playback.toGeneratedTrack
+import com.symphony.app.data.playlist.isLikedIn
 import com.symphony.app.ui.player.LocalMusicPlayer
 import com.symphony.app.ui.player.LocalExpandPlayer
 import com.symphony.app.ui.player.PlayerViewModel
@@ -130,7 +132,7 @@ fun FlowScreen(
                 track = tracks[page],
                 isPlaying = playback.current?.videoId == tracks[page].videoId && playback.isPlaying,
                 onTogglePlayback = musicPlayer::togglePlayPause,
-                isLiked = tracks[page].toPlayableTrack().let { com.symphony.app.data.playlist.isLikedIn(it, likedKeys) },
+                isLiked = tracks[page].toPlayableTrack().toGeneratedTrack().isLikedIn(likedKeys),
                 onToggleLike = { playerViewModel.toggleLiked(tracks[page].toPlayableTrack()) },
                 onOpenArtist = playerViewModel::openArtist,
                 onOpenMenu = { menuTrack = tracks[page] },
