@@ -59,7 +59,7 @@ import com.symphony.app.playback.toPlayableTrack
 import com.symphony.app.playback.toGeneratedTrack
 import com.symphony.app.data.playlist.isLikedIn
 import com.symphony.app.ui.player.LocalMusicPlayer
-import com.symphony.app.ui.player.LocalExpandPlayer
+import com.symphony.app.ui.player.LocalOpenPlayerLyrics
 import com.symphony.app.ui.player.PlayerViewModel
 import com.symphony.app.ui.common.TrackContextMenuSheet
 import com.symphony.app.ui.common.TrackMenuCapabilities
@@ -80,7 +80,7 @@ fun FlowScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val musicPlayer = LocalMusicPlayer.current
-    val expandPlayer = LocalExpandPlayer.current
+    val openPlayerLyrics = LocalOpenPlayerLyrics.current
     val playerViewModel: PlayerViewModel = hiltViewModel()
     val likedKeys by playerViewModel.likedTrackKeys.collectAsStateWithLifecycle()
     var menuTrack by remember { mutableStateOf<YouTubeMusicTrack?>(null) }
@@ -137,7 +137,7 @@ fun FlowScreen(
                 onToggleLike = { playerViewModel.toggleLiked(tracks[page].toPlayableTrack()) },
                 onOpenArtist = playerViewModel::openArtist,
                 onOpenMenu = { menuTrack = tracks[page] },
-                onOpenLyrics = expandPlayer,
+                onOpenLyrics = openPlayerLyrics,
             )
         }
         menuTrack?.let { track ->
@@ -239,7 +239,7 @@ private fun FlowPage(
                     Box(contentAlignment = Alignment.Center) { Icon(Icons.Filled.MoreVert, "More options", tint = scheme.onPrimary, modifier = Modifier.size(26.dp)) }
                 }
                 Surface(shape = CircleShape, color = scheme.surface.copy(alpha = 0.30f), onClick = onOpenLyrics, modifier = Modifier.size(52.dp)) {
-                    Box(contentAlignment = Alignment.Center) { Icon(Icons.Filled.FormatQuote, "Open player lyrics", tint = scheme.onPrimary, modifier = Modifier.size(26.dp)) }
+                    Box(contentAlignment = Alignment.Center) { Icon(Icons.Filled.FormatQuote, "Open lyrics", tint = scheme.onPrimary, modifier = Modifier.size(26.dp)) }
                 }
             }
         }
