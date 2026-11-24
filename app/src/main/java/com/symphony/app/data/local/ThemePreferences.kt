@@ -47,7 +47,7 @@ data class ThemePrefs(
     /** Haptic feedback on taps, buttons, toggles and gestures across the app. */
     val uiHaptics: Boolean = true,
     /** Dedicated SYMPHONY Signature Theme inspired by the app logo icon (#C9FB00 & #012226). */
-    val lastWaveTheme: Boolean = false,
+    val symphonyTheme: Boolean = false,
     val useLegacyColors: Boolean = false,
     val appIcon: AppIcon = AppIcon.DEFAULT,
 )
@@ -84,7 +84,7 @@ class ThemePreferences @Inject constructor(
                 md3NavBar = p.readSafely(Keys.MD3_NAV_BAR) ?: false,
                 hideNavTabs = p.readSafely(Keys.HIDE_NAV_TABS) ?: false,
                 uiHaptics = p.readSafely(Keys.UI_HAPTICS) ?: true,
-                lastWaveTheme = p.readSafely(Keys.SYMPHONY_THEME) ?: false,
+                symphonyTheme = p.readSafely(Keys.SYMPHONY_THEME) ?: false,
                 useLegacyColors = p.readSafely(Keys.USE_LEGACY_COLORS) ?: false,
                 appIcon = AppIcon.fromId(p.readSafely(Keys.APP_ICON)),
             )

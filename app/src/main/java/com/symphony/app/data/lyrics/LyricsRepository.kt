@@ -137,7 +137,7 @@ class LyricsRepository @Inject constructor(
     private val kugouApi: KugouLyricsApi,
     private val lrclibApi: LrclibLyricsApi,
     private val appleMusicApi: AppleMusicLyricsApi,
-    private val lastWaveLyricsApi: SYMPHONYLyricsApi,
+    private val symphonyLyricsApi: SYMPHONYLyricsApi,
     private val biniApi: BiniLyricsApi,
     private val lrcRedLyricsApi: LrcRedLyricsApi,
     private val simpMusicApi: SimpMusicLyricsApi,
@@ -819,13 +819,13 @@ class LyricsRepository @Inject constructor(
         videoId: String? = null,
     ): LyricsResult.Success? {
         return try {
-            val (foundIsrc, res) = lastWaveLyricsApi.fetchLyricsWithIsrc(
+            val (foundIsrc, res) = symphonyLyricsApi.fetchLyricsWithIsrc(
                 forSearchTitle(title),
                 forSearchArtist(artist),
                 album,
                 durationSeconds,
                 isrc,
-            ) ?: lastWaveLyricsApi.fetchLyricsWithIsrc(
+            ) ?: symphonyLyricsApi.fetchLyricsWithIsrc(
                 title,
                 artist,
                 album,

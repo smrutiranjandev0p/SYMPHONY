@@ -243,7 +243,7 @@ class ThemeRepository @Inject constructor(
     ) { prefs: ThemePrefs, dynamic: String?, nowPlaying: ArtworkAccent?, misc: MiscSettings ->
         val isAmoled = prefs.amoled
         val isGlass = prefs.liquidGlass
-        val isSYMPHONY = prefs.lastWaveTheme
+        val isSYMPHONY = prefs.symphonyTheme
         val useLegacy = prefs.useLegacyColors
         val nowPlayingActive = misc.dynamicNowPlayingEnabled && nowPlaying != null && !isSYMPHONY
         // Real wallpaper Monet on S+. Built here (not only in SYMPHONYTheme)

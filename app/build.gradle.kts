@@ -257,10 +257,10 @@ android {
             }
         }
 
-        val lastWaveLyricsToken = resolveSecret("SYMPHONY_LYRICS_TOKEN")
-        val lastWaveLyricsUrl = resolveSecret("SYMPHONY_LYRICS_URL")
-        buildConfigField("String", "SYMPHONY_LYRICS_TOKEN", "\"$lastWaveLyricsToken\"")
-        buildConfigField("String", "SYMPHONY_LYRICS_URL", "\"$lastWaveLyricsUrl\"")
+        val symphonyLyricsToken = resolveSecret("SYMPHONY_LYRICS_TOKEN")
+        val symphonyLyricsUrl = resolveSecret("SYMPHONY_LYRICS_URL")
+        buildConfigField("String", "SYMPHONY_LYRICS_TOKEN", "\"$symphonyLyricsToken\"")
+        buildConfigField("String", "SYMPHONY_LYRICS_URL", "\"$symphonyLyricsUrl\"")
 
         externalNativeBuild {
             cmake {

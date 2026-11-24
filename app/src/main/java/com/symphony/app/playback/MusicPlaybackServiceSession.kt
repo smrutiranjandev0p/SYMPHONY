@@ -558,7 +558,7 @@ internal suspend fun MusicPlaybackService.loadWavePlaylistShortcuts(): List<Wave
      */
 internal fun MusicPlaybackService.detectWaveSeek(state: MusicPlayerState) {
         val nowMs = SystemClock.elapsedRealtime()
-        val previous = lastWaveObservedState
+        val previous = symphonyObservedState
         if (
             previous != null &&
             previous.current == state.current &&
@@ -566,15 +566,15 @@ internal fun MusicPlaybackService.detectWaveSeek(state: MusicPlayerState) {
             previous.isPlaying &&
             state.isPlaying
         ) {
-            val elapsedMs = (nowMs - lastWaveObservedAtMs).coerceAtLeast(0L)
+            val elapsedMs = (nowMs - symphonyObservedAtMs).coerceAtLeast(0L)
             val expectedAdvanceMs = (elapsedMs * previous.speed.coerceAtLeast(0f)).toLong()
             val actualAdvanceMs = state.positionMs - previous.positionMs
             if (abs(actualAdvanceMs - expectedAdvanceMs) >= WAVE_SEEK_DISCONTINUITY_MS) {
                 publishWaveWidget(state, force = true)
             }
         }
-        lastWaveObservedState = state
-        lastWaveObservedAtMs = nowMs
+        symphonyObservedState = state
+        symphonyObservedAtMs = nowMs
     }
 
 internal fun MusicPlaybackService.publishWaveWidget(state: MusicPlayerState, force: Boolean = false) {

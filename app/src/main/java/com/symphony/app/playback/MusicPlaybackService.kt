@@ -213,8 +213,8 @@ class MusicPlaybackService : MediaBrowserServiceCompat() {
     internal var artworkRequestKey = ""
     internal var notificationPalette = NotificationPalette.default()
     internal var wavePlaylistShortcuts: List<WavePlaylistShortcut> = emptyList()
-    internal var lastWaveObservedState: MusicPlayerState? = null
-    internal var lastWaveObservedAtMs = 0L
+    internal var symphonyObservedState: MusicPlayerState? = null
+    internal var symphonyObservedAtMs = 0L
     internal var castVolumeProvider: VolumeProviderCompat? = null
     internal var playbackWakeLock: PowerManager.WakeLock? = null
     internal var playbackWifiLock: WifiManager.WifiLock? = null

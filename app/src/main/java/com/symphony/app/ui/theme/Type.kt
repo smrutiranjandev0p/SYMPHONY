@@ -147,7 +147,7 @@ fun lyricsBackingFontFamily(bold: Boolean): FontFamily = if (bold) LyricsBacking
 fun lyricsSubLineFontFamily(bold: Boolean): FontFamily = if (bold) LyricsSubLineBoldFontFamily else LyricsSubLineFontFamily
 
 // boost = 0 is exactly the tag 2.0 type scale; regular trims it, bold mode adds on top.
-private fun lastWaveTypography(boost: Float) = Typography(
+private fun symphonyTypography(boost: Float) = Typography(
     displayLarge = TextStyle(fontFamily = gsFlex(weight = (760f + boost).coerceAtMost(1000f), width = 122f, round = 42f, opticalSize = 57f), fontWeight = if (boost > 0f) FontWeight.ExtraBold else FontWeight.Bold, fontSize = 57.sp, lineHeight = 64.sp),
     displayMedium = TextStyle(fontFamily = gsFlex(weight = (740f + boost).coerceAtMost(1000f), width = 120f, round = 40f, opticalSize = 45f), fontWeight = if (boost > 0f) FontWeight.ExtraBold else FontWeight.Bold, fontSize = 45.sp, lineHeight = 52.sp),
     displaySmall = TextStyle(fontFamily = gsFlex(weight = (720f + boost).coerceAtMost(1000f), width = 118f, round = 38f, opticalSize = 36f), fontWeight = if (boost > 0f) FontWeight.ExtraBold else FontWeight.Bold, fontSize = 36.sp, lineHeight = 44.sp),
@@ -167,8 +167,8 @@ private fun lastWaveTypography(boost: Float) = Typography(
 
 // Regular app font sits a little lighter than the 2.0 values (wght axis); bold mode is unchanged.
 const val REGULAR_FONT_TRIM = -60f
-val SYMPHONYTypography = lastWaveTypography(REGULAR_FONT_TRIM)
-val SYMPHONYBoldTypography = lastWaveTypography(BOLD_FONT_BOOST)
+val SYMPHONYTypography = symphonyTypography(REGULAR_FONT_TRIM)
+val SYMPHONYBoldTypography = symphonyTypography(BOLD_FONT_BOOST)
 
 /**
  * Aliased typography maintaining backward compatibility so both bold and regular states

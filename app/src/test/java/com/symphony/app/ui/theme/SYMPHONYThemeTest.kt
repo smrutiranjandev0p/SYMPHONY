@@ -7,7 +7,7 @@ import org.junit.Test
 class SYMPHONYThemeTest {
 
     @Test
-    fun lastWaveDarkScheme_usesBrandColors() {
+    fun symphonyDarkScheme_usesBrandColors() {
         val scheme = Md3SchemeBuilder.buildSYMPHONYDarkScheme(amoled = false)
 
         assertThat(scheme.primary).isEqualTo(Color(0xFFC9FB00))
@@ -17,7 +17,7 @@ class SYMPHONYThemeTest {
     }
 
     @Test
-    fun lastWaveDarkScheme_amoled_pureBlackSurfaces() {
+    fun symphonyDarkScheme_amoled_pureBlackSurfaces() {
         val scheme = Md3SchemeBuilder.buildSYMPHONYDarkScheme(amoled = true)
 
         assertThat(scheme.primary).isEqualTo(Color(0xFFC9FB00))
@@ -29,7 +29,7 @@ class SYMPHONYThemeTest {
     }
 
     @Test
-    fun lastWaveLightScheme_usesBrandHighlights() {
+    fun symphonyLightScheme_usesBrandHighlights() {
         val scheme = Md3SchemeBuilder.buildSYMPHONYLightScheme()
 
         assertThat(scheme.onPrimaryContainer).isEqualTo(Color(0xFF012226))
