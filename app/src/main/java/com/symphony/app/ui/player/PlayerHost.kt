@@ -358,6 +358,8 @@ val LocalAddToPlaylist = staticCompositionLocalOf<(PlayableTrack) -> Unit> {
  */
 val LocalMiniPlayerScrollClearance = staticCompositionLocalOf { 0.dp }
 val LocalMiniPlayerSnackbarClearance = staticCompositionLocalOf { 0.dp }
+/** True while Flow is visible; its own full-screen transport replaces the global mini-player. */
+val LocalFlowTabActive = staticCompositionLocalOf<MutableState<Boolean>?> { null }
 
 
 val LocalBottomNavSlot = androidx.compose.runtime.staticCompositionLocalOf<androidx.compose.runtime.MutableState<BottomNavigationContent>> {
@@ -383,6 +385,7 @@ fun PlayerHost(
     @Suppress("NAME_SHADOWING")
     val hideMiniPlayer = hideMiniPlayer || webContentScreen
     val state by viewModel.chromeState.collectAsStateWithLifecycle()
+    val flowTabActive = remember { mutableStateOf(false) }
     val autoMixView = state.deckBlendTelemetry.view
     if (autoMixView != null) {
         // Prepare cue windows while the mini player is shown, before the popup can be tapped.
@@ -486,7 +489,7 @@ fun PlayerHost(
             }
         }
     }
-    val miniPlayerVisible = state.current != null && !expanded && !settings.buttonNowPlayingEnabled && !hideMiniPlayer
+    val miniPlayerVisible = state.current != null && !expanded && !settings.buttonNowPlayingEnabled && !hideMiniPlayer && !flowTabActive.value
 
     // Sibling pattern: ONE backdrop capturing feed content,
     // consumed by the sibling MiniPlayer. Unconditional remember keeps composition stable.
@@ -558,6 +561,7 @@ fun PlayerHost(
     }
     CompositionLocalProvider(
         LocalMusicPlayer provides viewModel.player,
+        LocalFlowTabActive provides flowTabActive,
         LocalExpandPlayer provides expandPlayer,
         LocalOpenPlayerLyrics provides {
             expandPlayer()
@@ -565,7 +569,7 @@ fun PlayerHost(
             currentTab = FullPlayerTab.NOW_PLAYING
         },
         LocalAddToPlaylist provides requestAddToPlaylist,
-        LocalMiniPlayerScrollClearance provides if (state.current != null && !settings.buttonNowPlayingEnabled && !hideMiniPlayer) 98.dp else 0.dp,
+        LocalMiniPlayerScrollClearance provides if (state.current != null && !settings.buttonNowPlayingEnabled && !hideMiniPlayer && !flowTabActive.value) 98.dp else 0.dp,
         LocalMiniPlayerSnackbarClearance provides if (miniPlayerVisible) {
             // Keep snackbars clear of the tray: its bottom lift plus its ~80dp card.
             (if (hasBottomNavigation) {
@@ -605,7 +609,7 @@ fun PlayerHost(
                     }
                 }
             }
-            if (state.current != null && !settings.buttonNowPlayingEnabled && !hideMiniPlayer && showMiniPlayer) {
+            if (state.current != null && !settings.buttonNowPlayingEnabled && !hideMiniPlayer && !flowTabActive.value && showMiniPlayer) {
                 val miniBottomPadding = if (hasBottomNavigation) {
                     if (material3NavigationEnabled) 84.dp else 80.dp
                 } else {
