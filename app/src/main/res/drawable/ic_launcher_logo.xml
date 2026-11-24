@@ -3,24 +3,47 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- Same source geometry as ic_launcher_foreground.xml, scaled to the
-         true logo proportions (bars nearly touching the circle edge)
-         instead of the adaptive-icon safe zone. For in-app use only —
-         anywhere the OS itself renders the launcher icon (home screen,
-         app switcher, settings' app info page) already uses
-         ic_launcher_foreground via the adaptive-icon XMLs; this drawable
-         is for contexts like the About card where we're drawing the mark
-         ourselves and want it pixel-accurate to the source artwork. -->
-    <path
-        android:fillColor="#012226"
-        android:pathData="M12.92,36.47 A5.99,5.99 0 0 1 24.89,36.47 L24.89,78.39 A5.99,5.99 0 0 1 12.92,78.39 Z" />
-    <path
-        android:fillColor="#012226"
-        android:pathData="M36.86,16.58 A6.14,6.14 0 0 1 49.15,16.58 L49.15,92.58 A6.14,6.14 0 0 1 36.86,92.58 Z" />
-    <path
-        android:fillColor="#012226"
-        android:pathData="M60.54,23.12 A6.25,6.25 0 0 1 73.04,23.12 L73.04,84.82 A6.25,6.25 0 0 1 60.54,84.82 Z" />
-    <path
-        android:fillColor="#012226"
-        android:pathData="M80.74,33.72 A6.72,6.72 0 0 1 94.18,33.72 L94.18,74.17 A6.72,6.72 0 0 1 80.74,74.17 Z" />
+    <!-- Electric blue / violet / rose glass waveform -->
+    <path android:fillColor="#A62A8CFF"
+        android:pathData="M9,54 C20,54 25,40 33,34 C40,29 45,34 50,45 C53,51 55,54 58,54 C55,54 53,57 50,64 C45,75 40,79 33,73 C25,67 20,54 9,54 Z"/>
+    <path android:fillColor="#A9A2B7FF"
+        android:pathData="M99,54 C88,54 83,40 75,34 C68,29 63,34 58,45 C55,51 53,54 50,54 C53,54 55,57 58,64 C63,75 68,79 75,73 C83,67 88,54 99,54 Z"/>
+    <path android:fillColor="#00000000"
+        android:strokeColor="#8CE9FFFF"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:pathData="M10,54 C23,54 27,44 35,37 C42,31 46,38 52,54"/>
+    <path android:fillColor="#00000000"
+        android:strokeColor="#FFB4E5"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:pathData="M98,54 C85,54 81,44 73,37 C66,31 62,38 56,54"/>
+    <!-- Glass treble clef: pearl edge with cool inner highlight -->
+    <path android:fillColor="#00000000"
+        android:strokeColor="#EAF4FF"
+        android:strokeAlpha="0.92"
+        android:strokeWidth="5.4"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M56,10 C44,10 40,22 45,31 C50,41 65,45 67,57 C70,71 58,81 45,78 C33,75 31,62 39,54 C47,46 61,44 68,32 C75,19 68,8 58,8 C48,8 44,17 48,25 C51,31 59,34 64,29"/>
+    <path android:fillColor="#00000000"
+        android:strokeColor="#A7D9FF"
+        android:strokeAlpha="0.7"
+        android:strokeWidth="2.0"
+        android:strokeLineCap="round"
+        android:pathData="M56,10 C44,10 40,22 45,31 C50,41 65,45 67,57 C70,71 58,81 45,78 C33,75 31,62 39,54 C47,46 61,44 68,32 C75,19 68,8 58,8 C48,8 44,17 48,25 C51,31 59,34 64,29"/>
+    <path android:fillColor="#00000000"
+        android:strokeColor="#EAF4FF"
+        android:strokeAlpha="0.95"
+        android:strokeWidth="5.0"
+        android:strokeLineCap="round"
+        android:pathData="M58,28 C54,42 55,57 59,71 C62,82 61,91 51,94 C43,96 36,91 38,84"/>
+    <path android:fillColor="#00000000"
+        android:strokeColor="#B9C9FF"
+        android:strokeAlpha="0.85"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:pathData="M58,28 C54,42 55,57 59,71 C62,82 61,91 51,94 C43,96 36,91 38,84"/>
+    <path android:fillColor="#EAF4FF"
+        android:pathData="M38,84 A3.5,3.5 0 1 1 45,84 A3.5,3.5 0 1 1 38,84 Z"/>
 </vector>
