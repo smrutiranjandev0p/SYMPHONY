@@ -112,11 +112,23 @@ fun FlowScreen(
     }
 
     val pagerState = rememberPagerState(pageCount = { tracks.size })
-    var lastPlayedId by remember { mutableStateOf<String?>(null) }
-    LaunchedEffect(pagerState.settledPage, tracks) {
+
+    // Keep the visual Flow page in lockstep with the real playback queue.
+    // Auto-advance changes the current media item without a user swipe; mirror
+    // that transition in the pager instead of leaving the previous artwork up.
+    LaunchedEffect(playback.current?.videoId, tracks) {
+        val currentId = playback.current?.videoId ?: return@LaunchedEffect
+        val currentIndex = tracks.indexOfFirst { it.videoId == currentId }
+        if (currentIndex >= 0 && currentIndex != pagerState.currentPage) {
+            pagerState.animateScrollToPage(currentIndex)
+        }
+    }
+
+    // A user swipe selects a different recommendation. If the player already
+    // advanced to that item, do not rebuild/restart the queue a second time.
+    LaunchedEffect(pagerState.settledPage, tracks, playback.current?.videoId) {
         val track = tracks.getOrNull(pagerState.settledPage) ?: return@LaunchedEffect
-        if (track.videoId != lastPlayedId) {
-            lastPlayedId = track.videoId
+        if (track.videoId != playback.current?.videoId) {
             musicPlayer.playQueue(
                 tracks = tracks.map(YouTubeMusicTrack::toPlayableTrack),
                 startIndex = pagerState.settledPage,
