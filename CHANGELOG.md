@@ -7,11 +7,13 @@
 - **Playback layout:** Moved the primary play/pause action into a prominent centred glass-style control; kept Like, More and Lyrics actions available below the track details.
 - **Flow mini-player:** Suppressed the global bottom mini-player only while the Flow tab is active, avoiding duplicate playback controls without changing the other tabs.
 - **Heart animation:** Increased the floating hearts' travel distance and animation duration.
+- **Auto-advance sync:** Flow now follows the current queue item when playback advances automatically, while manual swipes continue to select and play the chosen recommendation.
+- **Party Torch:** Added an opt-in Flow control that uses the active playback audio session to detect waveform peaks and pulse the device flash. Camera and microphone permissions are requested only after enabling it; pulses are rate-limited and the torch is switched off when playback pauses or Flow is left.
 - **Launcher identity:** Pointed both adaptive default launcher masks to the Glass Wave foreground artwork so the icon selector's default and installed launcher icon agree.
 - **Version metadata:** Set user-facing versionName to 1.2 and Android versionCode to 35.
 
 ### Validation
-- Source changes committed to main. Automated Android build and physical-device playback/layout verification are pending; this entry does not claim the 1.2 APK has been released.
+- Source changes committed to main. Automated Android build and physical-device playback/layout/flash verification are pending; the 1.2 APK has not been released.
 
 ---
 
