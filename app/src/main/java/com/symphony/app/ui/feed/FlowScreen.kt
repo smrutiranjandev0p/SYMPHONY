@@ -2,6 +2,7 @@ package com.symphony.app.ui.feed
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,9 +33,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -130,7 +128,7 @@ fun FlowScreen(
                 track = tracks[page],
                 isPlaying = playback.current?.videoId == tracks[page].videoId && playback.isPlaying,
                 onTogglePlayback = musicPlayer::togglePlayPause,
-                isLiked = tracks[page].toPlayableTrack().let { playerViewModel.likedTrackKeys.value.let { keys -> com.symphony.app.data.playlist.isLikedIn(it, keys) } },
+                isLiked = tracks[page].toPlayableTrack().let { com.symphony.app.data.playlist.isLikedIn(it, likedKeys) },
                 onToggleLike = { playerViewModel.toggleLiked(tracks[page].toPlayableTrack()) },
                 onOpenArtist = playerViewModel::openArtist,
                 onOpenMenu = { menuTrack = tracks[page] },
@@ -183,6 +181,7 @@ private fun FlowPage(
                     ),
                 ),
         )
+        if (isPlaying) FlowFloatingHearts()
         Column(
             modifier = Modifier
                 .align(Alignment.BottomStart)
@@ -199,12 +198,15 @@ private fun FlowPage(
                 overflow = TextOverflow.Ellipsis,
             )
             Text(
-                text = listOfNotNull(track.artist.takeIf(String::isNotBlank), track.album).joinToString(" • "),
-                style = MaterialTheme.typography.titleMedium,
-                color = scheme.onPrimary.copy(alpha = 0.82f),
+                text = track.artist.ifBlank { "Unknown artist" },
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = scheme.onPrimary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.clickable { track.artist.takeIf(String::isNotBlank)?.let(onOpenArtist) },
             )
+            if (!track.album.isNullOrBlank()) Text(track.album, style = MaterialTheme.typography.bodyMedium, color = scheme.onPrimary.copy(alpha = 0.88f), maxLines = 1, overflow = TextOverflow.Ellipsis)
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Surface(
                     shape = CircleShape,
@@ -290,6 +292,43 @@ private fun FlowEmptyState(onOpenSearch: () -> Unit, onOpenSettings: () -> Unit)
         Row(Modifier.padding(top = 20.dp)) {
             IconButton(onClick = onOpenSearch) { Icon(Icons.Filled.Search, "Search") }
             IconButton(onClick = onOpenSettings) { Icon(Icons.Filled.Settings, "Settings") }
+        }
+    }
+}
+
+@Composable
+private fun FlowFloatingHearts() {
+    val transition = androidx.compose.animation.core.rememberInfiniteTransition(label = "flowHearts")
+    val phases = listOf(0, 620, 1240)
+    Box(
+        modifier = Modifier.fillMaxSize().padding(end = 22.dp, bottom = 150.dp),
+        contentAlignment = Alignment.BottomEnd,
+    ) {
+        phases.forEachIndexed { index, delayMs ->
+            val progress by transition.animateFloat(
+                initialValue = 0f,
+                targetValue = 1f,
+                animationSpec = androidx.compose.animation.core.infiniteRepeatable(
+                    animation = androidx.compose.animation.core.tween(
+                        durationMillis = 2100,
+                        delayMillis = delayMs,
+                        easing = androidx.compose.animation.core.LinearEasing,
+                    ),
+                ),
+                label = "flowHeart$index",
+            )
+            Text(
+                text = if (index == 1) "♥" else "❤",
+                color = Color(0xFFFF6B81),
+                fontSize = (20 + index * 4).sp,
+                modifier = Modifier.graphicsLayer {
+                    translationY = -progress * 132.dp.toPx()
+                    translationX = (index - 1) * 18.dp.toPx() + kotlin.math.sin(progress * Math.PI * 2).toFloat() * 10.dp.toPx()
+                    alpha = (1f - progress).coerceIn(0f, 1f)
+                    scaleX = 0.75f + progress * 0.35f
+                    scaleY = 0.75f + progress * 0.35f
+                },
+            )
         }
     }
 }
