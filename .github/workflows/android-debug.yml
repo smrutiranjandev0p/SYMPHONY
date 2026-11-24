@@ -38,8 +38,8 @@ jobs:
       - name: Install Android SDK packages
         run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses >/dev/null || true
         shell: bash
-      - name: Install Android 37 preview platform
-        run: $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --channel=3 --install "platform-tools" "platforms;android-37"
+      - name: Install Android 36 platform
+        run: $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "platform-tools" "platforms;android-36"
 
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
