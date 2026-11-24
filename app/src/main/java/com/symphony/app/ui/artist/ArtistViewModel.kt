@@ -1,0 +1,187 @@
+package com.symphony.app.ui.artist
+
+import androidx.compose.runtime.Immutable
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.symphony.app.data.model.ArtistPageData
+import com.symphony.app.data.repository.ArtistRepository
+import com.symphony.app.playback.MusicPlayer
+import com.symphony.app.playback.PlayableTrack
+import com.symphony.app.ui.generate.MixLauncher
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.ensureActive
+import com.symphony.app.data.artwork.ArtworkNormalizer
+import com.symphony.app.data.canvas.CanvasArtwork
+import com.symphony.app.data.canvas.CanvasRepository
+import javax.inject.Inject
+
+import com.symphony.app.data.local.db.DownloadedTrackDao
+import com.symphony.app.data.playlist.TrackLikeController
+import kotlinx.coroutines.flow.combine
+import com.symphony.app.data.local.db.SongPlayStatsDao
+import kotlinx.coroutines.flow.map
+import com.symphony.app.data.local.MiscSettings
+import com.symphony.app.data.local.SettingsPreferences
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
+
+data class KnownSongSignals(
+    val likedKeys: Set<String> = emptySet(),
+    val downloadedTitlesAndIds: Set<String> = emptySet(),
+    val playedTitlesAndIds: Set<String> = emptySet(),
+)
+
+sealed interface ArtistUiState {
+    data object Loading : ArtistUiState
+    data class Success(val data: ArtistPageData) : ArtistUiState
+    data class Error(val message: String) : ArtistUiState
+}
+
+@HiltViewModel
+class ArtistViewModel @Inject constructor(
+    @dagger.hilt.android.qualifiers.ApplicationContext private val appContext: android.content.Context,
+    private val repository: ArtistRepository,
+    private val musicPlayer: MusicPlayer,
+    private val mixLauncher: MixLauncher,
+    private val settingsPreferences: SettingsPreferences,
+    private val canvasRepository: CanvasRepository,
+    private val songPlayStatsDao: SongPlayStatsDao,
+    private val downloadedTrackDao: DownloadedTrackDao,
+    val trackLikeController: TrackLikeController,
+) : ViewModel() {
+
+    val settings: StateFlow<MiscSettings> = settingsPreferences.settings
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), MiscSettings())
+
+    val knownSignals: StateFlow<KnownSongSignals> = combine(
+        trackLikeController.likedTrackKeys,
+        downloadedTrackDao.getAll(),
+        songPlayStatsDao.observeTopPlayed(2000),
+    ) { likedKeys, downloads, played ->
+        val dlSet = buildSet {
+            downloads.forEach { dt ->
+                add(dt.title.trim().lowercase())
+                add("${dt.title.trim().lowercase()}|${dt.artist.trim().lowercase()}")
+            }
+        }
+        val playedSet = buildSet {
+            played.forEach { sp ->
+                add(sp.title.trim().lowercase())
+                add(sp.trackKey.trim().lowercase())
+                sp.videoId?.let { add(it) }
+            }
+        }
+        KnownSongSignals(
+            likedKeys = likedKeys,
+            downloadedTitlesAndIds = dlSet,
+            playedTitlesAndIds = playedSet,
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), KnownSongSignals())
+
+    private val _uiState = MutableStateFlow<ArtistUiState>(ArtistUiState.Loading)
+    val uiState: StateFlow<ArtistUiState> = _uiState.asStateFlow()
+
+    private val _artistCanvas = MutableStateFlow<CanvasArtwork?>(null)
+    val artistCanvas: StateFlow<CanvasArtwork?> = _artistCanvas.asStateFlow()
+
+    private var currentArtistName: String = ""
+    private var currentBrowseId: String? = null
+    private var loadJob: Job? = null
+    private var canvasJob: Job? = null
+
+    fun loadArtist(artistName: String, browseId: String? = null) {
+        val cached = (_uiState.value as? ArtistUiState.Success)?.data
+        if (artistName == currentArtistName && browseId == currentBrowseId &&
+            (loadJob?.isActive == true || ArtworkNormalizer.isRealImage(cached?.artworkUrl))) {
+            return
+        }
+        currentArtistName = artistName
+        currentBrowseId = browseId
+
+        canvasJob?.cancel()
+        canvasJob = viewModelScope.launch {
+            _artistCanvas.value = null
+            try {
+                val canvas = canvasRepository.canvasForArtist(artistName)
+                coroutineContext.ensureActive()
+                _artistCanvas.value = canvas
+            } catch (e: CancellationException) {
+                throw e
+            } catch (_: Exception) {
+                // Silently leave _artistCanvas null on network or resolution error
+            }
+        }
+
+        loadJob?.cancel()
+        loadJob = viewModelScope.launch {
+            _uiState.value = ArtistUiState.Loading
+            try {
+                val data = repository.getArtistDetails(artistName, browseId) { initialData ->
+                    coroutineContext.ensureActive()
+                    _uiState.value = ArtistUiState.Success(initialData)
+                }
+                coroutineContext.ensureActive()
+                _uiState.value = ArtistUiState.Success(data)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                if (_uiState.value !is ArtistUiState.Success) {
+                    _uiState.value = ArtistUiState.Error(e.message ?: appContext.getString(com.symphony.app.R.string.art_load_fail))
+                }
+            }
+        }
+    }
+
+    fun playAll(startIndex: Int = 0) {
+        val state = _uiState.value as? ArtistUiState.Success ?: return
+        val songs = state.data.topSongs
+        if (songs.isNotEmpty()) {
+            musicPlayer.playQueue(songs, startIndex.coerceIn(0, songs.lastIndex), sourceLabel = state.data.name)
+        }
+    }
+
+    fun playShuffle() {
+        val state = _uiState.value as? ArtistUiState.Success ?: return
+        val songs = state.data.topSongs
+        if (songs.isNotEmpty()) {
+            val shuffled = songs.shuffled()
+            musicPlayer.playQueue(shuffled, 0, sourceLabel = state.data.name)
+        }
+    }
+
+    fun startArtistMix() {
+        val state = _uiState.value as? ArtistUiState.Success ?: return
+        val artistName = state.data.name
+        val topSongs = state.data.topSongs
+        val firstTrack = topSongs.firstOrNull()
+
+        viewModelScope.launch {
+            val radioTracks = try {
+                repository.getArtistRadio(artistName, firstTrack)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (_: Exception) {
+                emptyList()
+            }
+
+            val finalQueue = if (radioTracks.isNotEmpty()) {
+                radioTracks
+            } else if (topSongs.isNotEmpty()) {
+                topSongs.shuffled()
+            } else {
+                emptyList()
+            }
+
+            if (finalQueue.isNotEmpty()) {
+                musicPlayer.playQueue(finalQueue, startIndex = 0, sourceLabel = "$artistName Radio")
+            }
+        }
+    }
+}

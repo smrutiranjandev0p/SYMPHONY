@@ -1,0 +1,484 @@
+package com.symphony.app.ui.feed
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Sort
+import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Shuffle
+import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import com.symphony.app.R
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.symphony.app.data.music.YouTubeMusicTrack
+import com.symphony.app.data.music.YouTubePlaylistResult
+import com.symphony.app.ui.common.ArtworkImage
+import com.symphony.app.ui.common.ExpressiveGroupTrackRow
+import com.symphony.app.ui.common.ExpressiveHeader
+import com.symphony.app.ui.common.GlassHeaderLayout
+import com.symphony.app.ui.common.ExpressiveLoadingIndicator
+import com.symphony.app.ui.common.GroupGap
+import com.symphony.app.ui.common.groupPositionFor
+import com.symphony.app.ui.common.safeDrawingBottomPadding
+import com.symphony.app.ui.common.adaptiveContentWidth
+import com.symphony.app.playback.PlayableTrack
+import com.symphony.app.ui.common.TrackContextMenuSheet
+import com.symphony.app.ui.common.TrackMenuCapabilities
+import com.symphony.app.ui.common.TrackMenuTarget
+import com.symphony.app.ui.common.TrackMiniTrayData
+import com.symphony.app.ui.common.TrackMiniTraySheet
+import com.symphony.app.ui.player.LocalMiniPlayerScrollClearance
+
+@Composable
+fun FeedPlaylistDetailScreen(
+    playlistId: String,
+    onBack: () -> Unit,
+    viewModel: FeedPlaylistDetailViewModel = hiltViewModel(),
+) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(playlistId) {
+        viewModel.load(playlistId)
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+        contentAlignment = Alignment.TopCenter,
+    ) {
+        val playlist = (state as? FeedPlaylistDetailUiState.Success)?.playlist
+        GlassHeaderLayout(
+            modifier = Modifier
+                .fillMaxSize()
+                .adaptiveContentWidth(maxWidth = 860.dp),
+            header = { headerModifier, headerBackdrop ->
+        ExpressiveHeader(
+            modifier = headerModifier,
+            backdrop = headerBackdrop,
+            title = playlist?.title?.takeIf(String::isNotBlank) ?: "Playlist",
+            subtitle = playlist?.author ?: "YouTube Music",
+            onBack = onBack,
+        )
+            },
+        ) { headerInset ->
+        Column(Modifier.fillMaxSize()) {
+        when (val current = state) {
+            FeedPlaylistDetailUiState.Loading -> {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    ExpressiveLoadingIndicator(message = stringResource(R.string.fpd_opening))
+                }
+            }
+
+            is FeedPlaylistDetailUiState.Error -> {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(32.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.MusicNote,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(44.dp),
+                    )
+                    Spacer(Modifier.height(16.dp))
+                    Text(
+                        text = current.message,
+                        style = MaterialTheme.typography.bodyLarge,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Spacer(Modifier.height(18.dp))
+                    FilledTonalButton(onClick = { viewModel.load(playlistId) }) {
+                        Text(stringResource(R.string.fpd_retry))
+                    }
+                }
+            }
+
+            is FeedPlaylistDetailUiState.Success -> {
+                // Status rows sit above the list, so they need the inset themselves.
+                if (current.isLoadingMore || current.loadError != null) Spacer(Modifier.height(headerInset))
+                if (current.isLoadingMore) {
+                    Text(stringResource(R.string.fpd_loading_more), modifier = Modifier.padding(horizontal = 16.dp))
+                }
+                if (current.loadError != null) {
+                    FilledTonalButton(onClick = { viewModel.load(playlistId, force = true) }) {
+                        Text(stringResource(if (current.playlist.isComplete) R.string.fpd_retry else R.string.fpd_incomplete))
+                    }
+                }
+                PlaylistContent(
+                    playlist = current.playlist,
+                    onPlay = viewModel::playTracks,
+                    onShuffle = viewModel::shuffleTracks,
+                    onSave = viewModel::saveToLibrary,
+                    isSaving = current.isSaving,
+                    savedToLibrary = current.savedToLibrary,
+                    saveError = current.saveError,
+                    topInset = if (current.isLoadingMore || current.loadError != null) 0.dp else headerInset,
+                )
+            }
+        }
+        }
+        }
+    }
+}
+
+enum class OnlinePlaylistSort(val labelRes: Int) {
+    DEFAULT(R.string.pd_sort_custom),
+    TITLE(R.string.pd_sort_name),
+    ARTIST(R.string.pd_sort_artist),
+    DURATION(R.string.pd_sort_playtime),
+}
+
+private object OnlinePlaylistSortMemory {
+    private const val PREFS = "online_playlist_sort_prefs"
+    private const val GLOBAL_KEY = "global_last_sort"
+
+    fun load(context: android.content.Context, playlistId: String): Pair<OnlinePlaylistSort, Boolean> {
+        val prefs = context.getSharedPreferences(PREFS, android.content.Context.MODE_PRIVATE)
+        val raw = prefs.getString(playlistId, null) ?: prefs.getString(GLOBAL_KEY, null) ?: return OnlinePlaylistSort.DEFAULT to true
+        val sort = OnlinePlaylistSort.entries.firstOrNull { it.name == raw.substringBefore(':') } ?: return OnlinePlaylistSort.DEFAULT to true
+        return sort to (raw.substringAfter(':', "asc") != "desc")
+    }
+
+    fun save(context: android.content.Context, playlistId: String, sort: OnlinePlaylistSort, ascending: Boolean) {
+        val prefs = context.getSharedPreferences(PREFS, android.content.Context.MODE_PRIVATE).edit()
+        val serialized = "${sort.name}:${if (ascending) "asc" else "desc"}"
+        prefs.putString(playlistId, serialized)
+        prefs.putString(GLOBAL_KEY, serialized)
+        prefs.apply()
+    }
+}
+
+@Composable
+private fun PlaylistContent(
+    playlist: YouTubePlaylistResult,
+    onPlay: (List<YouTubeMusicTrack>, Int) -> Unit,
+    onShuffle: (List<YouTubeMusicTrack>) -> Unit,
+    onSave: () -> Unit,
+    isSaving: Boolean,
+    savedToLibrary: Boolean,
+    saveError: String?,
+    topInset: androidx.compose.ui.unit.Dp = 0.dp,
+) {
+    val context = LocalContext.current
+    val savedSort = remember(playlist.id) { OnlinePlaylistSortMemory.load(context, playlist.id) }
+    var sortMode by remember(playlist.id) { mutableStateOf(savedSort.first) }
+    var sortAscending by remember(playlist.id) { mutableStateOf(savedSort.second) }
+    var showSortMenu by remember { mutableStateOf(false) }
+
+    val displayedTracks = remember(playlist.tracks, sortMode, sortAscending) {
+        if (sortMode == OnlinePlaylistSort.DEFAULT) {
+            if (sortAscending) playlist.tracks else playlist.tracks.reversed()
+        } else {
+            when (sortMode) {
+                OnlinePlaylistSort.TITLE -> playlist.tracks.sortedWith(
+                    if (sortAscending) compareBy { it.title.lowercase() } else compareByDescending { it.title.lowercase() }
+                )
+                OnlinePlaylistSort.ARTIST -> playlist.tracks.sortedWith(
+                    if (sortAscending) compareBy({ it.artist.lowercase() }, { it.title.lowercase() })
+                    else compareByDescending<YouTubeMusicTrack> { it.artist.lowercase() }.thenBy { it.title.lowercase() }
+                )
+                OnlinePlaylistSort.DURATION -> playlist.tracks.sortedWith(
+                    compareBy<YouTubeMusicTrack> { (it.durationSeconds ?: 0) == 0 }
+                        .then(if (sortAscending) compareBy { it.durationSeconds ?: 0 } else compareByDescending { it.durationSeconds ?: 0 })
+                )
+                OnlinePlaylistSort.DEFAULT -> playlist.tracks
+            }
+        }
+    }
+
+    var menuTrack by remember { mutableStateOf<YouTubeMusicTrack?>(null) }
+    // Long-press (deep press) opens the mini tray; 3-dot keeps the full sheet.
+    var miniTrayIndex by remember { mutableStateOf<Int?>(null) }
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(
+            top = 20.dp + topInset,
+            bottom = 24.dp + LocalMiniPlayerScrollClearance.current + safeDrawingBottomPadding(),
+        ),
+        verticalArrangement = Arrangement.spacedBy(GroupGap),
+    ) {
+        item(key = "hero") {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 4.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                ArtworkImage(
+                    name = playlist.title,
+                    artist = playlist.author.orEmpty(),
+                    embeddedUrl = playlist.artworkUrl ?: playlist.tracks.firstOrNull()?.artworkUrl,
+                    fallbackIcon = if (playlist.id == "yt_liked") Icons.Filled.Favorite else Icons.Filled.MusicNote,
+                    modifier = Modifier
+                        .size(196.dp)
+                        .clip(RoundedCornerShape(26.dp)),
+                )
+                Spacer(Modifier.height(18.dp))
+                Text(
+                    text = playlist.title.ifBlank { "Playlist" },
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Text(
+                    text = listOfNotNull(
+                        playlist.author?.takeIf(String::isNotBlank),
+                        "${playlist.tracks.size} tracks",
+                    ).joinToString(" \u2022 "),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                )
+                Spacer(Modifier.height(18.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    Button(
+                        onClick = { onPlay(displayedTracks, 0) },
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Icon(Icons.Filled.PlayArrow, contentDescription = null)
+                        Spacer(Modifier.width(6.dp))
+                        Text(stringResource(R.string.home_play))
+                    }
+                    FilledTonalButton(
+                        onClick = { onShuffle(displayedTracks) },
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Icon(Icons.Filled.Shuffle, contentDescription = null)
+                        Spacer(Modifier.width(6.dp))
+                        Text(stringResource(R.string.feed_shuffle))
+                    }
+                }
+                Spacer(Modifier.height(18.dp))
+                FilledTonalButton(
+                    onClick = onSave,
+                    enabled = !isSaving && !savedToLibrary,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(when {
+                        isSaving -> "Saving…"
+                        savedToLibrary -> "Saved to library"
+                        else -> "Save to library"
+                    })
+                }
+                saveError?.let { message ->
+                    Text(message, color = MaterialTheme.colorScheme.error)
+                }
+                Spacer(Modifier.height(18.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = "TRACKS (${displayedTracks.size})",
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                    Box {
+                        Surface(
+                            onClick = { showSortMenu = true },
+                            shape = RoundedCornerShape(10.dp),
+                            color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.72f),
+                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            ) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.Sort,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(15.dp),
+                                )
+                                Text(
+                                    text = stringResource(sortMode.labelRes),
+                                    style = MaterialTheme.typography.labelMedium,
+                                    fontWeight = FontWeight.SemiBold,
+                                )
+                                Icon(
+                                    imageVector = if (sortAscending) Icons.Filled.ArrowUpward else Icons.Filled.ArrowDownward,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(14.dp),
+                                )
+                            }
+                        }
+                        DropdownMenu(
+                            expanded = showSortMenu,
+                            onDismissRequest = { showSortMenu = false },
+                        ) {
+                            OnlinePlaylistSort.entries.forEach { mode ->
+                                DropdownMenuItem(
+                                    text = { Text(stringResource(mode.labelRes)) },
+                                    leadingIcon = {
+                                        if (sortMode == mode) {
+                                            Icon(
+                                                imageVector = if (sortAscending) Icons.Filled.ArrowUpward else Icons.Filled.ArrowDownward,
+                                                contentDescription = null,
+                                                tint = MaterialTheme.colorScheme.primary,
+                                            )
+                                        }
+                                    },
+                                    onClick = {
+                                        if (sortMode == mode) {
+                                            sortAscending = !sortAscending
+                                        } else {
+                                            sortMode = mode
+                                            sortAscending = true
+                                        }
+                                        OnlinePlaylistSortMemory.save(context, playlist.id, sortMode, sortAscending)
+                                        showSortMenu = false
+                                    },
+                                )
+                            }
+                        }
+                    }
+                }
+                Spacer(Modifier.height(8.dp))
+            }
+        }
+
+        itemsIndexed(
+            items = displayedTracks,
+            key = { index, track -> "${track.videoId}:$index" },
+        ) { index, track ->
+            ExpressiveGroupTrackRow(
+                title = track.title,
+                subtitle = track.artistAndAlbum(),
+                position = groupPositionFor(index, displayedTracks.size),
+                onClick = { onPlay(displayedTracks, index) },
+                onLongClick = { miniTrayIndex = index },
+                modifier = Modifier.padding(horizontal = 16.dp),
+                leading = {
+                    ArtworkImage(
+                        name = track.title,
+                        artist = track.artist,
+                        embeddedUrl = track.artworkUrl,
+                        fallbackIcon = Icons.Filled.MusicNote,
+                        modifier = Modifier
+                            .size(52.dp)
+                            .clip(RoundedCornerShape(12.dp)),
+                    )
+                },
+                trailing = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    ) {
+                        track.durationSeconds?.let { duration ->
+                            Text(
+                                text = duration.toDurationLabel(),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        IconButton(
+                            onClick = { menuTrack = track },
+                            modifier = Modifier.size(36.dp),
+                        ) {
+                            Icon(
+                                Icons.Filled.MoreVert,
+                                contentDescription = stringResource(R.string.fpd_track_options_cd),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.size(18.dp),
+                            )
+                        }
+                    }
+                },
+            )
+        }
+    }
+
+    menuTrack?.let { track ->
+        TrackContextMenuSheet(
+            target = TrackMenuTarget.Track(track.title, track.artist, ""),
+            capabilities = TrackMenuCapabilities(showDeleteScrobble = false),
+            playableTrack = PlayableTrack(
+                title = track.title,
+                artist = track.artist,
+                album = track.album,
+                artworkUrl = track.artworkUrl,
+                videoId = track.videoId.takeIf(String::isNotBlank),
+            ),
+            playbackSourceLabel = playlist.title.ifBlank { "Mix" },
+            onDismiss = { menuTrack = null },
+        )
+    }
+
+    miniTrayIndex?.let { trayIndex ->
+        displayedTracks.getOrNull(trayIndex)?.let { track ->
+            TrackMiniTraySheet(
+                data = TrackMiniTrayData(
+                    title = track.title,
+                    artist = track.artist,
+                    album = track.album,
+                    artworkUrl = track.artworkUrl,
+                    videoId = track.videoId.takeIf(String::isNotBlank),
+                    sourceLabel = playlist.title.ifBlank { "Mix" },
+                    onPlay = { onPlay(displayedTracks, trayIndex) },
+                ),
+                onDismiss = { miniTrayIndex = null },
+            )
+        }
+    }
+}
+
+private fun YouTubeMusicTrack.artistAndAlbum(): String =
+    listOfNotNull(artist.takeIf(String::isNotBlank), album?.takeIf(String::isNotBlank))
+        .joinToString(" \u2022 ")
+        .ifBlank { "YouTube Music" }
+
+private fun Int.toDurationLabel(): String = "%d:%02d".format(this / 60, this % 60)

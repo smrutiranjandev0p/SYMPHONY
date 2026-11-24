@@ -1,0 +1,152 @@
+package com.symphony.app.ui.feed
+
+import com.google.common.truth.Truth.assertThat
+import com.symphony.app.data.discover.DiscoverRepository
+import com.symphony.app.data.feed.FeedData
+import com.symphony.app.data.feed.FeedRepository
+import com.symphony.app.data.generate.GeneratedTrack
+import com.symphony.app.data.generate.GenresRepository
+import com.symphony.app.data.local.db.RecommendationExclusionEntity
+import com.symphony.app.data.local.SessionData
+import com.symphony.app.data.local.SessionPreferences
+import com.symphony.app.data.local.SettingsPreferences
+import com.symphony.app.data.music.InnerTubeMusicApi
+import com.symphony.app.data.music.YouTubeMusicTrack
+import com.symphony.app.data.repository.HomeRepository
+import com.symphony.app.data.recommend.RecommendationRepository
+import com.symphony.app.data.ytmusic.YtConnection
+import com.symphony.app.data.ytmusic.YtMusicAuthManager
+import com.symphony.app.playback.MusicPlayer
+import io.mockk.coEvery
+import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
+
+@OptIn(ExperimentalCoroutinesApi::class)
+@RunWith(RobolectricTestRunner::class)
+@Config(manifest = Config.NONE)
+class FeedViewModelDiscoveryTest {
+
+    private val testDispatcher = UnconfinedTestDispatcher()
+
+    private val context: android.content.Context = mockk(relaxed = true)
+    private val feedRepository: FeedRepository = mockk(relaxed = true)
+    private val sessionPreferences: SessionPreferences = mockk(relaxed = true)
+    private val settingsPreferences: SettingsPreferences = mockk(relaxed = true)
+    private val musicPlayer: MusicPlayer = mockk(relaxed = true)
+    private val innerTube: InnerTubeMusicApi = mockk(relaxed = true)
+    private val recommendationRepository: RecommendationRepository = mockk(relaxed = true)
+    private val ytAuth: YtMusicAuthManager = mockk(relaxed = true)
+    private val homeRepository: HomeRepository = mockk(relaxed = true)
+    private val discoverRepository: DiscoverRepository = mockk(relaxed = true)
+    private val genresRepository: GenresRepository = mockk(relaxed = true)
+    private val previewQueueRepository: com.symphony.app.data.queue.PreviewQueueRepository = mockk(relaxed = true)
+
+    @Before
+    fun setUp() {
+        Dispatchers.setMain(testDispatcher)
+        coEvery { discoverRepository.observeRecommendationExclusions() } returns MutableStateFlow(emptyList<RecommendationExclusionEntity>())
+        coEvery { ytAuth.connection } returns MutableStateFlow(YtConnection())
+        coEvery { ytAuth.awaitLoadedConnection() } returns YtConnection()
+        coEvery { sessionPreferences.session } returns MutableStateFlow(SessionData(username = "test_user"))
+        coEvery { settingsPreferences.settings } returns MutableStateFlow(mockk(relaxed = true))
+        coEvery { homeRepository.fetchStats() } returns Result.failure(Exception("no stats"))
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
+    }
+
+    @Test
+    fun emptyRefreshDoesNotKeepPreviousTracks() {
+        val track = GeneratedTrack("Song", "Artist", "https://artwork.url")
+        coEvery { discoverRepository.allowedCachedFeed() } returnsMany listOf(listOf(track), listOf(track))
+        coEvery { discoverRepository.nextBatch(8) } returns emptyList()
+        val vm = FeedViewModel(
+            context, feedRepository, sessionPreferences, settingsPreferences, musicPlayer, innerTube,
+            recommendationRepository, ytAuth, homeRepository, discoverRepository, genresRepository,
+            previewQueueRepository,
+        )
+        fun waitForDiscovery() {
+            val deadline = System.currentTimeMillis() + 2_000
+            while (vm.isDiscoveryLoading.value && System.currentTimeMillis() < deadline) Thread.sleep(10)
+        }
+
+        waitForDiscovery()
+        assertThat(vm.discoveryTracks.value).containsExactly(track)
+        vm.loadDiscovery(forceRotate = true)
+        waitForDiscovery()
+        assertThat(vm.discoveryTracks.value).isEmpty()
+    }
+
+    @Test
+    fun loadDiscovery_populatesDiscoveryTracks() {
+        val mockTrack = GeneratedTrack("Discovery Song", "Discovery Artist", "https://artwork.url")
+        coEvery { discoverRepository.allowedCachedFeed() } returns listOf(mockTrack)
+
+        val viewModel = FeedViewModel(
+            context,
+            feedRepository,
+            sessionPreferences,
+            settingsPreferences,
+            musicPlayer,
+            innerTube,
+            recommendationRepository,
+            ytAuth,
+            homeRepository,
+            discoverRepository,
+            genresRepository,
+            previewQueueRepository,
+        )
+
+        assertThat(viewModel.discoveryTracks.value).containsExactly(mockTrack)
+    }
+
+    @Test
+    fun loadDiscovery_failureHandlesErrorGracefully() {
+        coEvery { discoverRepository.allowedCachedFeed() } throws RuntimeException("Network error")
+        coEvery { discoverRepository.nextBatch(any()) } throws RuntimeException("Network error")
+
+        val viewModel = FeedViewModel(
+            context,
+            feedRepository,
+            sessionPreferences,
+            settingsPreferences,
+            musicPlayer,
+            innerTube,
+            recommendationRepository,
+            ytAuth,
+            homeRepository,
+            discoverRepository,
+            genresRepository,
+            previewQueueRepository,
+        )
+
+        assertThat(viewModel.discoveryTracks.value).isEmpty()
+    }
+
+    @Test
+    fun quickPicks_combinesFamiliarAndNewDiscoveryTracks() {
+        val familiarTrack = YouTubeMusicTrack("vid1", "Familiar Song", "Familiar Artist", "Album1", "https://art1")
+        val newDiscoveryTrack = YouTubeMusicTrack("vid2", "New Song", "New Artist", "Album2", "https://art2")
+
+        val feedData = FeedData(
+            quickPicks = listOf(familiarTrack, newDiscoveryTrack),
+        )
+
+        assertThat(feedData.quickPicks).hasSize(2)
+        assertThat(feedData.quickPicks).contains(familiarTrack)
+        assertThat(feedData.quickPicks).contains(newDiscoveryTrack)
+    }
+}

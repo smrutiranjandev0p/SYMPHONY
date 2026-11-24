@@ -1,0 +1,141 @@
+package com.symphony.app.util
+
+/**
+ * Utility for splitting and handling composite multi-artist strings cleanly.
+ * Handles separators such as commas, ampersands, slashes, "feat.", "ft.", "with", and "x".
+ */
+object ArtistHelper {
+    private val SEPARATOR_REGEX = Regex(
+        "(?:\\s*,\\s*|\\s*&\\s*|\\s*;\\s*|\\s*\\/\\s*|\\s*\\+\\s*|\\s+(?:ft\\.?|feat\\.?|featuring|with|and|x|X)\\s+)",
+        RegexOption.IGNORE_CASE
+    )
+
+    // Bands whose own name contains a separator ("Earth, Wind & Fire"). Without this they
+    // were split into several solo artists and opened as the first member only.
+    private val BAND_NAMES = listOf(
+        "Earth, Wind & Fire", "Earth, Wind and Fire", "Tyler, The Creator", "Crosby, Stills, Nash & Young",
+        "Crosby, Stills & Nash", "Simon & Garfunkel", "Hall & Oates", "Florence + the Machine",
+        "Mumford & Sons", "Kool & the Gang", "Sly & the Family Stone", "AC/DC", "Guns N' Roses",
+        "Of Monsters and Men", "Brooks & Dunn", "Bob Marley & The Wailers", "Echo & the Bunnymen",
+        "Huey Lewis and the News", "Hootie & the Blowfish", "Years & Years", "Coheed and Cambria",
+    ).map { Regex(Regex.escape(it), RegexOption.IGNORE_CASE) }
+    private val BAND_PLACEHOLDER = Regex("\u0000(\\d+)\u0000")
+
+    // Matches "973 plays", "3.4K plays", "15M listens", "15 ml listens",
+    // "15 mln listeners", "2.3M monthly listeners", "10K subscribers", etc.
+    // Suffix covers K/M/B/T plus long "mln"/"mil"/"mn"/"ml" abbreviations
+    // seen in localized YouTube Music / Last.fm counters.
+    private val STAT_PATTERN = Regex(
+        """^[\d.,\s]+(?:(?:mln|mil|mn|ml)|[kKmMbBtT])?\s*(?:monthly\s+)?(?:plays?|views?|streams?|listens?|listeners?|scrobbles?|tracks?|songs?|subscribers?|followers?|fans?)$""",
+        RegexOption.IGNORE_CASE
+    )
+
+    private val NUMBER_PREFIX = Regex("""^[\d.,\s]+(?:(?:mln|mil|mn|ml)|[kKmMbBtT])?$""")
+    private val WHITESPACE_RUN = Regex("\\s+")
+    private val DURATION = Regex("""^\d{1,3}:\d{2}(?::\d{2})?$""")
+    val YEAR = Regex("""^(19|20)\d{2}$""")
+
+    // "Track 16" / "Song 5" / "Side A - Track 3" style labels that InnerTube
+    // sometimes exposes in the artist flex column for album tracks.
+    private val TRACK_LABEL_PATTERN = Regex(
+        """^(?:side\s+[a-z\d]+\s*[\u2022\u00B7\-–]?\s*)?(?:track|song|part|no\.?|n\u00B0|#)\s*\d+\s*$""",
+        RegexOption.IGNORE_CASE
+    )
+
+    /**
+     * Detects strings like "973 plays", "3.4K plays", "4.1K views", "15M listens",
+     * "15 ml listens", "2.3M monthly listeners", "10K subscribers", "Track 16"
+     * that InnerTube / YouTube Music sometimes exposes in place of an artist.
+     */
+    fun isPlayCountOrStat(raw: String?): Boolean {
+        if (raw.isNullOrBlank()) return false
+        // Normalize exotic spaces (NBSP, narrow NBSP, thin space) so localized
+        // counters match the ASCII patterns below.
+        val normalized = raw.trim()
+            .replace('\u00A0', ' ')
+            .replace('\u202F', ' ')
+            .replace('\u2009', ' ')
+            .replace(WHITESPACE_RUN, " ")
+            .trim().trim('\u2022', '\u00B7', '-', '\u2013', '\u2014', ',').trim()
+        if (normalized.isBlank()) return false
+        val trimmed = normalized
+        if (STAT_PATTERN.matches(trimmed)) return true
+        if (TRACK_LABEL_PATTERN.matches(trimmed)) return true
+        val lower = trimmed.lowercase()
+        // Any counter phrase with a numeric prefix is a stat, even with extra
+        // words ("monthly", locale suffixes) the strict regex above missed.
+        // This is what previously leaked counters through as artist names.
+        val hasStatWord = lower.contains("play") ||
+            lower.contains("view") ||
+            lower.contains("stream") ||
+            lower.contains("listen") ||
+            lower.contains("scrobbl") ||
+            lower.contains("subscrib") ||
+            lower.contains("follow") ||
+            lower.contains("monthly") ||
+            lower.contains(" fan") || lower == "fans" || lower.endsWith(" fans") ||
+            lower.endsWith(" songs") || lower.endsWith(" song") ||
+            lower.endsWith(" tracks") || lower.endsWith(" track")
+        if (hasStatWord) {
+            // Starts with a number ("15 ...", "3.4K ...", "1,234 ...") -> stat.
+            if (trimmed.first().isDigit()) return true
+            // Ends with a stat word and the prefix before it is numeric
+            // ("15 ml listens" -> prefix "15 ml" is numeric+suffix).
+            val withoutLastWord = trimmed.substringBeforeLast(' ').trim()
+                .removeSuffix("ly").trim()
+            if (withoutLastWord.isNotBlank()) {
+                val prefixCandidate = if (lower.endsWith("listeners") || lower.endsWith("listener") ||
+                    lower.endsWith("listens") || lower.endsWith("listen")
+                ) {
+                    // Strip optional "monthly" so "15M monthly" -> "15M".
+                    withoutLastWord.removeSuffix("monthly").removeSuffix("Monthly")
+                        .removeSuffix("MONTHLY").trim()
+                } else {
+                    withoutLastWord
+                }
+                if (prefixCandidate.matches(NUMBER_PREFIX)) return true
+                if (prefixCandidate.firstOrNull()?.isDigit() == true &&
+                    prefixCandidate.split(' ', '\u00A0').any { it.firstOrNull() in '0'..'9' }
+                ) {
+                    return true
+                }
+            } else if (lower.contains("monthly") || lower.contains("listen") ||
+                lower.contains("subscrib") || lower.contains("follow")
+            ) {
+                return true
+            }
+        }
+        // Durations ("3:45") and years ("2024") are never artists here.
+        if (trimmed.matches(DURATION)) return true
+        if (trimmed.matches(YEAR)) return true
+        return false
+    }
+
+    /**
+     * Splits multi-artist strings (e.g. "Arijit Singh, Badshah", "Alan Walker feat. Au/Ra", "Drake & 21 Savage")
+     * into clean, individual artist names.
+     */
+    fun splitArtists(rawArtist: String?): List<String> {
+        if (rawArtist.isNullOrBlank() || isPlayCountOrStat(rawArtist)) return emptyList()
+        val trimmed = rawArtist.trim()
+        val bands = ArrayList<String>()
+        var masked = trimmed
+        for (band in BAND_NAMES) {
+            masked = band.replace(masked) { bands.add(it.value); "\u0000${bands.lastIndex}\u0000" }
+        }
+        val parts = masked.split(SEPARATOR_REGEX)
+            .map { it.trim().trim(',', '&', '/', ';').trim() }
+            .map { part -> BAND_PLACEHOLDER.replace(part) { bands[it.groupValues[1].toInt()] } }
+            .filter { it.isNotBlank() && !isPlayCountOrStat(it) }
+            .distinct()
+        return if (parts.isNotEmpty()) parts else listOf(trimmed)
+    }
+
+    /**
+     * Returns the primary / first artist from a composite string.
+     */
+    fun primaryArtist(rawArtist: String?): String {
+        if (rawArtist.isNullOrBlank() || isPlayCountOrStat(rawArtist)) return ""
+        return splitArtists(rawArtist).firstOrNull() ?: rawArtist.orEmpty()
+    }
+}

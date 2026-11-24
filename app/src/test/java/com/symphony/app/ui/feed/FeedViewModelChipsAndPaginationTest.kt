@@ -1,0 +1,654 @@
+package com.symphony.app.ui.feed
+
+import com.google.common.truth.Truth.assertThat
+import com.symphony.app.data.discover.DiscoverRepository
+import com.symphony.app.data.feed.FeedData
+import com.symphony.app.data.feed.FeedMix
+import com.symphony.app.data.feed.FeedRepository
+import com.symphony.app.data.generate.GeneratedTrack
+import com.symphony.app.data.generate.GenresRepository
+import com.symphony.app.data.local.db.RecommendationExclusionEntity
+import com.symphony.app.data.local.SessionData
+import com.symphony.app.data.local.SessionPreferences
+import com.symphony.app.data.local.SettingsPreferences
+import com.symphony.app.data.music.HomeChip
+import com.symphony.app.data.music.HomePage
+import com.symphony.app.data.music.HomeShelf
+import com.symphony.app.data.music.HomeShelfItem
+import com.symphony.app.data.music.InnerTubeMusicApi
+import com.symphony.app.data.music.YouTubeMusicTrack
+import com.symphony.app.data.repository.HomeRepository
+import com.symphony.app.data.repository.HomeStats
+import com.symphony.app.data.recommend.RecommendationRepository
+import com.symphony.app.data.ytmusic.YtConnection
+import com.symphony.app.data.ytmusic.YtMusicAuthManager
+import com.symphony.app.playback.MusicPlayer
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.mockk
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
+import java.util.concurrent.atomic.AtomicBoolean
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
+
+@OptIn(ExperimentalCoroutinesApi::class)
+@RunWith(RobolectricTestRunner::class)
+@Config(manifest = Config.NONE)
+class FeedViewModelChipsAndPaginationTest {
+
+    private val testDispatcher = UnconfinedTestDispatcher()
+
+    private val context: android.content.Context = mockk(relaxed = true)
+    private val feedRepository: FeedRepository = mockk(relaxed = true)
+    private val sessionPreferences: SessionPreferences = mockk(relaxed = true)
+    private val settingsPreferences: SettingsPreferences = mockk(relaxed = true)
+    private val musicPlayer: MusicPlayer = mockk(relaxed = true)
+    private val innerTube: InnerTubeMusicApi = mockk(relaxed = true)
+    private val recommendationRepository: RecommendationRepository = mockk(relaxed = true)
+    private val ytAuth: YtMusicAuthManager = mockk(relaxed = true)
+    private val homeRepository: HomeRepository = mockk(relaxed = true)
+    private val discoverRepository: DiscoverRepository = mockk(relaxed = true)
+    private val genresRepository: GenresRepository = mockk(relaxed = true)
+    private val previewQueueRepository: com.symphony.app.data.queue.PreviewQueueRepository = mockk(relaxed = true)
+
+    private fun createShelf(title: String, videoId: String): HomeShelf {
+        return HomeShelf(
+            title = title,
+            items = listOf(
+                HomeShelfItem.Track(
+                    YouTubeMusicTrack(
+                        videoId = videoId,
+                        title = "Song in $title",
+                        artist = "Artist",
+                    )
+                )
+            )
+        )
+    }
+
+    private fun waitFor(timeoutMs: Long = 2000, condition: () -> Boolean) {
+        val start = System.currentTimeMillis()
+        while (!condition() && System.currentTimeMillis() - start < timeoutMs) {
+            Thread.sleep(20)
+        }
+    }
+
+    @Before
+    fun setUp() {
+        Dispatchers.setMain(testDispatcher)
+        coEvery { discoverRepository.observeRecommendationExclusions() } returns MutableStateFlow(emptyList<RecommendationExclusionEntity>())
+        coEvery { ytAuth.connection } returns MutableStateFlow(YtConnection())
+        coEvery { ytAuth.awaitLoadedConnection() } returns YtConnection()
+        coEvery { sessionPreferences.session } returns MutableStateFlow(SessionData(username = "test_user"))
+        coEvery { settingsPreferences.settings } returns MutableStateFlow(mockk(relaxed = true))
+        coEvery { context.getString(any()) } returns "An error occurred"
+        coEvery { homeRepository.fetchStats() } returns Result.failure(Exception("no stats"))
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
+    }
+
+    private fun createViewModel(): FeedViewModel {
+        return FeedViewModel(
+            context,
+            feedRepository,
+            sessionPreferences,
+            settingsPreferences,
+            musicPlayer,
+            innerTube,
+            recommendationRepository,
+            ytAuth,
+            homeRepository,
+            discoverRepository,
+            genresRepository,
+            previewQueueRepository,
+        )
+    }
+
+    @Test
+    fun becomingVisibleDoesNotStartAnotherLoadWhileAuthIsLoading() {
+        val connection = CompletableDeferred<YtConnection>()
+        coEvery { ytAuth.awaitLoadedConnection() } coAnswers { connection.await() }
+        coEvery { feedRepository.loadFeed(any(), any()) } returns FeedData()
+
+        val vm = createViewModel()
+        vm.onVisible()
+        coVerify(exactly = 0) { feedRepository.loadFeed(any(), any()) }
+
+        connection.complete(YtConnection())
+        coVerify(exactly = 1) { feedRepository.loadFeed(any(), any()) }
+    }
+
+    @Test
+    fun cachedFeedRemainsVisibleDuringReload() {
+        val cached = FeedData(nativeShelves = listOf(createShelf("Cached", "cached_video")))
+        val pending = CompletableDeferred<FeedData>()
+        coEvery { feedRepository.getCachedFeed(any(), any()) } returns cached
+        coEvery { feedRepository.loadFeed(any(), any()) } coAnswers { pending.await() }
+
+        val vm = createViewModel()
+        vm.onVisible()
+
+        assertThat(vm.uiState.value.feedData).isEqualTo(cached)
+        assertThat(vm.uiState.value.isLoading).isFalse()
+        coVerify(exactly = 1) { feedRepository.loadFeed(any(), any()) }
+        pending.complete(cached)
+    }
+
+    @Test
+    fun cachedRecommendationsReactToExclusionsAndRestoreWithoutRefetching() {
+        val blocked = YouTubeMusicTrack("blocked", "Excluded Song", "Artist")
+        val allowed = YouTubeMusicTrack("allowed", "Allowed Song", "Artist")
+        val shelf = HomeShelf("For you", items = listOf(HomeShelfItem.Track(blocked), HomeShelfItem.Track(allowed)))
+        val cached = FeedData(
+            nativeShelves = listOf(shelf),
+            quickPicks = listOf(blocked, allowed),
+            mixes = listOf(FeedMix("Excluded mix", blocked), FeedMix("Allowed mix", allowed)),
+            ytLikedSongs = listOf(blocked),
+            ytRecentSongs = listOf(blocked),
+        )
+        val exclusions = MutableStateFlow(emptyList<RecommendationExclusionEntity>())
+        val pending = CompletableDeferred<FeedData>()
+        coEvery { discoverRepository.observeRecommendationExclusions() } returns exclusions
+        coEvery { feedRepository.getCachedFeed(any(), any()) } returns cached
+        coEvery { feedRepository.loadFeed(any(), any()) } coAnswers { pending.await() }
+        val vm = createViewModel()
+        assertThat(vm.uiState.value.feedData).isEqualTo(cached)
+
+        exclusions.value = listOf(RecommendationExclusionEntity(GeneratedTrack(blocked.title, blocked.artist).key, 1))
+        assertThat(vm.uiState.value.feedData.quickPicks).containsExactly(allowed)
+        assertThat(vm.uiState.value.feedData.mixes.map { it.seed }).containsExactly(allowed)
+        assertThat(vm.uiState.value.feedData.nativeShelves.single().items).containsExactly(HomeShelfItem.Track(allowed))
+        assertThat(vm.uiState.value.lastCompletedFeed?.quickPicks).containsExactly(allowed)
+        assertThat(vm.uiState.value.feedData.ytLikedSongs).containsExactly(blocked)
+        assertThat(vm.uiState.value.feedData.ytRecentSongs).containsExactly(blocked)
+
+        exclusions.value = emptyList()
+        assertThat(vm.uiState.value.feedData).isEqualTo(cached)
+        coVerify(exactly = 1) { feedRepository.loadFeed(any(), any()) }
+        pending.complete(cached)
+    }
+
+    @Test
+    fun infiniteRadioDoesNotSelectAnExcludedLikedSongAsItsSeed() {
+        val blocked = YouTubeMusicTrack("blocked", "Excluded Song", "Artist")
+        val key = GeneratedTrack(blocked.title, blocked.artist).key
+        coEvery { discoverRepository.observeRecommendationExclusions() } returns
+            MutableStateFlow(listOf(RecommendationExclusionEntity(key, 1)))
+        coEvery { feedRepository.loadFeed(any(), any()) } returns FeedData(ytLikedSongs = listOf(blocked))
+        val vm = createViewModel()
+        vm.playInfiniteRadio()
+        assertThat(vm.uiState.value.feedData.ytLikedSongs).containsExactly(blocked)
+        coVerify(exactly = 0) { musicPlayer.play(any(), any(), any(), any(), any()) }
+    }
+
+    @Test
+    fun newChipAndContinuationPagesCannotBringExcludedSongsBack() {
+        val blocked = YouTubeMusicTrack("blocked", "Excluded Song", "Artist")
+        val allowed = YouTubeMusicTrack("allowed", "Allowed Song", "Artist")
+        val mixed = HomeShelf("Recommendations", items = listOf(HomeShelfItem.Track(blocked), HomeShelfItem.Track(allowed)))
+        val key = GeneratedTrack(blocked.title, blocked.artist).key
+        coEvery { discoverRepository.observeRecommendationExclusions() } returns
+            MutableStateFlow(listOf(RecommendationExclusionEntity(key, 1)))
+        coEvery { feedRepository.loadFeed(any(), any()) } returns FeedData(homeContinuationToken = "page")
+        coEvery { innerTube.fetchHomeContinuation("page") } returns HomePage(shelves = listOf(mixed))
+        val vm = createViewModel()
+        vm.loadMoreHomeShelves()
+        waitFor { !vm.uiState.value.isLoadingMore }
+        assertThat(vm.uiState.value.pagedShelves.single().items).containsExactly(HomeShelfItem.Track(allowed))
+
+        val chip = HomeChip("Focus", "focus")
+        coEvery { innerTube.fetchHomeChip(chip) } returns HomePage(shelves = listOf(mixed), continuationToken = "chip-next")
+        coEvery { innerTube.fetchHomeContinuation("chip-next") } returns
+            HomePage(shelves = listOf(mixed.copy(title = "More recommendations")))
+        vm.selectChip(chip)
+        waitFor { !vm.uiState.value.isChipLoading }
+        vm.loadMoreHomeShelves()
+        waitFor { !vm.uiState.value.isLoadingMore }
+        assertThat(vm.uiState.value.chipShelves.flatMap { it.items })
+            .containsExactly(HomeShelfItem.Track(allowed), HomeShelfItem.Track(allowed))
+    }
+
+    @Test
+    fun defaultPaginationStartsWithFirstShelvesAndKeepsItsPlaceWhenTheFeedFinishes() {
+        val feed = FeedData(nativeShelves = listOf(createShelf("Home", "video")), homeContinuationToken = "next")
+        val pending = CompletableDeferred<FeedData>()
+        coEvery { feedRepository.loadFeed(any(), any()) } coAnswers {
+            secondArg<(FeedData) -> Unit>()(feed)
+            pending.await()
+        }
+        coEvery { innerTube.fetchHomeContinuation("next") } returns
+            HomePage(shelves = listOf(createShelf("Page two", "two")), continuationToken = "after")
+
+        val vm = createViewModel()
+        vm.loadMoreHomeShelves()
+        waitFor { vm.uiState.value.defaultContinuationToken == "after" }
+        coVerify(exactly = 1) { innerTube.fetchHomeContinuation("next") }
+
+        pending.complete(feed)
+        waitFor { !vm.uiState.value.isFeedUpdating }
+        assertThat(vm.uiState.value.defaultContinuationToken).isEqualTo("after")
+    }
+
+    @Test
+    fun refreshKeepsPagedShelvesAndUpdatesThemWithoutChangingTheirPositions() {
+        val first = createShelf("First", "first")
+        val page = createShelf("Paged", "old")
+        val updatedPage = createShelf("Paged", "updated")
+        val added = createShelf("New", "new")
+        val initial = FeedData(nativeShelves = listOf(first), homeContinuationToken = "page", lastUpdatedMillis = 1)
+        val refreshed = FeedData(nativeShelves = listOf(updatedPage, added), homeContinuationToken = "fresh", lastUpdatedMillis = 2)
+        coEvery { feedRepository.getCachedFeed(any(), any()) } returns initial
+        coEvery { feedRepository.loadFeed(any(), any()) } returns initial
+        coEvery { innerTube.fetchHomeContinuation("page") } returns HomePage(shelves = listOf(page))
+
+        val vm = createViewModel()
+        vm.loadMoreHomeShelves()
+        waitFor { !vm.uiState.value.isLoadingMore }
+        assertThat(vm.uiState.value.pagedShelves).containsExactly(page)
+
+        coEvery { feedRepository.loadFeed(any(), any()) } returns refreshed
+        vm.refresh()
+
+        assertThat(vm.uiState.value.feedData.nativeShelves).containsExactly(first)
+        assertThat(vm.uiState.value.pagedShelves).containsExactly(updatedPage, added).inOrder()
+        assertThat(vm.uiState.value.defaultContinuationToken).isEqualTo("fresh")
+    }
+
+    @Test
+    fun refreshKeepsRemovedShelvesInPlaceAfterTheFinalFeedArrives() {
+        val first = createShelf("First", "first")
+        val second = createShelf("Second", "second")
+        val added = createShelf("New", "new")
+        val cached = FeedData(nativeShelves = listOf(first, second), lastUpdatedMillis = 1)
+        val partial = cached.copy(nativeShelves = listOf(second, added))
+        val allowUpdate = CompletableDeferred<Unit>()
+        val finalResult = CompletableDeferred<FeedData>()
+        coEvery { feedRepository.getCachedFeed(any(), any()) } returns cached
+        coEvery { feedRepository.loadFeed(any(), any()) } coAnswers {
+            allowUpdate.await()
+            secondArg<(FeedData) -> Unit>()(partial)
+            finalResult.await()
+        }
+
+        val vm = createViewModel()
+        vm.refresh()
+        allowUpdate.complete(Unit)
+        assertThat(vm.uiState.value.feedData.nativeShelves).containsExactly(first, second, added).inOrder()
+
+        finalResult.complete(partial)
+        assertThat(vm.uiState.value.feedData.nativeShelves).containsExactly(first, second, added).inOrder()
+        assertThat(vm.uiState.value.lastCompletedFeed).isEqualTo(partial)
+    }
+
+    @Test
+    fun continuationRefreshesRetainedPageInPlaceAndStopsAtTheEnd() {
+        val first = createShelf("First", "first")
+        val oldPage = createShelf("Paged", "old")
+        val newPage = createShelf("Paged", "new")
+        val initial = FeedData(nativeShelves = listOf(first), homeContinuationToken = "old-token", lastUpdatedMillis = 1)
+        val refreshed = FeedData(nativeShelves = listOf(first), homeContinuationToken = "new-token", lastUpdatedMillis = 2)
+        coEvery { feedRepository.getCachedFeed(any(), any()) } returns initial
+        coEvery { feedRepository.loadFeed(any(), any()) } returns initial
+        coEvery { innerTube.fetchHomeContinuation("old-token") } returns HomePage(shelves = listOf(oldPage))
+        coEvery { innerTube.fetchHomeContinuation("new-token") } returns HomePage(shelves = listOf(newPage))
+
+        val vm = createViewModel()
+        vm.loadMoreHomeShelves()
+        waitFor { !vm.uiState.value.isLoadingMore }
+        assertThat(vm.uiState.value.pagedShelves).containsExactly(oldPage)
+
+        coEvery { feedRepository.loadFeed(any(), any()) } returns refreshed
+        vm.refresh()
+
+        vm.loadMoreHomeShelves()
+        waitFor { !vm.uiState.value.isLoadingMore }
+        assertThat(vm.uiState.value.pagedShelves).containsExactly(newPage)
+        vm.loadMoreHomeShelves()
+        coVerify(exactly = 1) { innerTube.fetchHomeContinuation("new-token") }
+    }
+
+    @Test
+    fun refreshIndicatorStopsWhenFreshFeedArrivesWhileRemainingWorkContinues() {
+        val cached = FeedData(nativeShelves = listOf(createShelf("Cached", "cached")))
+        val fresh = FeedData(nativeShelves = listOf(createShelf("Fresh", "fresh")))
+        val allowUpdate = CompletableDeferred<Unit>()
+        val finalResult = CompletableDeferred<FeedData>()
+        coEvery { feedRepository.getCachedFeed(any(), any()) } returns cached
+        coEvery { feedRepository.loadFeed(any(), any()) } coAnswers {
+            allowUpdate.await()
+            secondArg<(FeedData) -> Unit>()(fresh)
+            finalResult.await()
+        }
+
+        val vm = createViewModel()
+        vm.refresh()
+        assertThat(vm.uiState.value.isRefreshIndicatorVisible).isTrue()
+
+        allowUpdate.complete(Unit)
+        assertThat(vm.uiState.value.feedData.nativeShelves)
+            .containsExactlyElementsIn(cached.nativeShelves + fresh.nativeShelves).inOrder()
+        assertThat(vm.uiState.value.isRefreshIndicatorVisible).isFalse()
+        assertThat(vm.uiState.value.isRefreshing).isTrue()
+        assertThat(vm.uiState.value.isFeedUpdating).isTrue()
+
+        finalResult.complete(fresh)
+        assertThat(vm.uiState.value.isRefreshing).isFalse()
+        assertThat(vm.uiState.value.isFeedUpdating).isFalse()
+    }
+
+    @Test
+    fun refreshFinishesWithoutWaitingForProfileStats() {
+        val feed = FeedData(nativeShelves = listOf(createShelf("Home", "video")))
+        val stats = CompletableDeferred<Result<HomeStats>>()
+        coEvery { feedRepository.getCachedFeed(any(), any()) } returns feed
+        coEvery { feedRepository.loadFeed(any(), any()) } returns feed
+        coEvery { homeRepository.fetchStats() } coAnswers { stats.await() }
+
+        val vm = createViewModel()
+        vm.refresh()
+
+        assertThat(vm.uiState.value.feedData).isEqualTo(feed)
+        assertThat(vm.uiState.value.isRefreshing).isFalse()
+        stats.complete(Result.failure(Exception("no stats")))
+    }
+
+    @Test
+    fun selectChip_togglesSelection_andLoadsChipShelves() {
+        val chip = HomeChip(title = "Energize", params = "energize_params_1")
+        val chipShelf = createShelf("High Energy Beats", "energy_vid_1")
+        coEvery { innerTube.fetchHomeChip(chip) } returns HomePage(
+            shelves = listOf(chipShelf),
+            chips = emptyList(),
+            continuationToken = "chip_token_2",
+        )
+
+        val vm = createViewModel()
+
+        // 1. Select the chip
+        vm.selectChip(chip)
+        waitFor { !vm.uiState.value.isChipLoading }
+
+        val stateAfterSelect = vm.uiState.value
+        assertThat(stateAfterSelect.selectedChip).isEqualTo(chip)
+        assertThat(stateAfterSelect.isChipActive).isTrue()
+        assertThat(stateAfterSelect.chipShelves).containsExactly(chipShelf)
+        assertThat(stateAfterSelect.chipContinuationToken).isEqualTo("chip_token_2")
+
+        // 2. Tapping the same chip again deselects it and reverts to default view
+        vm.selectChip(chip)
+        val stateAfterDeselect = vm.uiState.value
+        assertThat(stateAfterDeselect.selectedChip).isNull()
+        assertThat(stateAfterDeselect.isChipActive).isFalse()
+        assertThat(stateAfterDeselect.chipShelves).isEmpty()
+        assertThat(stateAfterDeselect.chipContinuationToken).isNull()
+    }
+
+    @Test
+    fun selectChip_failureRevertsToDefaultView_andShowsError() {
+        val chip = HomeChip(title = "Relax", params = "relax_params_1")
+        coEvery { innerTube.fetchHomeChip(chip) } throws RuntimeException("Network error")
+
+        val vm = createViewModel()
+        vm.selectChip(chip)
+        waitFor { !vm.uiState.value.isChipLoading }
+
+        val state = vm.uiState.value
+        assertThat(state.selectedChip).isNull()
+        assertThat(state.isChipActive).isFalse()
+        assertThat(state.isChipLoading).isFalse()
+        assertThat(state.error).isNotNull()
+    }
+
+    @Test
+    fun loadMoreHomeShelves_appendsNewShelves_andUpdatesContinuationToken() {
+        val page1Shelf = createShelf("Page 1 Shelf", "p1_vid")
+        val page2Shelf = createShelf("Page 2 Shelf", "p2_vid")
+        val initialFeedData = FeedData(
+            nativeShelves = listOf(page1Shelf),
+            homeContinuationToken = "page1_token",
+        )
+        coEvery { feedRepository.loadFeed(any(), any()) } returns initialFeedData
+        coEvery { feedRepository.getCachedFeed(any(), any()) } returns initialFeedData
+        coEvery { innerTube.fetchHomeContinuation("page1_token") } returns HomePage(
+            shelves = listOf(page2Shelf),
+            chips = emptyList(),
+            continuationToken = "page2_token",
+        )
+
+        val vm = createViewModel()
+        vm.loadFeed()
+        waitFor { !vm.uiState.value.isLoading }
+
+        // Initial state before load-more
+        assertThat(vm.uiState.value.feedData.nativeShelves).containsExactly(page1Shelf)
+        assertThat(vm.uiState.value.pagedShelves).isEmpty()
+
+        // Trigger load more
+        vm.loadMoreHomeShelves()
+        waitFor { !vm.uiState.value.isLoadingMore }
+
+        val stateAfter = vm.uiState.value
+        assertThat(stateAfter.pagedShelves).containsExactly(page2Shelf)
+        assertThat(stateAfter.defaultContinuationToken).isEqualTo("page2_token")
+        assertThat(stateAfter.isLoadingMore).isFalse()
+    }
+
+    @Test
+    fun loadMoreHomeShelves_skipsDuplicateShelves() {
+        val page1Shelf = createShelf("Existing Shelf", "existing_vid_1")
+        val duplicateShelf = createShelf("Existing Shelf", "existing_vid_1")
+        val distinctShelf = createShelf("New Unique Shelf", "new_vid_2")
+
+        val initialFeedData = FeedData(
+            nativeShelves = listOf(page1Shelf),
+            homeContinuationToken = "token_dup_test",
+        )
+        coEvery { feedRepository.loadFeed(any(), any()) } returns initialFeedData
+        coEvery { feedRepository.getCachedFeed(any(), any()) } returns initialFeedData
+        coEvery { innerTube.fetchHomeContinuation("token_dup_test") } returns HomePage(
+            shelves = listOf(duplicateShelf, distinctShelf),
+            chips = emptyList(),
+            continuationToken = "next_token",
+        )
+
+        val vm = createViewModel()
+        vm.loadFeed()
+        waitFor { !vm.uiState.value.isLoading }
+
+        vm.loadMoreHomeShelves()
+        waitFor { !vm.uiState.value.isLoadingMore }
+
+        // Only distinctShelf should be added to pagedShelves, duplicateShelf must be skipped
+        assertThat(vm.uiState.value.pagedShelves).containsExactly(distinctShelf)
+    }
+
+    @Test
+    fun loadMoreHomeShelves_doesNothingWhenTokenIsNull() {
+        val initialFeedData = FeedData(
+            nativeShelves = listOf(createShelf("Shelf A", "vid_a")),
+            homeContinuationToken = null,
+        )
+        coEvery { feedRepository.loadFeed(any(), any()) } returns initialFeedData
+        coEvery { feedRepository.getCachedFeed(any(), any()) } returns initialFeedData
+
+        val vm = createViewModel()
+        vm.loadFeed()
+        waitFor { !vm.uiState.value.isLoading }
+
+        vm.loadMoreHomeShelves()
+
+        coVerify(exactly = 0) { innerTube.fetchHomeContinuation(any()) }
+        assertThat(vm.uiState.value.isLoadingMore).isFalse()
+        assertThat(vm.uiState.value.pagedShelves).isEmpty()
+    }
+
+    private fun createEpisodeShelf(title: String, videoId: String): HomeShelf {
+        return HomeShelf(
+            title = title,
+            items = listOf(
+                HomeShelfItem.PodcastEpisode(
+                    videoId = videoId,
+                    title = "Episode in $title",
+                    showName = "Show name",
+                    subtitle = "10K views",
+                    durationText = "45:00",
+                )
+            )
+        )
+    }
+
+    private fun createShowShelf(title: String, browseId: String): HomeShelf {
+        return HomeShelf(
+            title = title,
+            items = listOf(
+                HomeShelfItem.PodcastShow(
+                    browseId = browseId,
+                    title = "Show in $title",
+                    author = "Host",
+                )
+            )
+        )
+    }
+
+    @Test
+    fun selectPodcastsChip_loadsAllShelves_andSetsBackgroundUrl() {
+        val chip = HomeChip(title = "Podcasts", params = "podcast_params")
+        val showsShelf = createShowShelf("Shows for you", "MPSP_show_1")
+        val episodeShelf = createEpisodeShelf("Government", "ep_gov_1")
+        val bgUrl = "https://example.com/podcast_hero.jpg"
+        coEvery { innerTube.fetchHomeChip(chip) } returns HomePage(
+            shelves = listOf(showsShelf, episodeShelf),
+            chips = emptyList(),
+            continuationToken = "podcast_cont_1",
+            backgroundUrl = bgUrl,
+        )
+
+        val vm = createViewModel()
+        vm.selectChip(chip)
+        waitFor { !vm.uiState.value.isChipLoading }
+
+        val state = vm.uiState.value
+        assertThat(state.selectedChip).isEqualTo(chip)
+        assertThat(state.isChipActive).isTrue()
+        assertThat(state.chipShelves).containsExactly(showsShelf, episodeShelf).inOrder()
+        assertThat(state.chipContinuationToken).isEqualTo("podcast_cont_1")
+        assertThat(state.chipBackgroundUrl).isEqualTo(bgUrl)
+
+        // Deselecting clears the backgroundUrl as well
+        vm.selectChip(chip)
+        val stateAfterDeselect = vm.uiState.value
+        assertThat(stateAfterDeselect.selectedChip).isNull()
+        assertThat(stateAfterDeselect.chipBackgroundUrl).isNull()
+    }
+
+    @Test
+    fun loadMoreHomeShelves_inChipMode_appendsPage2Shelves_skippingDuplicates() {
+        val chip = HomeChip(title = "Podcasts", params = "podcast_params")
+        val showsShelf = createShowShelf("Shows for you", "MPSP_show_1")
+        val govShelf = createEpisodeShelf("Government", "ep_gov_1")
+        coEvery { innerTube.fetchHomeChip(chip) } returns HomePage(
+            shelves = listOf(showsShelf, govShelf),
+            chips = emptyList(),
+            continuationToken = "podcast_cont_1",
+            backgroundUrl = "https://example.com/hero.jpg",
+        )
+
+        val duplicateGovShelf = createEpisodeShelf("Government", "ep_gov_1")
+        val filmsShelf = createEpisodeShelf("Films", "ep_film_1")
+        coEvery { innerTube.fetchHomeContinuation("podcast_cont_1") } returns HomePage(
+            shelves = listOf(duplicateGovShelf, filmsShelf),
+            chips = emptyList(),
+            continuationToken = "podcast_cont_2",
+        )
+
+        val vm = createViewModel()
+        vm.selectChip(chip)
+        waitFor { !vm.uiState.value.isChipLoading }
+
+        // Initial chip shelves
+        assertThat(vm.uiState.value.chipShelves).containsExactly(showsShelf, govShelf).inOrder()
+
+        // Paginate in chip mode
+        vm.loadMoreHomeShelves()
+        waitFor { !vm.uiState.value.isLoadingMore }
+
+        val stateAfter = vm.uiState.value
+        assertThat(stateAfter.chipShelves).containsExactly(showsShelf, govShelf, filmsShelf).inOrder()
+        assertThat(stateAfter.chipContinuationToken).isEqualTo("podcast_cont_2")
+    }
+
+    @Test
+    fun selectingChipDuringHomePagination_releasesLoadingMore() {
+        val feed = FeedData(homeContinuationToken = "home-next")
+        coEvery { feedRepository.loadFeed(any(), any()) } returns feed
+        coEvery { feedRepository.getCachedFeed(any(), any()) } returns feed
+        val response = CompletableDeferred<HomePage>()
+        val started = AtomicBoolean(false)
+        coEvery { innerTube.fetchHomeContinuation("home-next") } coAnswers {
+            started.set(true)
+            response.await()
+        }
+        val chip = HomeChip(title = "Relax", params = "relax")
+        coEvery { innerTube.fetchHomeChip(chip) } returns HomePage(
+            shelves = listOf(createShelf("Relaxing", "relax-1")),
+            chips = emptyList(),
+            continuationToken = "relax-next",
+        )
+        val vm = createViewModel()
+        waitFor { !vm.uiState.value.isLoading }
+        vm.loadMoreHomeShelves()
+        waitFor { started.get() }
+        assertThat(started.get()).isTrue()
+        vm.selectChip(chip)
+        assertThat(vm.uiState.value.isLoadingMore).isFalse()
+        response.complete(HomePage(shelves = emptyList(), chips = emptyList()))
+        waitFor { !vm.uiState.value.isChipLoading }
+        assertThat(vm.uiState.value.selectedChip).isEqualTo(chip)
+        assertThat(vm.uiState.value.isLoadingMore).isFalse()
+    }
+
+    @Test
+    fun deselectingChipDuringPagination_releasesLoadingMore() {
+        val feed = FeedData(homeContinuationToken = "home-next")
+        coEvery { feedRepository.loadFeed(any(), any()) } returns feed
+        coEvery { feedRepository.getCachedFeed(any(), any()) } returns feed
+        val chip = HomeChip(title = "Relax", params = "relax")
+        coEvery { innerTube.fetchHomeChip(chip) } returns HomePage(
+            shelves = listOf(createShelf("Relaxing", "relax-1")),
+            chips = emptyList(),
+            continuationToken = "relax-next",
+        )
+        val response = CompletableDeferred<HomePage>()
+        val started = AtomicBoolean(false)
+        coEvery { innerTube.fetchHomeContinuation("relax-next") } coAnswers {
+            started.set(true)
+            response.await()
+        }
+        val vm = createViewModel()
+        waitFor { !vm.uiState.value.isLoading }
+        vm.selectChip(chip)
+        waitFor { !vm.uiState.value.isChipLoading }
+        vm.loadMoreHomeShelves()
+        waitFor { started.get() }
+        assertThat(started.get()).isTrue()
+        vm.selectChip(chip)
+        assertThat(vm.uiState.value.selectedChip).isNull()
+        assertThat(vm.uiState.value.isLoadingMore).isFalse()
+        response.complete(HomePage(shelves = listOf(createShelf("Old chip page", "old")), chips = emptyList()))
+        assertThat(vm.uiState.value.chipShelves).isEmpty()
+    }
+
+}

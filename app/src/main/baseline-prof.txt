@@ -1,0 +1,8 @@
+HSPLcom/symphony/app/MainActivity;->**(**)**
+HSPLcom/symphony/app/MainShellActivity;->**(**)**
+HSPLcom/symphony/app/SYMPHONYApplication;->**(**)**
+HSPLcom/symphony/app/ui/**;->**(**)**
+HSPLcom/symphony/app/playback/MusicPlayer**;->**(**)**
+HSPLcom/symphony/app/playback/MusicPlaybackService**;->**(**)**
+HSPLcom/symphony/app/data/artwork/**;->**(**)**
+Lcom/symphony/app/ui/**;

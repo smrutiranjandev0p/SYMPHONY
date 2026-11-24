@@ -1,0 +1,124 @@
+name: Build SYMPHONY APK
+
+on:
+  push:
+    branches: [ main, master, 'feat/**', 'feature/**' ]
+    paths-ignore:
+      - '**.md'
+      - 'Screenshot/**'
+      - '**.yml'
+  pull_request:
+    branches: [ main, master ]
+    paths-ignore:
+      - '**.md'
+      - 'Screenshot/**'
+      - '**.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Release APK
+    runs-on: ubuntu-latest
+    env:
+      SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+      ADDON_CLIENT_SECRET: ${{ secrets.ADDON_CLIENT_SECRET }}
+      RELEASE_STORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD || secrets.RELEASE_STORE_PASSWORD }}
+      SYMPHONY_LYRICS_TOKEN: ${{ secrets.SYMPHONY_LYRICS_TOKEN }}
+      SYMPHONY_LYRICS_URL: ${{ secrets.SYMPHONY_LYRICS_URL }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6.3.0
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Grant Gradle execute permission
+        run: chmod +x gradlew
+
+      - name: Verify download, playback and scrobbler regressions
+        run: >-
+          ./gradlew :app:testDebugUnitTest
+          --tests 'com.symphony.app.data.download.YouTubeDownloadResolverTest'
+          --tests 'com.symphony.app.data.download.TrackDownloadTransferTest'
+          --tests 'com.symphony.app.data.download.DownloadPayloadValidationTest'
+          --tests 'com.symphony.app.data.music.AwaitSharedStreamTest'
+          --tests 'com.symphony.app.data.download.ClearAllDownloadsTest'
+          --tests 'com.symphony.app.data.download.AudioRestoreScanTest'
+          --tests 'com.symphony.app.data.download.Mp4FlacRemuxerTest'
+          --tests 'com.symphony.app.data.download.Fmp4IndexBuilderTest'
+          --tests 'com.symphony.app.playback.ChunkedRangeDataSourceTest'
+          --tests 'com.symphony.app.data.music.PlaybackCandidateRaceTest'
+          --tests 'com.symphony.app.playback.automix.*'
+          --tests 'com.symphony.app.data.scrobbler.*'
+          --tests 'com.symphony.app.data.repository.ScrobbleRepositoryTest'
+          --tests 'com.symphony.app.data.backup.BackupScrobblerCredentialsTest'
+          --tests 'com.symphony.app.ui.settings.SettingsClearAllDataTest'
+          --stacktrace
+
+      - name: Upload regression test results
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: Download-regression-test-results
+          path: |
+            app/build/reports/tests/testDebugUnitTest/
+            app/build/test-results/testDebugUnitTest/
+            app/build/automix-renders/
+          if-no-files-found: ignore
+
+      - name: Build Release APK
+        env:
+          ADDON_CLIENT_SECRET: ${{ secrets.ADDON_CLIENT_SECRET }}
+          SYMPHONY_LYRICS_TOKEN: ${{ secrets.SYMPHONY_LYRICS_TOKEN }}
+          SYMPHONY_LYRICS_URL: ${{ secrets.SYMPHONY_LYRICS_URL }}
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          RELEASE_STORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD || secrets.RELEASE_STORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.ALIAS || secrets.RELEASE_KEY_ALIAS || 'release_key' }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD || secrets.RELEASE_KEY_PASSWORD }}
+        run: ./gradlew assembleRelease --stacktrace
+
+      - name: Stage Final APK
+        id: prep_apk
+        run: |
+          mkdir -p final_apk
+          VERSION=$(grep 'versionName = ' app/build.gradle.kts | head -n1 | sed -E 's/.*"([^"]+)".*/\1/')
+          if [ -z "$VERSION" ]; then
+            VERSION="5.0.0"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "APP_VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Building APK for SYMPHONY v$VERSION"
+          if [ -f "app/build/outputs/apk/release/app-release-signed.apk" ]; then
+            cp app/build/outputs/apk/release/app-release-signed.apk final_apk/SYMPHONY-v${VERSION}-release.apk
+          else
+            cp app/build/outputs/apk/release/app-release.apk final_apk/SYMPHONY-v${VERSION}-release.apk
+          fi
+          ls -lh final_apk/
+
+      - name: Verify APK signature + publish checksum
+        run: |
+          SDKROOT="${ANDROID_HOME:-$ANDROID_SDK_ROOT}"
+          APKSIGNER=$(find "$SDKROOT/build-tools" -maxdepth 2 -name apksigner 2>/dev/null | head -n1)
+          if [ -z "$APKSIGNER" ]; then
+            echo "::warning::apksigner not found under $SDKROOT, skipping signature verification"
+          else
+            for apk in final_apk/*.apk; do
+              echo "Verifying $apk ..."
+              "$APKSIGNER" verify --print-certs "$apk" > /dev/null || { echo "::error::APK failed signature verification: $apk"; exit 1; }
+            done
+            echo "All APK signatures valid."
+          fi
+          (cd final_apk && sha256sum *.apk > SHA256SUMS.txt)
+          cat final_apk/SHA256SUMS.txt
+
+      - name: Upload Release APK
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: SYMPHONY-v${{ steps.prep_apk.outputs.version }}-APK
+          path: final_apk/*
+          if-no-files-found: error
