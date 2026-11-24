@@ -1,5 +1,20 @@
 # SYMPHONY Changelog
 
+## [1.2] - 2026-11-25
+
+### Changed
+- **Flow controls:** Removed the redundant dashboard shortcut and enlarged the search and settings targets with status-bar-aware top spacing.
+- **Playback layout:** Moved the primary play/pause action into a prominent centred glass-style control; kept Like, More and Lyrics actions available below the track details.
+- **Flow mini-player:** Suppressed the global bottom mini-player only while the Flow tab is active, avoiding duplicate playback controls without changing the other tabs.
+- **Heart animation:** Increased the floating hearts' travel distance and animation duration.
+- **Launcher identity:** Pointed both adaptive default launcher masks to the Glass Wave foreground artwork so the icon selector's default and installed launcher icon agree.
+- **Version metadata:** Set user-facing versionName to 1.2 and Android versionCode to 35.
+
+### Validation
+- Source changes committed to main. Automated Android build and physical-device playback/layout verification are pending; this entry does not claim the 1.2 APK has been released.
+
+---
+
 This changelog records the refreshed SYMPHONY release line, beginning with version **1.1** on 2026-11-25. Earlier version history is intentionally not carried into this sequence.
 
 ## [1.1] - 2026-11-25
