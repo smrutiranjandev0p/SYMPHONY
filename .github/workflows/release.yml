@@ -4,13 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       tag_name:
-        description: 'Git Tag (e.g., 4.2.3)'
+        description: 'Git Tag (e.g., 5.2.2)'
         required: true
-        default: '4.2.3'
+        default: '5.2.2'
       release_name:
-        description: 'Release Title (e.g., SYMPHONY 4.2.3)'
+        description: 'Release Title (e.g., SYMPHONY 5.2.2)'
         required: true
-        default: 'Update v4.2.3'
+        default: 'SYMPHONY 5.2.2'
       release_notes:
         description: 'Changelog / Release Notes'
         required: false
@@ -34,7 +34,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          ref: ${{ inputs.tag_name }}
+          ref: main
           fetch-depth: 0
 
       - name: Set up JDK 17
@@ -43,6 +43,12 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: gradle
+
+      - name: Install Android API 37 SDK
+        run: |
+          yes | "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null || true
+          "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" --channel=3 --install "platforms;android-37.0" "platform-tools"
+          ln -s "${ANDROID_HOME}/platforms/android-37.0" "${ANDROID_HOME}/platforms/android-37"
 
       - name: Grant Gradle execute permission
         run: chmod +x gradlew
