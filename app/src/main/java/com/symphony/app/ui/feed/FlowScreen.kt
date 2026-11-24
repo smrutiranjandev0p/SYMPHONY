@@ -83,6 +83,7 @@ fun FlowScreen(
     val playerViewModel: PlayerViewModel = hiltViewModel()
     val likedKeys by playerViewModel.likedTrackKeys.collectAsStateWithLifecycle()
     var menuTrack by remember { mutableStateOf<YouTubeMusicTrack?>(null) }
+    var partyTorchEnabled by remember { mutableStateOf(false) }
     val playback by musicPlayer.stateWithoutProgress.collectAsStateWithLifecycle()
     val tracks = remember(state.feedData) {
         buildList {
@@ -149,6 +150,9 @@ fun FlowScreen(
                 onOpenArtist = playerViewModel::openArtist,
                 onOpenMenu = { menuTrack = tracks[page] },
                 onOpenLyrics = openPlayerLyrics,
+                partyTorchEnabled = partyTorchEnabled,
+                onPartyTorchEnabledChange = { partyTorchEnabled = it },
+                audioSessionId = musicPlayer.activePlayer?.audioSessionId ?: 0,
             )
         }
         menuTrack?.let { track ->
@@ -178,6 +182,9 @@ private fun FlowPage(
     onOpenArtist: (String) -> Unit,
     onOpenMenu: () -> Unit,
     onOpenLyrics: () -> Unit,
+    partyTorchEnabled: Boolean,
+    onPartyTorchEnabledChange: (Boolean) -> Unit,
+    audioSessionId: Int,
 ) {
     val scheme = MaterialTheme.colorScheme
     Box(Modifier.fillMaxSize()) {
@@ -240,6 +247,12 @@ private fun FlowPage(
                 Surface(shape = CircleShape, color = scheme.surface.copy(alpha = 0.34f), onClick = onOpenLyrics, modifier = Modifier.size(54.dp)) {
                     Box(contentAlignment = Alignment.Center) { Icon(Icons.Filled.FormatQuote, "Open lyrics", tint = scheme.onPrimary, modifier = Modifier.size(27.dp)) }
                 }
+                FlowPartyTorch(
+                    enabled = partyTorchEnabled,
+                    isPlaying = isPlaying,
+                    audioSessionId = audioSessionId,
+                    onEnabledChange = onPartyTorchEnabledChange,
+                )
             }
         }
         Surface(
