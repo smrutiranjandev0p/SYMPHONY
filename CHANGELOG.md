@@ -1,5 +1,16 @@
 # SYMPHONY Changelog
 
+## [1.3] - 2026-11-25
+
+### Changed
+- **Unified icon family:** Desktop, Pure White and Obsidian Black now reuse the Glass Wave treble-clef and waveform artwork from the default icon, retaining their distinct background colours.
+- **Version metadata:** Set user-facing versionName to 1.3 and Android versionCode to 36.
+
+### Validation
+- Automated Android build and release verification are pending. Physical-device icon rendering and upgrade verification remain required.
+
+---
+
 ## [1.2] - 2026-11-25
 
 ### Changed
