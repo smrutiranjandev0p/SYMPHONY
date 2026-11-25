@@ -1,6 +1,25 @@
-# SYMPHONY
+<p align="center">
+  <img src="assets/SYMPHONY_banner_v2_1440p.png" alt="SYMPHONY — Your music. In motion." width="100%" />
+</p>
 
-**Your music. In motion.**
+<h1 align="center">SYMPHONY</h1>
+<p align="center"><strong>Your music. In motion.</strong><br/>
+A modern Android listening experience built around Flow, discovery and control.</p>
+
+<p align="center">
+  <a href="https://github.com/smrutiranjandev0p/SYMPHONY/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/smrutiranjandev0p/SYMPHONY?style=for-the-badge&color=9B8CFF" /></a>
+  <a href="https://github.com/smrutiranjandev0p/SYMPHONY/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/smrutiranjandev0p/SYMPHONY?style=for-the-badge&color=F5C451" /></a>
+  <a href="https://github.com/smrutiranjandev0p/SYMPHONY/network/members"><img alt="GitHub forks" src="https://img.shields.io/github/forks/smrutiranjandev0p/SYMPHONY?style=for-the-badge&color=64748B" /></a>
+  <a href="https://github.com/smrutiranjandev0p/SYMPHONY/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/smrutiranjandev0p/SYMPHONY?style=for-the-badge&color=38BDF8" /></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/smrutiranjandev0p/SYMPHONY/releases/latest"><strong>⬇ Download APK</strong></a>
+  &nbsp;·&nbsp;
+  <a href="#features"><strong>Explore features</strong></a>
+  &nbsp;·&nbsp;
+  <a href="#community"><strong>Contribute</strong></a>
+</p>
 
 SYMPHONY is a native Android music player built around a focused listening experience: **Flow · Home · Statistics · Library**. It brings music discovery, streaming and local playback, playlists, lyrics, audio controls and a customisable visual experience into one app.
 
@@ -13,6 +32,8 @@ SYMPHONY is a native Android music player built around a focused listening exper
 
 ## Download SYMPHONY
 
+Get the newest published build from GitHub Releases. The release page is the source of truth for available APK variants and compatibility notes.
+
 <p align="center">
   <a href="https://github.com/smrutiranjandev0p/SYMPHONY/releases/latest">
     <img alt="Download latest SYMPHONY release" src="https://img.shields.io/badge/⬇%20DOWNLOAD-LATEST%20RELEASE-9B8CFF?style=for-the-badge&labelColor=111827" />
@@ -23,10 +44,10 @@ Choose the APK that matches your Android device from the **Assets** section of t
 
 | Your device / requirement | APK to choose |
 | --- | --- |
-| **Most Android phones (Android 10 / API 29+)** | `SYMPHONY-vX-universal.apk` — recommended compressed universal APK |
+| **Most Android phones** | `SYMPHONY-vX-universal.apk` — recommended compressed universal APK; check the release notes for minimum Android version |
 | Older phones (Android 7+) | `SYMPHONY-vX-android7.apk` — legacy-compatible build |
 | Need the uncompressed package | `SYMPHONY-vX-universal-uncompressed.apk` |
-| Supported Vivo OriginOS edition | `SYMPHONY-vX-vivo-origin.apk` — only if this asset is included in that release |
+| Supported Vivo OriginOS edition | `SYMPHONY-vX-vivo-origin.apk` — only if listed in that release's assets |
 
 **Not sure?** Choose the standard **universal APK** for most modern Android phones. Check the release notes and minimum Android version before installing. If GitHub shows multiple APK variants, select the one matching your device and requirements.
 
@@ -37,8 +58,6 @@ Choose the APK that matches your Android device from the **Assets** section of t
 </p>
 
 Downloads are hosted on GitHub Releases. Verify the downloaded APK against `SHA256SUMS.txt` when the checksum file is provided.
-
----
 
 ---
 
@@ -67,7 +86,7 @@ The adaptive launcher icon now points to the Glass Wave foreground for both stan
 
 Changing the selection updates the Android launcher icon through the app's existing launcher-alias manager.
 
-## Highlights
+## Features
 
 - YouTube Music search, discovery and streaming integrations
 - Local music library and offline downloads
@@ -154,9 +173,7 @@ SYMPHONY/
 
 ## Versioning
 
-The refreshed release line started at **1.1** and advances to **1.2**. Android internal `versionCode` remains monotonic for upgrade compatibility; the user-facing version is `versionName`. Android's internal `versionCode` remains monotonic for upgrade compatibility; the user-facing version is `versionName`.
-
-See [CHANGELOG.md](CHANGELOG.md) for the 1.2 Flow redesign and the 1.1 release baseline.
+The release page shows the latest published version and its downloadable assets. Android `versionCode` is kept monotonic for upgrade compatibility; `versionName` is the user-facing version. See [CHANGELOG.md](CHANGELOG.md) for release-by-release changes.
 
 ## Project principles
 
@@ -166,10 +183,29 @@ See [CHANGELOG.md](CHANGELOG.md) for the 1.2 Flow redesign and the 1.1 release b
 - Keep release signing material and private credentials out of Git.
 - Verify builds before describing a change as shipped.
 
+## Community
+
+SYMPHONY is an independent project maintained by **[smrutiranjandev0p](https://github.com/smrutiranjandev0p)**.
+
+- ⭐ **Like the project?** Star the repository to show support and help others discover it.
+- 🐛 **Found a bug?** [Open an issue](https://github.com/smrutiranjandev0p/SYMPHONY/issues/new/choose) with your device model, Android version and steps to reproduce.
+- 💡 **Have an idea?** Start a [discussion or feature request](https://github.com/smrutiranjandev0p/SYMPHONY/issues).
+- 🤝 **Want to contribute?** Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
+
+Please star only if you genuinely find the project useful. No star exchanges or artificial engagement.
+
+## Credits & inspiration
+
+SYMPHONY's Flow screen takes inspiration from the immersive, swipe-led music discovery interaction popularised by Resso. SYMPHONY is an independent project and is not affiliated with or endorsed by Resso, Vivo, YouTube, Spotify or other referenced services.
+
+## Maintainer
+
+**Made with care by [Smruti Ranjan Behera](https://github.com/smrutiranjandev0p).**
+
 ## License
 
 See [LICENSE](LICENSE) for the project's license and distribution terms.
 
 ---
 
-**SYMPHONY — Press play. Follow the flow.**
+<p align="center"><strong>SYMPHONY — Press play. Follow the flow.</strong><br/>If it adds something to your listening experience, consider leaving a ⭐.</p>
