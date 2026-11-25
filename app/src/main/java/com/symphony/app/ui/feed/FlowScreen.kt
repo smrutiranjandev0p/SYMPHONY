@@ -205,16 +205,17 @@ private fun FlowPage(
             model = track.artworkUrl,
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize().alpha(0.78f),
+            modifier = Modifier.fillMaxSize().alpha(0.94f),
         )
         Box(
             Modifier
                 .fillMaxSize()
                 .background(
                     Brush.verticalGradient(
-                        0f to scheme.scrim.copy(alpha = 0.22f),
-                        0.48f to Color.Transparent,
-                        1f to scheme.scrim.copy(alpha = 0.78f),
+                        0f to Color.Black.copy(alpha = 0.48f),
+                        0.38f to Color.Black.copy(alpha = 0.08f),
+                        0.62f to Color.Black.copy(alpha = 0.20f),
+                        1f to Color.Black.copy(alpha = 0.82f),
                     ),
                 ),
         )
@@ -230,7 +231,7 @@ private fun FlowPage(
                 text = track.title,
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Black,
-                color = scheme.onPrimary,
+                color = Color.White,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -243,19 +244,19 @@ private fun FlowPage(
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.clickable { track.artist.takeIf(String::isNotBlank)?.let(onOpenArtist) },
             )
-            if (!track.album.isNullOrBlank()) Text(track.album, style = MaterialTheme.typography.bodyMedium, color = scheme.onPrimary.copy(alpha = 0.88f), maxLines = 1, overflow = TextOverflow.Ellipsis)
+            if (!track.album.isNullOrBlank()) Text(track.album, style = MaterialTheme.typography.bodyMedium, color = Color.White.copy(alpha = 0.92f), maxLines = 1, overflow = TextOverflow.Ellipsis)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(18.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Surface(shape = CircleShape, color = scheme.surface.copy(alpha = 0.34f), onClick = onToggleLike, modifier = Modifier.size(54.dp)) {
+                Surface(shape = CircleShape, color = Color.Black.copy(alpha = 0.48f), onClick = onToggleLike, modifier = Modifier.size(54.dp)) {
                     Box(contentAlignment = Alignment.Center) {
-                        Icon(if (isLiked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder, "${if (isLiked) "Unlike" else "Like"}", tint = if (isLiked) Color(0xFFFF6B81) else scheme.onPrimary, modifier = Modifier.size(27.dp))
+                        Icon(if (isLiked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder, "${if (isLiked) "Unlike" else "Like"}", tint = if (isLiked) Color(0xFFFF6B81) else Color.White, modifier = Modifier.size(27.dp))
                     }
                 }
                 Surface(shape = CircleShape, color = scheme.surface.copy(alpha = 0.34f), onClick = onOpenMenu, modifier = Modifier.size(54.dp)) {
-                    Box(contentAlignment = Alignment.Center) { Icon(Icons.Filled.MoreVert, "More options", tint = scheme.onPrimary, modifier = Modifier.size(27.dp)) }
+                    Box(contentAlignment = Alignment.Center) { Icon(Icons.Filled.MoreVert, "More options", tint = Color.White, modifier = Modifier.size(27.dp)) }
                 }
                 Surface(shape = CircleShape, color = scheme.surface.copy(alpha = 0.34f), onClick = onOpenLyrics, modifier = Modifier.size(54.dp)) {
                     Box(contentAlignment = Alignment.Center) { Icon(Icons.Filled.FormatQuote, "Open lyrics", tint = scheme.onPrimary, modifier = Modifier.size(27.dp)) }
@@ -293,7 +294,7 @@ private fun FlowTopBar(
     onOpenSearch: () -> Unit,
     onOpenSettings: () -> Unit,
 ) {
-    val foreground = MaterialTheme.colorScheme.onPrimary
+    val foreground = Color.White
     Row(
         modifier = Modifier
             .fillMaxWidth()
