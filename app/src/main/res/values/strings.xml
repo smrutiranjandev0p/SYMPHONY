@@ -157,8 +157,8 @@
     <string name="video_quality_auto_recommended">Auto (Recommended)</string>
     <string name="settings_liquid_glass">Liquid Glass</string>
     <string name="settings_liquid_glass_sub">iOS-style translucent materials across the app</string>
-    <string name="settings_md3_nav_bar">Material 3 Navigation Bar</string>
-    <string name="settings_md3_nav_bar_sub">Enable modern floating dock navigation instead of classic bottom tabs</string>
+    <string name="settings_md3_nav_bar">Floating Navigation Dock</string>
+    <string name="settings_md3_nav_bar_sub">Use a modern floating, rounded bottom dock instead of the classic navigation tabs</string>
     <string name="settings_hide_nav_tabs">Hide Navigation Tabs</string>
     <string name="settings_hide_nav_tabs_sub">Completely hide navigation tabs and switch between screens using swipe gestures only</string>
     <string name="settings_ui_haptics">Haptic Feedback</string>
