@@ -5,13 +5,15 @@ For any UI or visual work, also read [DESIGN.md](DESIGN.md).
 
 ## 0. App overview
 
-SYMPHONY is a native Android YouTube Music client written in Kotlin and Jetpack
-Compose (`com.symphony.app`, version `5.2.1` / code `33`). Alongside YouTube
-Music browsing and streaming, it includes offline downloads, local device audio,
-Spotify imports/Canvas, Last.fm scrobbling and stats, podcasts, Listen Together
-(`jam`), Discord Rich Presence, Google Cast, Android Auto, Glance home-screen
-widgets, and a C++/Oboe audiophile audio pipeline (parametric EQ, AutoEQ,
-Automix transitions, lossless addons, and Bit-Perfect USB DAC output).
+SYMPHONY is an independent native Android music player written in Kotlin and Jetpack
+Compose (`com.symphony.app`). The current public release is `1.4` (Android
+`versionCode 37`). Its four primary destinations are Flow, Home, Statistics and
+Library. Alongside YouTube Music browsing and playback, it includes offline
+downloads, local device audio, Spotify playlist imports/Canvas, Last.fm
+scrobbling and statistics, podcasts, Listen Together (`jam`), Discord Rich
+Presence, Google Cast, Android Auto, Glance home-screen widgets, and a C++/Oboe
+audio pipeline (parametric EQ, AutoEQ, Automix transitions, lossless add-ons,
+and bit-perfect USB DAC output).
 
 ### Modules and build
 
