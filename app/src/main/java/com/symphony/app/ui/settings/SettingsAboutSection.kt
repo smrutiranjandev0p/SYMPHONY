@@ -627,7 +627,7 @@ internal fun AboutCard(
                 color = MaterialTheme.colorScheme.primaryContainer,
             ) {
                 Text(
-                    "Version $versionName",
+                    "Version $versionName · Build ${com.symphony.app.BuildConfig.VERSION_CODE}",
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     fontWeight = FontWeight.Medium,
