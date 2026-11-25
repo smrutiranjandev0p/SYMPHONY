@@ -2,6 +2,23 @@
 
 All notable project changes are documented here. Release status and downloadable artifacts are linked to the official GitHub Releases page.
 
+## [1.4] - 2026-11-25
+
+### Fixed
+- **Launcher icon selection:** Corrected the in-app icon previews so Glass Wave, Desktop, Pure White and Obsidian Black display the matching selectable artwork.
+- **Launcher icon artwork:** Updated all three alternate launcher foregrounds to the current Glass Wave treble-clef and waveform identity, retaining each edition's distinct background.
+- **Icon consistency:** The Appearance selector artwork and launcher-alias artwork now use the same visual identity for each option.
+
+### Changed
+- **Version metadata:** User-facing `versionName` is `1.4`; Android `versionCode` is `37`.
+- **About & System:** The update row reports the installed app version and build number.
+
+### Validation
+- Release and Android build workflows are running for v1.4.
+- Launcher switching still needs verification on a physical device and supported launcher; CI can validate compilation but cannot prove OEM launcher refresh behaviour.
+
+---
+
 ## [1.3] - 2026-11-25
 
 ### Added
