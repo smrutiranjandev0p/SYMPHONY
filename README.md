@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/symphony-v1.4-banner.svg" alt="SYMPHONY 1.4 — Your music. In motion. Flow, Appearance, Statistics and Library showcase" width="100%" />
+  <img src="assets/symphony_logo.svg" alt="SYMPHONY logo" width="160" />
 </p>
 
 <h1 align="center">SYMPHONY</h1>
