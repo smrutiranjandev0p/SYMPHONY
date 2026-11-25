@@ -2188,7 +2188,7 @@ fun SettingsScreen(
                                                 if (!fileName.isNullOrBlank()) "Tap to download $fileName" else "Tap to download the latest version"
                                             }
                                             !updateInfo.message.isNullOrBlank() -> updateInfo.message.orEmpty()
-                                            else -> "Current version: ${appVersionName(context)}"
+                                            else -> "Current version: ${appVersionName(context)} · Build ${com.symphony.app.BuildConfig.VERSION_CODE}"
                                         },
                                         onClick = {
                                             if (updateInfo.isUpdateAvailable) viewModel.openUpdate(context)
