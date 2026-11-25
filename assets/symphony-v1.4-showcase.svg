@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="760" viewBox="0 0 1440 760" role="img" aria-labelledby="title desc">
+<title id="title">SYMPHONY — Your music. In motion.</title>
+<desc id="desc">A premium showcase of SYMPHONY for Android, featuring Flow playback, Appearance and Visuals, Listening Stats, Library and Statistics, with the Glass Wave treble-clef identity.</desc>
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#070a12"/><stop offset=".52" stop-color="#10101b"/><stop offset="1" stop-color="#080911"/></linearGradient>
+ <radialGradient id="blue"><stop stop-color="#2679ff" stop-opacity=".5"/><stop offset="1" stop-color="#2679ff" stop-opacity="0"/></radialGradient>
+ <radialGradient id="pink"><stop stop-color="#d13bce" stop-opacity=".42"/><stop offset="1" stop-color="#d13bce" stop-opacity="0"/></radialGradient>
+ <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#293348" stop-opacity=".92"/><stop offset=".55" stop-color="#141622" stop-opacity=".98"/><stop offset="1" stop-color="#251729" stop-opacity=".96"/></linearGradient>
+ <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#62b9ff"/><stop offset=".48" stop-color="#b5a0ff"/><stop offset="1" stop-color="#ed78c9"/></linearGradient>
+ <linearGradient id="rose" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f1c6cd"/><stop offset="1" stop-color="#a96e83"/></linearGradient>
+ <linearGradient id="wave" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#18a7ff"/><stop offset=".5" stop-color="#947cff"/><stop offset="1" stop-color="#ec53c8"/></linearGradient>
+ <filter id="blur"><feGaussianBlur stdDeviation="36"/></filter>
+ <filter id="shadow"><feGaussianBlur stdDeviation="13"/></filter>
+ <style>
+ .ui{font-family:Inter,Arial,sans-serif;fill:#f5f3fb}.muted{fill:#a9a8b8;font-family:Inter,Arial,sans-serif}.small{font-size:13px}.tiny{font-size:10px}.heading{font-size:19px;font-weight:700}
+ .phone{fill:#080a11;stroke:#69758c;stroke-opacity:.75;stroke-width:3}.screen{fill:#11131d}.card{fill:#201d29}.line{stroke:#484457;stroke-width:1}
+ </style>
+</defs>
+<rect width="1440" height="760" rx="34" fill="url(#bg)"/>
+<ellipse cx="350" cy="390" rx="420" ry="360" fill="url(#blue)" filter="url(#blur)"/>
+<ellipse cx="1120" cy="390" rx="390" ry="360" fill="url(#pink)" filter="url(#blur)"/>
+<path d="M0 650 C260 510 390 790 700 620 S1130 490 1440 650" fill="none" stroke="url(#wave)" stroke-opacity=".35" stroke-width="3"/>
+<path d="M0 690 C280 550 420 820 720 670 S1150 550 1440 700" fill="none" stroke="url(#wave)" stroke-opacity=".18" stroke-width="18" filter="url(#shadow)"/>
+<!-- left appearance device -->
+<g transform="translate(54 92) rotate(-5 150 285)">
+ <rect x="0" y="0" width="285" height="565" rx="38" class="phone"/>
+ <rect x="10" y="10" width="265" height="545" rx="30" class="screen"/>
+ <text x="28" y="49" class="ui heading">Appearance &amp; Visuals</text>
+ <text x="28" y="82" class="muted small">Appearance</text>
+ <rect x="22" y="98" width="241" height="76" rx="17" class="card"/>
+ <text x="40" y="127" class="ui small" font-weight="700">Theme</text><text x="40" y="149" class="muted tiny">System · Light · Dark</text>
+ <rect x="22" y="187" width="241" height="150" rx="17" class="card" stroke="#dba7b5" stroke-opacity=".65"/>
+ <text x="40" y="216" class="ui small" font-weight="700">App Icon</text><text x="40" y="236" class="muted tiny">Choose your launcher identity</text>
+ <g transform="translate(36 251)"><rect width="52" height="58" rx="11" fill="#101c35" stroke="#7c9cff"/><text x="26" y="44" text-anchor="middle" font-size="39" fill="url(#edge)">𝄞</text></g>
+ <g transform="translate(105 251)"><rect width="52" height="58" rx="11" fill="#c7f000"/><text x="26" y="44" text-anchor="middle" font-size="39" fill="#092b2b">𝄞</text></g>
+ <g transform="translate(174 251)"><rect width="52" height="58" rx="11" fill="#fff"/><text x="26" y="44" text-anchor="middle" font-size="39" fill="#6b9de8">𝄞</text></g>
+ <rect x="22" y="350" width="241" height="51" rx="14" class="card"/><text x="40" y="381" class="ui small">AMOLED Mode</text><rect x="210" y="365" width="37" height="20" rx="10" fill="#d9a6b5"/>
+ <rect x="22" y="410" width="241" height="51" rx="14" class="card"/><text x="40" y="441" class="ui small">Liquid Glass</text><rect x="210" y="425" width="37" height="20" rx="10" fill="#d9a6b5"/>
+ <rect x="22" y="470" width="241" height="51" rx="14" class="card"/><text x="40" y="501" class="ui small">Floating Navigation</text>
+</g>
+<!-- stats device -->
+<g transform="translate(360 145) rotate(-2 145 250)">
+ <rect width="270" height="500" rx="36" class="phone"/><rect x="10" y="10" width="250" height="480" rx="28" class="screen"/>
+ <text x="27" y="49" class="ui heading">Listening Stats</text>
+ <g><rect x="20" y="75" width="65" height="30" rx="15" fill="#583944"/><text x="52" y="95" text-anchor="middle" class="ui tiny">All Time</text><rect x="92" y="75" width="55" height="30" rx="15" class="card"/><text x="119" y="95" text-anchor="middle" class="muted tiny">Week</text><rect x="154" y="75" width="55" height="30" rx="15" class="card"/><text x="181" y="95" text-anchor="middle" class="muted tiny">Month</text></g>
+ <rect x="20" y="120" width="110" height="91" rx="16" class="card"/><text x="35" y="151" class="muted small">Listening</text><text x="35" y="184" class="ui" font-size="22" font-weight="700">16h 41m</text>
+ <rect x="140" y="120" width="110" height="91" rx="16" class="card"/><text x="155" y="151" class="muted small">Plays</text><text x="155" y="184" class="ui" font-size="25" font-weight="700">286</text>
+ <rect x="20" y="225" width="230" height="145" rx="18" class="card"/><text x="36" y="253" class="ui small" font-weight="700">Rhythm &amp; Consistency</text><circle cx="78" cy="315" r="37" fill="none" stroke="#423342" stroke-width="10"/><path d="M78 278 A37 37 0 1 1 43 328" fill="none" stroke="url(#rose)" stroke-width="10" stroke-linecap="round"/><text x="78" y="321" class="ui" font-size="20" text-anchor="middle" font-weight="700">70</text>
+ <text x="132" y="296" class="muted tiny">Avg. Session</text><text x="230" y="296" class="ui tiny" text-anchor="end">120m</text><text x="132" y="324" class="muted tiny">Streak</text><text x="230" y="324" class="ui tiny" text-anchor="end">1 day</text><text x="132" y="350" class="muted tiny">Active Days</text><text x="230" y="350" class="ui tiny" text-anchor="end">3 / 7</text>
+ <rect x="20" y="384" width="230" height="86" rx="17" class="card"/><text x="36" y="410" class="ui small" font-weight="700">Listening Stages</text><rect x="36" y="427" width="194" height="8" rx="4" fill="#3a303d"/><rect x="36" y="427" width="128" height="8" rx="4" fill="#e2aeb9"/><rect x="164" y="427" width="46" height="8" fill="#b58bb7"/>
+</g>
+<!-- central flow phone -->
+<g transform="translate(660 48)">
+ <rect x="0" y="0" width="340" height="620" rx="48" fill="#05070e" stroke="url(#edge)" stroke-width="4"/>
+ <rect x="12" y="12" width="316" height="596" rx="38" fill="#11111b"/>
+ <text x="35" y="57" class="ui heading" font-size="23">FLOW</text><circle cx="262" cy="43" r="21" fill="#302d39"/><circle cx="303" cy="43" r="21" fill="#302d39"/><text x="262" y="50" class="ui" font-size="20" text-anchor="middle">⌕</text><text x="303" y="50" class="ui" font-size="19" text-anchor="middle">⚙</text>
+ <rect x="25" y="84" width="290" height="380" rx="25" fill="#28202a"/>
+ <defs><linearGradient id="sunset" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f9d36d"/><stop offset=".42" stop-color="#cf694e"/><stop offset="1" stop-color="#201a2a"/></linearGradient></defs>
+ <rect x="25" y="84" width="290" height="380" rx="25" fill="url(#sunset)"/>
+ <circle cx="235" cy="178" r="56" fill="#ffe7a2" opacity=".85"/>
+ <path d="M25 290 Q95 235 150 285 T315 275 V464 H25Z" fill="#241b27" opacity=".85"/>
+ <path d="M25 350 Q95 315 160 354 T315 345" fill="none" stroke="#e5a2a1" stroke-opacity=".55" stroke-width="4"/>
+ <circle cx="170" cy="335" r="39" fill="#e8b6c0"/><path d="M160 317v36m20-36v36" stroke="#3d2330" stroke-width="8"/>
+ <text x="35" y="500" class="ui" font-size="23" font-weight="700">One Love (Audio)</text><text x="35" y="526" class="muted">Shubh</text>
+ <path d="M35 553 H305" stroke="#554452" stroke-width="4" stroke-linecap="round"/><path d="M35 553 H164" stroke="#e7b5c2" stroke-width="4" stroke-linecap="round"/>
+ <text x="42" y="584" class="ui" font-size="18">♥</text><text x="170" y="584" class="ui" font-size="18">♫</text><text x="286" y="584" class="ui" font-size="18">⋮</text>
+</g>
+<!-- library device -->
+<g transform="translate(1030 112) rotate(3 155 260)">
+ <rect width="290" height="540" rx="39" class="phone"/><rect x="10" y="10" width="270" height="520" rx="30" class="screen"/>
+ <text x="27" y="52" class="ui" font-size="25" font-weight="700">Library</text><text x="27" y="76" class="muted small">50 Playlists · 4673 Tracks</text>
+ <rect x="20" y="95" width="250" height="36" rx="18" class="card"/><text x="37" y="118" class="muted small">Search playlists...</text>
+ <rect x="20" y="145" width="120" height="68" rx="14" fill="#44303a"/><text x="35" y="174" class="ui small" font-weight="700">Local songs</text><text x="35" y="193" class="muted tiny">32 tracks</text>
+ <rect x="150" y="145" width="120" height="68" rx="14" fill="#54363d"/><text x="165" y="174" class="ui small" font-weight="700">Downloads</text><text x="165" y="193" class="muted tiny">Offline music</text>
+ <g><rect x="20" y="226" width="250" height="64" rx="13" class="card"/><rect x="30" y="237" width="43" height="42" rx="8" fill="url(#rose)"/><text x="84" y="254" class="ui small" font-weight="700">Liked Songs</text><text x="84" y="273" class="muted tiny">128 tracks</text>
+ <rect x="20" y="299" width="250" height="64" rx="13" class="card"/><rect x="30" y="310" width="43" height="42" rx="8" fill="#9156c9"/><text x="84" y="327" class="ui small" font-weight="700">Liked YT Song</text><text x="84" y="346" class="muted tiny">Connected account</text>
+ <rect x="20" y="372" width="250" height="64" rx="13" class="card"/><rect x="30" y="383" width="43" height="42" rx="8" fill="#315a84"/><text x="84" y="400" class="ui small" font-weight="700">Phoenix</text><text x="84" y="419" class="muted tiny">16 tracks</text>
+ <rect x="20" y="445" width="250" height="64" rx="13" class="card"/><rect x="30" y="456" width="43" height="42" rx="8" fill="#8c5266"/><text x="84" y="473" class="ui small" font-weight="700">Frozen Wanderlust</text><text x="84" y="492" class="muted tiny">1 track</text></g>
+</g>
+<!-- brand mark and wordmark -->
+<g transform="translate(1340 230)">
+ <circle cx="0" cy="0" r="67" fill="#10131f" stroke="url(#edge)" stroke-width="2"/>
+ <text x="0" y="31" text-anchor="middle" font-size="100" fill="url(#edge)" font-family="serif">𝄞</text>
+</g>
+<text x="1338" y="345" text-anchor="middle" class="ui" font-size="20" font-weight="800" letter-spacing="2">GLASS WAVE</text>
+<text x="1338" y="372" text-anchor="middle" class="muted tiny" letter-spacing="1.5">TREBLE CLEF EDITION</text>
+<text x="720" y="720" text-anchor="middle" class="ui" font-size="37" font-weight="800" letter-spacing="8">SYMPHONY</text>
+<text x="720" y="746" text-anchor="middle" class="muted small" letter-spacing="4">YOUR MUSIC. IN MOTION.</text>
+</svg>
