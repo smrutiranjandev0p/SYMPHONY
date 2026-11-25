@@ -1,19 +1,19 @@
 <p align="center">
-  <img src="assets/symphony-v1.4-banner.jpg.png" alt="SYMPHONY 1.4 — Flow, Appearance, Listening Statistics and Library showcase" width="100%" />
+  <img src="assets/symphony-v1.5-banner.jpg.png" alt="SYMPHONY product showcase — Flow, Appearance, Listening Statistics and Library" width="100%" />
 </p>
 
 <p align="center"><strong>Your music. In motion.</strong><br/>
 A native Android music player built around immersive Flow discovery, flexible playback and personalisation.</p>
 
 <p align="center">
-  <a href="https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/1.4"><img alt="Latest release" src="https://img.shields.io/badge/release-v1.4-e7b8bd?style=for-the-badge" /></a>
+  <a href="https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/1.5"><img alt="Latest release" src="https://img.shields.io/badge/release-v1.5-e7b8bd?style=for-the-badge" /></a>
   <a href="https://github.com/smrutiranjandev0p/SYMPHONY/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/smrutiranjandev0p/SYMPHONY?style=for-the-badge&color=F5C451" /></a>
   <a href="https://github.com/smrutiranjandev0p/SYMPHONY/network/members"><img alt="GitHub forks" src="https://img.shields.io/github/forks/smrutiranjandev0p/SYMPHONY?style=for-the-badge&color=64748B" /></a>
   <a href="https://github.com/smrutiranjandev0p/SYMPHONY/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/smrutiranjandev0p/SYMPHONY?style=for-the-badge&color=38BDF8" /></a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/1.4"><strong>⬇ Download v1.4</strong></a>
+  <a href="https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/1.5"><strong>⬇ Download v1.5</strong></a>
   &nbsp;·&nbsp;
   <a href="#features"><strong>Explore features</strong></a>
   &nbsp;·&nbsp;
@@ -24,26 +24,27 @@ A native Android music player built around immersive Flow discovery, flexible pl
 
 ## About SYMPHONY
 
-**SYMPHONY 1.4** is an independent, native Android music player designed around an artwork-first listening experience. Its four primary destinations are **Flow, Home, Statistics and Library**. The Flow experience uses swipe-led, full-screen music discovery inspired by the interaction style popularised by Resso, while keeping SYMPHONY's own visual identity, playback system and feature set.
+**SYMPHONY 1.5** is an independent, native Android music player designed around an artwork-first listening experience. Its four primary destinations are **Flow, Home, Statistics and Library**. The Flow experience uses swipe-led, full-screen music discovery inspired by the interaction style popularised by Resso, while keeping SYMPHONY's own visual identity, playback system and feature set.
 
 ## Download
 
-The official stable release is **v1.4**.
+The official stable release is **v1.5**.
 
 | APK | Choose this when |
 | --- | --- |
-| [Universal APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/1.4/SYMPHONY-v1.4-universal.apk) | Recommended build for Android 10 and newer |
-| [vivo Origin APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/1.4/SYMPHONY-v1.4-vivo-origin.apk) | For compatible vivo OriginOS features; installs as a separate app |
-| [Android 7 legacy APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/1.4/SYMPHONY-v1.4-android7.apk) | For Android 7–9 devices |
-| [Universal uncompressed APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/1.4/SYMPHONY-v1.4-universal-uncompressed.apk) | Raw/unminified universal package for troubleshooting |
+| [Universal APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/1.5/SYMPHONY-v1.5-universal.apk) | Recommended build for Android 10 and newer |
+| [vivo Origin APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/1.5/SYMPHONY-v1.5-vivo-origin.apk) | For compatible vivo OriginOS features; installs as a separate app |
+| [Android 7 legacy APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/1.5/SYMPHONY-v1.5-android7.apk) | For Android 7–9 devices |
+| [Universal uncompressed APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/1.5/SYMPHONY-v1.5-universal-uncompressed.apk) | Raw/unminified universal package for troubleshooting |
 
-See the [full v1.4 release page](https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/1.4) for compatibility notes and all assets. The release includes [SHA256SUMS.txt](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/1.4/SHA256SUMS.txt) for integrity checks. If you are unsure which package to install, choose the standard universal APK.
+See the [full v1.5 release page](https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/1.5) for compatibility notes and all assets. The release includes [SHA256SUMS.txt](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/1.5/SHA256SUMS.txt) for integrity checks. If you are unsure which package to install, choose the standard universal APK.
 
 **vivo Origin edition note:** This edition uses a package identity intended for vivo OriginOS integration. It installs separately from the standard app, does not share app data with it, and cannot coexist with the genuine QQ Music package. Install the standard universal build unless you specifically need the vivo integration.
 
 ## The experience
 
 ### Flow
+- **Shared playback state (v1.5):** Flow reflects the active YouTube Music track started from Home and avoids issuing a new playback command from its restored initial pager position when returning from Settings.
 - Full-screen, artwork-first music discovery with swipe navigation.
 - Prominent playback controls, track actions and lyrics access.
 - Party Torch entry point with opt-in audio-reactive flash behaviour and Light Studio on compatible hardware.
@@ -176,8 +177,8 @@ SYMPHONY/
 
 ## Current release and verification
 
-- **Release:** [SYMPHONY 1.4](https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/1.4)
-- **Android version metadata:** `versionName 1.4`, `versionCode 37`
+- **Release:** [SYMPHONY 1.5](https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/1.5)
+- **Android version metadata:** `versionName 1.5`, `versionCode 38`
 - **Build workflow:** [#45563020342](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45563020342) — completed successfully.
 - **Release publication workflow:** [#45563020178](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45563020178) — completed successfully.
 - **Device verification:** CI completion does not confirm physical-device installation, upgrade behaviour, launcher refresh or OEM-specific features. Those still need to be checked on real hardware.
