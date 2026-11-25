@@ -636,7 +636,7 @@ internal fun AboutCard(
             }
             Spacer(Modifier.height(12.dp))
             Text(
-                "Made by Smruti Ranjan Behera 🇮🇳",
+                "Created & maintained by Smruti Ranjan Behera 🇮🇳",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
@@ -644,7 +644,7 @@ internal fun AboutCard(
             )
             Spacer(Modifier.height(8.dp))
             Text(
-                "An independent music player project focused on immersive discovery, powerful playback and a personal listening experience.",
+                "An independent Android music player inspired by immersive, swipe-led music discovery. Built around Flow, personalisation and powerful playback controls.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
@@ -677,6 +677,76 @@ internal fun AboutCard(
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                     )
+                }
+            }
+            Spacer(Modifier.height(18.dp))
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    "PROJECT & COMMUNITY",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 1.2.sp,
+                )
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    "smrutiranjandev0p / SYMPHONY",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Center,
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    "Open-source project repository · Kotlin · Jetpack Compose · Android Media3",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                )
+                Spacer(Modifier.height(12.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    listOf(
+                        Triple("Releases", "https://github.com/smrutiranjandev0p/SYMPHONY/releases", Icons.Filled.Download),
+                        Triple("Issues", "https://github.com/smrutiranjandev0p/SYMPHONY/issues", Icons.Filled.Info),
+                        Triple("Star project", "https://github.com/smrutiranjandev0p/SYMPHONY", Icons.Filled.Favorite),
+                    ).forEach { (label, url, icon) ->
+                        Surface(
+                            modifier = Modifier.weight(1f),
+                            shape = RoundedCornerShape(14.dp),
+                            color = MaterialTheme.colorScheme.surfaceVariant,
+                            onClick = {
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                if (!startActivitySafely(context, intent)) {
+                                    android.widget.Toast.makeText(context, context.getString(R.string.toast_no_browser_plain), android.widget.Toast.LENGTH_SHORT).show()
+                                }
+                            },
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(vertical = 10.dp, horizontal = 4.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                            ) {
+                                Icon(
+                                    imageVector = icon,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp),
+                                    tint = MaterialTheme.colorScheme.primary,
+                                )
+                                Spacer(Modifier.height(4.dp))
+                                Text(
+                                    label,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    fontWeight = FontWeight.Medium,
+                                    textAlign = TextAlign.Center,
+                                    maxLines = 1,
+                                )
+                            }
+                        }
+                    }
                 }
             }
             Spacer(Modifier.height(14.dp))
