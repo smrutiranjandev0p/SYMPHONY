@@ -9,7 +9,13 @@ import android.os.Handler
 import android.os.Looper
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
@@ -18,6 +24,8 @@ import androidx.compose.material.icons.filled.FlashOff
 import androidx.compose.material.icons.filled.FlashOn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import android.os.Build
 import androidx.core.content.ContextCompat
 import kotlin.math.sqrt
 
@@ -38,6 +47,7 @@ import kotlin.math.sqrt
  * camera access are requested only after the user enables Party Torch.
  * Pulses are deliberately rate-limited to avoid rapid strobing.
  */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun FlowPartyTorch(
     enabled: Boolean,
@@ -65,6 +75,16 @@ internal fun FlowPartyTorch(
         )
     }
     var permissionDenied by remember { mutableStateOf(false) }
+    var showLightStudio by remember { mutableStateOf(false) }
+    val maxStrength = remember(cameraManager, flashCameraId) {
+        if (Build.VERSION.SDK_INT >= 33 && flashCameraId != null) {
+            runCatching {
+                cameraManager.getCameraCharacteristics(flashCameraId)
+                    .get(android.hardware.camera2.CameraCharacteristics.FLASH_INFO_STRENGTH_MAXIMUM_LEVEL) ?: 1
+            }.getOrDefault(1).coerceAtLeast(1)
+        } else 1
+    }
+    var strength by remember(maxStrength) { mutableStateOf(maxStrength) }
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions(),
     ) { result ->
@@ -105,7 +125,11 @@ internal fun FlowPartyTorch(
                         lastPulseAt = now
                         mainHandler.post {
                             releaseTask?.let(mainHandler::removeCallbacks)
-                            runCatching { cameraManager.setTorchMode(flashCameraId, true) }
+                            runCatching {
+                                if (Build.VERSION.SDK_INT >= 33 && maxStrength > 1) {
+                                    cameraManager.turnOnTorchWithStrengthLevel(flashCameraId, strength.coerceIn(1, maxStrength))
+                                } else cameraManager.setTorchMode(flashCameraId, true)
+                            }
                             torchOn = true
                             releaseTask = Runnable {
                                 runCatching { cameraManager.setTorchMode(flashCameraId, false) }
@@ -139,20 +163,15 @@ internal fun FlowPartyTorch(
     Surface(
         shape = CircleShape,
         color = MaterialTheme.colorScheme.surface.copy(alpha = 0.78f),
-        onClick = {
-            if (enabled) {
-                onEnabledChange(false)
-            } else if (flashCameraId == null) {
-                permissionDenied = true
-            } else if (permissionGranted) {
-                onEnabledChange(true)
-            } else {
-                permissionLauncher.launch(
-                    arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO),
-                )
-            }
-        },
-        modifier = modifier,
+        modifier = modifier.combinedClickable(
+            onClick = {
+                if (enabled) onEnabledChange(false)
+                else if (flashCameraId == null) permissionDenied = true
+                else if (permissionGranted) onEnabledChange(true)
+                else permissionLauncher.launch(arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO))
+            },
+            onLongClick = { showLightStudio = true },
+        ),
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 14.dp, vertical = 11.dp),
@@ -177,4 +196,52 @@ internal fun FlowPartyTorch(
             )
         }
     }
-}
+
+    if (showLightStudio) {
+        ModalBottomSheet(onDismissRequest = { showLightStudio = false }) {
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp).padding(bottom = 28.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Text("Party Torch · Light Studio", style = MaterialTheme.typography.titleLarge)
+                Text("Flash intensity", style = MaterialTheme.typography.titleMedium)
+                if (Build.VERSION.SDK_INT >= 33 && maxStrength > 1) {
+                    Text("Level $strength of $maxStrength", style = MaterialTheme.typography.bodyMedium)
+                    Slider(
+                        value = strength.toFloat(),
+                        onValueChange = { value ->
+                            strength = value.toInt().coerceIn(1, maxStrength)
+                            if (enabled && isPlaying) runCatching {
+                                cameraManager.turnOnTorchWithStrengthLevel(flashCameraId!!, strength)
+                            }
+                        },
+                        valueRange = 1f..maxStrength.toFloat(),
+                        steps = (maxStrength - 2).coerceAtLeast(0),
+                    )
+                } else {
+                    Text(
+                        "This phone does not expose adjustable flash intensity. Standard ON/OFF flash will be used.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                Text("Music sync", style = MaterialTheme.typography.titleMedium)
+                Text(
+                    "Beat-reactive pulses remain enabled while Party Torch is active. Pulses are rate-limited and stop when playback pauses or you leave Flow.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Text("Colour temperature / RGB", style = MaterialTheme.typography.titleMedium)
+                Text(
+                    "Standard Android flash APIs cannot change physical flash colour. Device-specific controls will only be shown when a supported interface is verified.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Text(
+                    "Safety: no rapid strobe mode. Long-press Party Torch to reopen these settings.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+    }}
