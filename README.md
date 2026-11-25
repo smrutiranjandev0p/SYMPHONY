@@ -5,11 +5,40 @@
 SYMPHONY is a native Android music player built around a focused listening experience: **Flow · Home · Statistics · Library**. It brings music discovery, streaming and local playback, playlists, lyrics, audio controls and a customisable visual experience into one app.
 
 <p align="left">
-  <img alt="Version 1.2" src="https://img.shields.io/badge/version-1.2-9B8CFF?style=for-the-badge&labelColor=111827" />
+  <img alt="Latest release" src="https://img.shields.io/github/v/release/smrutiranjandev0p/SYMPHONY?display_name=tag&style=for-the-badge&label=latest&color=9B8CFF" />
   <img alt="Android" src="https://img.shields.io/badge/platform-Android-3DDC84?style=for-the-badge&logo=android&logoColor=white" />
   <img alt="Kotlin" src="https://img.shields.io/badge/Kotlin-Jetpack%20Compose-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white" />
   <img alt="License" src="https://img.shields.io/badge/license-see%20LICENSE-64748B?style=for-the-badge" />
 </p>
+
+## Download SYMPHONY
+
+<p align="center">
+  <a href="https://github.com/smrutiranjandev0p/SYMPHONY/releases/latest">
+    <img alt="Download latest SYMPHONY release" src="https://img.shields.io/badge/⬇%20DOWNLOAD-LATEST%20RELEASE-9B8CFF?style=for-the-badge&labelColor=111827" />
+  </a>
+</p>
+
+Choose the APK that matches your Android device from the **Assets** section of the latest GitHub release:
+
+| Your device / requirement | APK to choose |
+| --- | --- |
+| **Most Android phones (Android 10 / API 29+)** | `SYMPHONY-vX-universal.apk` — recommended compressed universal APK |
+| Older phones (Android 7+) | `SYMPHONY-vX-android7.apk` — legacy-compatible build |
+| Need the uncompressed package | `SYMPHONY-vX-universal-uncompressed.apk` |
+| Supported Vivo OriginOS edition | `SYMPHONY-vX-vivo-origin.apk` — only if this asset is included in that release |
+
+**Not sure?** Choose the standard **universal APK** for most modern Android phones. Check the release notes and minimum Android version before installing. If GitHub shows multiple APK variants, select the one matching your device and requirements.
+
+<p align="center">
+  <a href="https://github.com/smrutiranjandev0p/SYMPHONY/releases/latest">View all APK options & release notes</a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/smrutiranjandev0p/SYMPHONY/releases">All versions</a>
+</p>
+
+Downloads are hosted on GitHub Releases. Verify the downloaded APK against `SHA256SUMS.txt` when the checksum file is provided.
+
+---
 
 ---
 
@@ -99,9 +128,7 @@ The APK is generated under `app/build/outputs/apk/debug/`.
 
 Release builds must be signed with the project's release keystore. Configure signing values through environment variables or local Gradle properties. Never commit keystores, passwords, API tokens or other credentials.
 
-GitHub Actions contains the build and release workflows. Published releases and update checks are intended to use this repository only:
-
-https://github.com/smrutiranjandev0p/SYMPHONY/releases
+GitHub Actions contains the build and release workflows. Published releases and update checks use this repository. For the latest APK and device-specific variants, use the [Download SYMPHONY](https://github.com/smrutiranjandev0p/SYMPHONY/releases/latest) section above.
 
 ## Project structure
 
