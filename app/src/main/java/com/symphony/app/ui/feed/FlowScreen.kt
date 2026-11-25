@@ -66,6 +66,7 @@ import com.symphony.app.ui.common.TrackContextMenuSheet
 import com.symphony.app.ui.common.TrackMenuCapabilities
 import com.symphony.app.ui.common.TrackMenuTarget
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.collect
 import androidx.compose.runtime.snapshotFlow
 
@@ -89,7 +90,11 @@ fun FlowScreen(
     var menuTrack by remember { mutableStateOf<YouTubeMusicTrack?>(null) }
     var partyTorchEnabled by remember { mutableStateOf(false) }
     val playback by musicPlayer.stateWithoutProgress.collectAsStateWithLifecycle()
-    val tracks = remember(state.feedData) {
+    // The process-wide player is the source of truth across Home, Flow and
+    // Settings. A Home/library track may not be part of the recommendation
+    // feed, so pin the currently playing YouTube track into Flow's visual
+    // catalogue instead of showing an unrelated first recommendation.
+    val tracks = remember(state.feedData, playback.current) {
         buildList {
             addAll(state.feedData.quickPicks)
             addAll(state.feedData.charts)
@@ -102,6 +107,19 @@ fun FlowScreen(
                     shelf.items.filterIsInstance<HomeShelfItem.Track>().map { it.track }
                 },
             )
+            playback.current?.takeIf { !it.videoId.isNullOrBlank() }?.let { current ->
+                add(
+                    0,
+                    YouTubeMusicTrack(
+                        videoId = current.videoId!!,
+                        title = current.title,
+                        artist = current.artist,
+                        album = current.album,
+                        artworkUrl = current.artworkUrl,
+                        durationSeconds = current.durationMs?.div(1_000L)?.toInt(),
+                    ),
+                )
+            }
         }.filter { it.videoId.isNotBlank() }.distinctBy(YouTubeMusicTrack::videoId)
     }
 
@@ -135,6 +153,11 @@ fun FlowScreen(
     LaunchedEffect(pagerState, tracks) {
         snapshotFlow { pagerState.settledPage }
             .distinctUntilChanged()
+            // The initial settled page is restored UI state, not a user
+            // swipe. Replaying it used to replace the active Home song with
+            // Flow's first recommendation whenever Flow was re-entered
+            // (for example after returning from Settings).
+            .drop(1)
             .collect { page ->
                 if (autoAdvanceTarget == page) {
                     autoAdvanceTarget = null
