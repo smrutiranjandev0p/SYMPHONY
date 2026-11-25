@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/SYMPHONY_banner_v2_1440p.png" alt="SYMPHONY — Your music. In motion." width="100%" />
+  <img src="assets/symphony-v1.3-banner.svg" alt="SYMPHONY v1.3 — Your music. In motion." width="100%" />
 </p>
 
 <h1 align="center">SYMPHONY</h1>
