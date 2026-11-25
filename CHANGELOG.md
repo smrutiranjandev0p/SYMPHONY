@@ -2,6 +2,25 @@
 
 All notable user-facing and project changes are documented here. Release assets and platform-specific installation notes are published on the [GitHub Releases page](https://github.com/smrutiranjandev0p/SYMPHONY/releases).
 
+## [1.5] - 2026-11-25
+
+### Fixed
+- **Home → Flow playback reflection:** Flow now places the currently playing YouTube Music track at the front of its visible track collection so the Flow artwork and track details can reflect playback started from Home.
+- **Settings → Flow return reset:** Flow ignores the initial restored pager page as a user selection. Returning from Settings no longer automatically sends a play command for Flow's first recommendation and overwrites the active Home track.
+
+### Changed
+- **Shared playback source of truth:** Flow reads the app-wide MusicPlayer state for the active track and playback status rather than assuming its first recommendation is the active song.
+- **Version metadata:** User-facing `versionName` is `1.5`; Android `versionCode` is `38`.
+- **Release workflow:** Updated the release workflow trigger and manual defaults for tag `1.5`.
+- **Documentation:** Updated README download/release references and project metadata for v1.5.
+
+### Validation
+- GitHub Actions build and debug workflows are running for the v1.5 source changes. Their results and release asset links will be added after completion.
+- Automated CI does not prove physical-device behaviour. Home → Flow track reflection, Settings → Flow return behaviour, playback-position continuity and device-specific audio must still be checked on a real device.
+- Flow's current catalogue is YouTube Music-track based; local-only tracks without a YouTube video ID are not represented by this specific synchronization change.
+
+---
+
 ## [1.4] - 2026-11-25
 
 ### Added
