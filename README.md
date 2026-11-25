@@ -1,5 +1,6 @@
 <p align="center">
-  <img src="assets/symphony-v1.5-banner.jpg.png" alt="SYMPHONY product showcase — Flow, Appearance, Listening Statistics and Library" width="100%" />
+  <!-- LOCKED BRAND ASSET: Keep this exact banner path unless the owner explicitly requests a replacement. -->
+  <img src="assets/symphony-v1.4-banner.jpg.png" alt="SYMPHONY v1.4 product showcase — Flow, Appearance, Listening Statistics and Library" width="100%" />
 </p>
 
 <p align="center"><strong>Your music. In motion.</strong><br/>
