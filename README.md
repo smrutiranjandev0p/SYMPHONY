@@ -2,7 +2,6 @@
   <img src="assets/symphony-v1.4-showcase.svg" alt="SYMPHONY 1.4 — Flow, Appearance, Listening Stats and Library showcase" width="100%" />
 </p>
 
-<h1 align="center">SYMPHONY</h1>
 <p align="center"><strong>Your music. In motion.</strong><br/>
 A native Android music player built around immersive Flow discovery, personalisation and playback control.</p>
 
