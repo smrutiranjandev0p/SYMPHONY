@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.FlashOff
 import androidx.compose.material.icons.filled.FlashOn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
@@ -47,7 +48,7 @@ import kotlin.math.sqrt
  * camera access are requested only after the user enables Party Torch.
  * Pulses are deliberately rate-limited to avoid rapid strobing.
  */
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 internal fun FlowPartyTorch(
     enabled: Boolean,
