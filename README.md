@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/symphony-v1.4-showcase.svg" alt="SYMPHONY 1.4 — Flow, Appearance, Listening Stats and Library showcase" width="100%" />
+  <img src="assets/symphony-v1.4-banner.jpg.png" alt="SYMPHONY 1.4 — Flow, Appearance, Listening Stats and Library showcase" width="100%" />
 </p>
 
 <p align="center"><strong>Your music. In motion.</strong><br/>
