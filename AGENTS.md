@@ -167,3 +167,11 @@ Find the evidence in the log before writing a fix, and quote it in the summary.
 
 Lead with what changed and why, tied to the evidence. Then what is still
 unverified or out of scope. No filler, no restating the request.
+
+
+## Locked README brand asset
+
+- The README hero/banner is an owner-approved, locked brand asset. Keep the exact image reference `assets/symphony-v1.4-banner.jpg.png` and its centered presentation unchanged.
+- Do not rename, replace, regenerate, resize, restyle, or edit this banner or its README image path during routine version/documentation updates.
+- Do not change the banner's alt text or surrounding hero layout unless the repository owner explicitly asks for that specific change.
+- Version-number updates must never rename the banner asset. The banner remains the approved v1.4-named source even when the app release version advances.
