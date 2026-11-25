@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="assets/symphony-v1.4-banner.jpg.png" alt="SYMPHONY 1.4 — Flow, Appearance, Listening Stats and Library showcase" width="100%" />
+  <img src="assets/symphony-v1.4-banner.jpg.png" alt="SYMPHONY 1.4 — Flow, Appearance, Listening Statistics and Library showcase" width="100%" />
 </p>
 
 <p align="center"><strong>Your music. In motion.</strong><br/>
-A native Android music player built around immersive Flow discovery, personalisation and playback control.</p>
+A native Android music player built around immersive Flow discovery, flexible playback and personalisation.</p>
 
 <p align="center">
   <a href="https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/1.4"><img alt="Latest release" src="https://img.shields.io/badge/release-v1.4-e7b8bd?style=for-the-badge" /></a>
@@ -13,96 +13,113 @@ A native Android music player built around immersive Flow discovery, personalisa
 </p>
 
 <p align="center">
-  <a href="https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/1.4"><strong>⬇ Download v1.4 APKs</strong></a>
+  <a href="https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/1.4"><strong>⬇ Download v1.4</strong></a>
   &nbsp;·&nbsp;
   <a href="#features"><strong>Explore features</strong></a>
+  &nbsp;·&nbsp;
+  <a href="CHANGELOG.md"><strong>What's new</strong></a>
   &nbsp;·&nbsp;
   <a href="#community"><strong>Contribute</strong></a>
 </p>
 
-**SYMPHONY 1.4** brings together four core destinations — **Flow, Home, Statistics and Library** — in a native Android listening experience. Discover music in an artwork-first player, shape the app's appearance, review listening activity and organise your collection.
+## About SYMPHONY
 
-## Download SYMPHONY 1.4
+**SYMPHONY 1.4** is an independent, native Android music player designed around an artwork-first listening experience. Its four primary destinations are **Flow, Home, Statistics and Library**. The Flow experience uses swipe-led, full-screen music discovery inspired by the interaction style popularised by Resso, while keeping SYMPHONY's own visual identity, playback system and feature set.
 
-The official v1.4 release is published on GitHub:
+## Download
 
-<p align="center">
-  <a href="https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/1.4">
-    <img alt="Download SYMPHONY 1.4" src="https://img.shields.io/badge/⬇%20DOWNLOAD-SYMPHONY%201.4-e7b8bd?style=for-the-badge&labelColor=171317" />
-  </a>
-</p>
+The official stable release is **v1.4**.
 
-Choose an APK from the release **Assets**:
-
-| Package | When to choose it |
+| APK | Choose this when |
 | --- | --- |
-| `SYMPHONY-v1.4-universal.apk` | Recommended compressed universal build for most supported Android devices |
-| `SYMPHONY-v1.4-android7.apk` | Legacy-compatible Android 7+ variant |
-| `SYMPHONY-v1.4-universal-uncompressed.apk` | Uncompressed universal package |
-| `SYMPHONY-v1.4-vivo-origin.apk` | Vivo OriginOS-targeted variant |
+| [Universal APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/1.4/SYMPHONY-v1.4-universal.apk) | Recommended build for Android 10 and newer |
+| [vivo Origin APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/1.4/SYMPHONY-v1.4-vivo-origin.apk) | For compatible vivo OriginOS features; installs as a separate app |
+| [Android 7 legacy APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/1.4/SYMPHONY-v1.4-android7.apk) | For Android 7–9 devices |
+| [Universal uncompressed APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/1.4/SYMPHONY-v1.4-universal-uncompressed.apk) | Raw/unminified universal package for troubleshooting |
 
-Check the release notes for compatibility details before installing. If unsure, start with the standard **universal APK**. The release includes `SHA256SUMS.txt` for checksum verification.
+See the [full v1.4 release page](https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/1.4) for compatibility notes and all assets. The release includes [SHA256SUMS.txt](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/1.4/SHA256SUMS.txt) for integrity checks. If you are unsure which package to install, choose the standard universal APK.
 
-[View v1.4 release and APK assets](https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/1.4) · [All releases](https://github.com/smrutiranjandev0p/SYMPHONY/releases)
+**vivo Origin edition note:** This edition uses a package identity intended for vivo OriginOS integration. It installs separately from the standard app, does not share app data with it, and cannot coexist with the genuine QQ Music package. Install the standard universal build unless you specifically need the vivo integration.
 
-## The SYMPHONY experience
+## The experience
 
-### Flow — discover and listen
-An immersive, artwork-first listening surface with swipe-led track discovery, a prominent central play/pause control, track actions and the Party Torch entry point. Flow keeps the music and its artwork at the centre of the screen.
+### Flow
+- Full-screen, artwork-first music discovery with swipe navigation.
+- Prominent playback controls, track actions and lyrics access.
+- Party Torch entry point with opt-in audio-reactive flash behaviour and Light Studio on compatible hardware.
+- Flow follows queue auto-advance while retaining manual swipe selection.
 
-### Appearance & Visuals
-Personalise the look and feel with:
-- System, Light and Dark theme choices
-- Selectable launcher icon editions: Glass Wave, Desktop, Pure White and Obsidian Black
-- SYMPHONY Signature Theme
-- AMOLED mode for a pure-black dark appearance
-- Dynamic Color and Liquid Glass options
-- Floating Navigation Dock option
+### Home
+A home surface for discovery, recommendations and music entry points. Available cards and content depend on configured sources, network access and account state.
 
-Some appearance options depend on Android version, launcher support and device rendering.
-
-### Listening Statistics
-Review listening activity with time filters and listening summaries. The statistics experience includes plays, tracks, artists, albums, listening rhythm, listening stages and personal records. Values shown in the app reflect the local account/session data and available scrobble history; they are not universal service-wide counts.
+### Statistics
+Listening summaries and history views with time filters, play activity, tracks, artists, albums, listening rhythm and personal records. Displayed totals depend on locally available activity and connected scrobble history.
 
 ### Library
-Organise and revisit your collection with library filters and sections for local songs, downloads, liked songs, playlists and connected-source collections. Playlist search, sorting and playlist generation entry points help you navigate larger libraries.
+A place to revisit local songs, downloads, liked tracks, playlists and connected-source collections, with browsing and organisation tools.
 
 ## Features
 
-- YouTube Music discovery and playback integrations
-- Local music library and offline downloads
-- Playlists, favourites, queue and playback history
-- Lyrics and synchronised lyrics where available
-- Spotify playlist import and Last.fm scrobbling
-- Equalizer, AutoEQ, Automix and advanced audio output options
-- Google Cast, Android Auto, widgets and Android media controls
-- Theme, accent, Liquid Glass and launcher icon customisation
-- Party Torch with audio-reactive flash pulses and a long-press Light Studio for supported flash-strength control
+### Music and playback
+- YouTube Music search, discovery and playback integration.
+- Stream resolution prioritises the InnerTubeX integration, with the existing NewPipe/local resolver path retained as fallback.
+- Local music browsing and offline downloads.
+- Queue, playback history, liked tracks and playlists.
+- Lyrics and synchronised lyrics when a supported source provides them.
+- Spotify playlist import and Last.fm scrobbling.
+- Google Cast, Android Auto, Android media notifications and headset/Bluetooth controls.
 
-**Party Torch safety and compatibility:** the feature is opt-in and requests relevant permissions when enabled. Flash-strength adjustment is shown only on compatible hardware; devices without adjustable torch support retain standard torch behaviour. Pulses are rate-limited, and the torch is turned off when playback pauses or Flow is left. Avoid staring into or directing a flashing light at anyone.
+### Audio
+- Equalizer and AutoEQ support.
+- Automix transitions and playback controls.
+- Native C++/Oboe audio processing path.
+- USB audio and bit-perfect output options on compatible hardware.
+- Output quality and available processing depend on the source, device, route and connected audio hardware.
 
-Feature availability can vary by device, Android version, connected service, music source, credentials and network conditions.
+### Personalisation
+- System, Light and Dark appearance modes.
+- Glass Wave, Desktop, Pure White and Obsidian Black launcher icon editions.
+- SYMPHONY Signature Theme, AMOLED appearance and Dynamic Color options.
+- Liquid Glass surfaces with platform-aware fallbacks.
+- Floating Navigation Dock option.
+- Additional player and lyrics presentation controls.
+
+### Extras
+- Home-screen widgets and Android system media controls.
+- Listen Together / SYMPHONY Jam features where configured.
+- Discord Rich Presence integration.
+- Party Torch is opt-in; flash strength controls appear only on supported hardware. Flash pulses are rate-limited and stop when playback pauses or Flow is left. Do not look directly into a flashing light or direct it at another person.
+
+Feature availability can vary by Android version, device, hardware, connected services, account permissions, credentials, network conditions and source-side changes.
+
+## Updates
+
+SYMPHONY checks the repository's GitHub Releases endpoint for newer versions. A new-version prompt is shown when a release newer than the installed app is available; dismissing a version suppresses repeat prompts for that same version. You can also check manually from the app's update/settings area. Re-uploading assets to an existing release tag without increasing the app version does not constitute a newer app version.
 
 ## Technology
 
-| Layer | Stack |
+| Area | Technology |
 | --- | --- |
-| App language | Kotlin |
+| Language | Kotlin |
 | UI | Jetpack Compose, Material 3 |
 | Playback | AndroidX Media3 / ExoPlayer |
-| Async work | Kotlin Coroutines and Flow |
+| Stream extraction | InnerTubeX integration, NewPipe Extractor and local resolver fallback |
+| Async | Kotlin Coroutines and Flow |
 | Dependency injection | Hilt |
-| Local persistence | Room, DataStore |
-| Networking | OkHttp and Retrofit |
-| Native audio | C++, CMake and included USB audio driver |
+| Persistence | Room and DataStore |
+| Networking | OkHttp, Retrofit and Jsoup |
+| Native audio | C++, JNI, CMake and Google Oboe |
+| Build | Gradle, Android Gradle Plugin and GitHub Actions |
 
 ## Build locally
 
 ### Requirements
 - Android Studio
 - JDK 17
-- Android SDK 37
-- Android 10 / API 29 or newer for the standard app configuration
+- Android SDK Platform 37
+- Android NDK and CMake versions required by the project
+
+The standard app configuration uses Android 10 / API 29 as its minimum SDK. The repository also defines a legacy Android 7+ build configuration.
 
 ### Clone
 ```bash
@@ -112,22 +129,27 @@ cd SYMPHONY
 
 ### Build a debug APK
 
-**Windows PowerShell**
+Windows PowerShell:
 ```powershell
 .\gradlew.bat assembleDebug
 ```
 
-**macOS / Linux**
+macOS / Linux:
 ```bash
 ./gradlew assembleDebug
 ```
 
-The APK is generated under `app/build/outputs/apk/debug/`.
+The debug APK is generated under `app/build/outputs/apk/debug/`.
+
+### Run unit tests
+```bash
+./gradlew testDebugUnitTest
+```
 
 ### Release builds
-Release builds must be signed with the project's release keystore. Configure signing values through environment variables or local Gradle properties. Never commit keystores, passwords, API tokens or other credentials.
+Release variants require the project's release signing key. Configure signing through the documented Gradle environment variables or local Gradle properties. Never commit keystores, passwords, API tokens or local secret files.
 
-GitHub Actions contains the build and release workflows. Published releases and in-app update checks use this repository's GitHub Releases page.
+GitHub Actions contains the Android build and release workflows. CI success verifies the automated tasks that ran; it does not replace installation, upgrade and hardware testing on physical devices.
 
 ## Project structure
 
@@ -136,51 +158,62 @@ SYMPHONY/
 ├── app/
 │   └── src/main/
 │       ├── java/com/symphony/app/
-│       │   ├── data/       # Music sources, repositories and persistence
-│       │   ├── playback/   # Playback service, queue and audio engine
+│       │   ├── data/       # Sources, repositories and persistence
+│       │   ├── playback/   # Player, stream resolution and audio pipeline
 │       │   ├── ui/         # Compose screens and components
 │       │   └── ...
 │       ├── res/            # Android resources and launcher icons
-│       └── cpp/            # Native components
-├── audio/                  # Included audio driver module
-├── assets/                 # Repository branding and showcase artwork
+│       └── cpp/            # Native audio and DSP components
+├── audio/                  # USB audio driver module
+├── assets/                 # Branding and showcase artwork
+├── docs/                   # Design and implementation notes
 ├── .github/workflows/      # CI, APK builds and release automation
+├── AGENTS.md
 ├── CHANGELOG.md
+├── DESIGN.md
 └── README.md
 ```
 
-## Versioning and verification
+## Current release and verification
 
-The current published release is **1.4** (Android `versionCode 37`, `versionName 1.4`). See [CHANGELOG.md](CHANGELOG.md) for release history. The v1.4 Android build workflow and release publication workflow completed successfully. CI success confirms automated build and publication; installation, upgrade behaviour and hardware-specific features still require physical-device testing.
+- **Release:** [SYMPHONY 1.4](https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/1.4)
+- **Android version metadata:** `versionName 1.4`, `versionCode 37`
+- **Build workflow:** [#45563020342](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45563020342) — completed successfully.
+- **Release publication workflow:** [#45563020178](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45563020178) — completed successfully.
+- **Device verification:** CI completion does not confirm physical-device installation, upgrade behaviour, launcher refresh or OEM-specific features. Those still need to be checked on real hardware.
+
+See [CHANGELOG.md](CHANGELOG.md) for the version history.
 
 ## Project principles
 
 - Keep the listening experience central.
 - Keep navigation clear and consistent.
 - Prefer reliable playback and honest source/quality reporting.
+- Respect third-party service terms and open-source licences.
 - Keep release signing material and private credentials out of Git.
 - Verify builds before describing a change as shipped.
 
 ## Community
 
-SYMPHONY is an independent project maintained by **[smrutiranjandev0p](https://github.com/smrutiranjandev0p)**.
+SYMPHONY is an independent project maintained by **[Smruti Ranjan Behera](https://github.com/smrutiranjandev0p)**.
 
-- ⭐ [Star the repository](https://github.com/smrutiranjandev0p/SYMPHONY/stargazers) if you genuinely find it useful.
-- 🐛 [Report a bug](https://github.com/smrutiranjandev0p/SYMPHONY/issues/new/choose) with your device model, Android version and reproduction steps.
+- ⭐ [Star the repository](https://github.com/smrutiranjandev0p/SYMPHONY/stargazers).
+- 🐛 [Report a bug](https://github.com/smrutiranjandev0p/SYMPHONY/issues/new/choose) with your app version, device, Android version and reproduction steps.
 - 💡 [Suggest an improvement](https://github.com/smrutiranjandev0p/SYMPHONY/issues).
 - 🤝 Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
+- 🔐 Read [SECURITY.md](SECURITY.md) before reporting a vulnerability.
 
-## Credits & inspiration
+## Credits and inspiration
 
-SYMPHONY's Flow screen takes inspiration from the immersive, swipe-led music discovery interaction popularised by Resso. SYMPHONY is an independent project and is not affiliated with or endorsed by Resso, Vivo, YouTube, Spotify or other referenced services.
+SYMPHONY's Flow interaction takes inspiration from the swipe-led music discovery experience popularised by Resso. The app's identity, implementation and broader feature set are independent. SYMPHONY is not affiliated with or endorsed by Resso, vivo, YouTube, Spotify or any other referenced service.
 
 ## Maintainer
 
-**Made with care by [Smruti Ranjan Behera](https://github.com/smrutiranjandev0p).**
+**Created and maintained by [Smruti Ranjan Behera](https://github.com/smrutiranjandev0p).**
 
 ## License
 
-See [LICENSE](LICENSE) for the project's license and distribution terms.
+See [LICENSE](LICENSE) and the applicable third-party notices for licensing and distribution terms.
 
 ---
 
