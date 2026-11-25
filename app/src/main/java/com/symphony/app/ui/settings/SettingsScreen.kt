@@ -2200,6 +2200,14 @@ fun SettingsScreen(
                                 }
                             }
                         }
+                        item {
+                            Spacer(Modifier.height(12.dp))
+                            SectionLabel("About SYMPHONY")
+                            AboutCard(
+                                versionName = appVersionName(context),
+                                appIcon = theme?.appIcon ?: AppIcon.DEFAULT,
+                            )
+                        }
                     }
                     }
                 }
