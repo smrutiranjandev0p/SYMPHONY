@@ -1,21 +1,36 @@
 # SYMPHONY Changelog
 
-All notable project changes are documented here. Release status and downloadable artifacts are linked to the official GitHub Releases page.
+All notable user-facing and project changes are documented here. Release assets and platform-specific installation notes are published on the [GitHub Releases page](https://github.com/smrutiranjandev0p/SYMPHONY/releases).
 
 ## [1.4] - 2026-11-25
 
-### Fixed
-- **Launcher icon selection:** Corrected the in-app icon previews so Glass Wave, Desktop, Pure White and Obsidian Black display the matching selectable artwork.
-- **Launcher icon artwork:** Updated all three alternate launcher foregrounds to the current Glass Wave treble-clef and waveform identity, retaining each edition's distinct background.
-- **Icon consistency:** The Appearance selector artwork and launcher-alias artwork now use the same visual identity for each option.
+### Added
+- **InnerTubeX playback integration:** Added the InnerTubeX-based stream extraction path to the playback stack, with the existing NewPipe/local resolver path retained as a fallback.
+- **About & System build details:** The About area displays the installed app version and Android build number.
+- **Release showcase:** Added the current SYMPHONY v1.4 promotional banner to the repository README.
 
 ### Changed
 - **Version metadata:** User-facing `versionName` is `1.4`; Android `versionCode` is `37`.
-- **About & System:** The update row reports the installed app version and build number.
+- **Launcher identity:** Refreshed the alternate launcher icon artwork around the Glass Wave treble-clef and waveform identity while preserving the individual Desktop, Pure White and Obsidian Black backgrounds.
+- **Appearance selector:** Updated the icon previews so Glass Wave, Desktop, Pure White and Obsidian Black show their corresponding selectable artwork.
+- **Documentation:** Reworked the README download guidance, feature overview, audio/streaming architecture, updater behaviour, development instructions and verification notes.
+
+### Fixed
+- **Icon consistency:** Aligned the Appearance selector previews with the artwork used by their corresponding launcher aliases.
+- **README artwork path:** Corrected the hero image reference to the uploaded v1.4 banner asset.
+
+### Release assets
+- `SYMPHONY-v1.4-universal.apk` — recommended Android 10+ release.
+- `SYMPHONY-v1.4-vivo-origin.apk` — separate vivo OriginOS-targeted package.
+- `SYMPHONY-v1.4-android7.apk` — Android 7–9 legacy package.
+- `SYMPHONY-v1.4-universal-uncompressed.apk` — uncompressed universal package.
+- `SHA256SUMS.txt` — SHA-256 checksums for published assets.
 
 ### Validation
-- Release and Android build workflows are running for v1.4.
-- Launcher switching still needs verification on a physical device and supported launcher; CI can validate compilation but cannot prove OEM launcher refresh behaviour.
+- **Android build workflow:** [#45563020342](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45563020342) completed successfully.
+- **Release publication workflow:** [#45563020178](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45563020178) completed successfully.
+- The release assets were published to [GitHub Release 1.4](https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/1.4).
+- Automated CI does not prove physical-device installation, in-place upgrade, OEM launcher refresh, vivo OriginOS integration or hardware-specific audio/torch behaviour. Those checks remain device-dependent.
 
 ---
 
@@ -23,17 +38,17 @@ All notable project changes are documented here. Release status and downloadable
 
 ### Added
 - **Party Torch Light Studio:** Long-pressing Party Torch opens a dedicated control sheet. Adjustable flash strength is exposed only when the device reports compatible hardware support; otherwise the app retains standard torch behaviour.
-- **README showcase refresh:** Replaced the previous logo-led banner with a current product showcase reflecting Flow, Appearance, Statistics and Library.
+- **README showcase refresh:** Replaced the previous logo-led banner with a product showcase reflecting Flow, Appearance, Statistics and Library.
 
 ### Changed
-- **Unified icon family:** Desktop, Pure White and Obsidian Black icon editions use the current Glass Wave treble-clef and waveform artwork while retaining their distinct backgrounds.
+- **Unified icon family:** Desktop, Pure White and Obsidian Black icon editions use the Glass Wave treble-clef and waveform artwork while retaining their distinct backgrounds.
 - **Version metadata:** User-facing `versionName` is `1.3`; Android `versionCode` is `36`.
 - **Documentation:** Updated download links, APK variant guidance, feature descriptions, visual customisation notes, project structure and release verification status.
 
 ### Validation
 - **Android build:** GitHub Actions build workflow [#45545506080](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45545506080) completed successfully.
 - **Release publication:** GitHub Actions release workflow [#45545506015](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45545506015) completed successfully.
-- **Published:** [SYMPHONY 1.3](https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/1.3) is live with universal, Android 7+, uncompressed universal and Vivo Origin APK variants plus `SHA256SUMS.txt`.
+- **Published:** [SYMPHONY 1.3](https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/1.3) is live with universal, Android 7+, uncompressed universal and vivo Origin APK variants plus `SHA256SUMS.txt`.
 - Physical-device installation, in-place upgrade and hardware-specific torch behaviour still require device testing.
 
 ---
@@ -76,5 +91,5 @@ All notable project changes are documented here. Release status and downloadable
 ### Release verification
 - **Published:** GitHub Release [1.1](https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/1.1) is live.
 - **CI:** Release workflow run [#45482588828](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45482588828) completed successfully, including Android APK builds, signing verification and release publication.
-- **Assets:** Universal APK, uncompressed universal APK, Android 7 legacy APK, Vivo Origin edition APK and SHA-256 checksum file were attached to the release.
+- **Assets:** Universal APK, uncompressed universal APK, Android 7 legacy APK, vivo Origin edition APK and SHA-256 checksum file were attached to the release.
 - Installation and in-place upgrade behaviour still need validation on physical Android devices.
