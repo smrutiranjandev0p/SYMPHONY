@@ -352,139 +352,196 @@ private fun FlowArtworkGlassOverlay(
     style: FlowArtworkStyle,
     isPlaying: Boolean,
 ) {
-    // The selected finish animates only over the full-bleed song artwork.
-    // Interactive controls are composed after this layer and remain untouched.
-    val transition = androidx.compose.animation.core.rememberInfiniteTransition(label = "flowArtworkGlass")
+    // Premium liquid-glass finish: preserve the original artwork and add
+    // a controlled specular ribbon, prismatic edge light and sparse glints.
+    val transition = androidx.compose.animation.core.rememberInfiniteTransition(label = "flowLiquidGlass")
     val sweep by transition.animateFloat(
-        initialValue = -0.35f,
-        targetValue = 1.35f,
+        initialValue = -0.55f,
+        targetValue = 1.55f,
         animationSpec = androidx.compose.animation.core.infiniteRepeatable(
             animation = androidx.compose.animation.core.tween(
-                durationMillis = if (isPlaying) 6200 else 11000,
+                durationMillis = if (isPlaying) 5200 else 10500,
                 easing = androidx.compose.animation.core.LinearEasing,
             ),
             repeatMode = androidx.compose.animation.core.RepeatMode.Restart,
         ),
-        label = "flowArtworkSweep",
+        label = "flowLiquidGlassSweep",
     )
-    val sparkle by transition.animateFloat(
+    val glintPhase by transition.animateFloat(
         initialValue = 0f,
         targetValue = 1f,
         animationSpec = androidx.compose.animation.core.infiniteRepeatable(
             animation = androidx.compose.animation.core.tween(
-                durationMillis = if (isPlaying) 3400 else 6200,
+                durationMillis = if (isPlaying) 3900 else 7000,
                 easing = androidx.compose.animation.core.LinearEasing,
             ),
             repeatMode = androidx.compose.animation.core.RepeatMode.Restart,
         ),
-        label = "flowArtworkSparkle",
+        label = "flowLiquidGlassGlints",
     )
-    val palette = when (style) {
-        FlowArtworkStyle.CRYSTAL -> listOf(Color(0xFFBDEBFF), Color(0xFF9C8CFF), Color.White)
-        FlowArtworkStyle.AURORA -> listOf(Color(0xFFB36BFF), Color(0xFF55DFFF), Color(0xFFFF83D5))
-        FlowArtworkStyle.OBSIDIAN -> listOf(Color(0xFFCBD5E1), Color(0xFF64748B), Color.White)
+    val colors = when (style) {
+        FlowArtworkStyle.CRYSTAL -> listOf(Color(0xFFB8F1FF), Color(0xFF9C8CFF), Color.White)
+        FlowArtworkStyle.AURORA -> listOf(Color(0xFFB65CFF), Color(0xFF42E5FF), Color(0xFFFF83D5))
+        FlowArtworkStyle.OBSIDIAN -> listOf(Color(0xFFE5ECF7), Color(0xFF75849D), Color(0xFFB8C7DA))
     }
 
     androidx.compose.foundation.Canvas(Modifier.fillMaxSize()) {
         val w = size.width
         val h = size.height
-        val motionAlpha = if (isPlaying) 1f else 0.52f
+        val intensity = if (isPlaying) 1f else 0.62f
+        val bandStart = w * sweep
 
+        // Style identity is deliberately expressed through edge-light and
+        // reflections, not a heavy tint that destroys the original cover.
         when (style) {
             FlowArtworkStyle.CRYSTAL -> {
-                // Cool crystal tint with a clearly visible moving specular reflection.
-                drawRect(brush = Brush.linearGradient(
-                    colors = listOf(
-                        palette[0].copy(alpha = 0.12f),
-                        Color.Transparent,
-                        palette[1].copy(alpha = 0.10f),
+                drawRect(
+                    brush = Brush.linearGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            colors[0].copy(alpha = 0.15f),
+                            Color.White.copy(alpha = 0.25f),
+                            colors[1].copy(alpha = 0.12f),
+                            Color.Transparent,
+                        ),
+                        start = androidx.compose.ui.geometry.Offset(bandStart - w * 0.30f, 0f),
+                        end = androidx.compose.ui.geometry.Offset(bandStart + w * 0.16f, h),
                     ),
-                    start = androidx.compose.ui.geometry.Offset(0f, 0f),
-                    end = androidx.compose.ui.geometry.Offset(w, h),
-                ))
-                drawRect(brush = Brush.linearGradient(
-                    colors = listOf(
-                        Color.Transparent,
-                        Color.White.copy(alpha = 0.32f * motionAlpha),
-                        palette[0].copy(alpha = 0.18f * motionAlpha),
-                        Color.Transparent,
-                    ),
-                    start = androidx.compose.ui.geometry.Offset(w * (sweep - 0.32f), 0f),
-                    end = androidx.compose.ui.geometry.Offset(w * (sweep + 0.20f), h),
-                ))
-                drawRect(brush = Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.09f), Color.Transparent, palette[0].copy(alpha = 0.11f))))
+                )
             }
             FlowArtworkStyle.AURORA -> {
-                // Purple/cyan aurora ribbons sweep diagonally across the cover.
-                drawRect(brush = Brush.linearGradient(
-                    colors = listOf(
-                        palette[0].copy(alpha = 0.24f),
-                        Color.Transparent,
-                        palette[1].copy(alpha = 0.20f),
-                        Color.Transparent,
-                        palette[2].copy(alpha = 0.15f),
+                drawRect(
+                    brush = Brush.linearGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            colors[0].copy(alpha = 0.19f),
+                            Color.Transparent,
+                            colors[1].copy(alpha = 0.22f),
+                            Color.Transparent,
+                            colors[2].copy(alpha = 0.14f),
+                        ),
+                        start = androidx.compose.ui.geometry.Offset(0f, h * 0.12f),
+                        end = androidx.compose.ui.geometry.Offset(w, h * 0.92f),
                     ),
-                    start = androidx.compose.ui.geometry.Offset(w * (0.10f + sweep * 0.12f), 0f),
-                    end = androidx.compose.ui.geometry.Offset(w * (0.72f + sweep * 0.10f), h),
-                ))
-                drawRect(brush = Brush.linearGradient(
-                    colors = listOf(
-                        Color.Transparent,
-                        palette[1].copy(alpha = 0.30f * motionAlpha),
-                        Color.White.copy(alpha = 0.20f * motionAlpha),
-                        palette[0].copy(alpha = 0.24f * motionAlpha),
-                        Color.Transparent,
+                )
+                drawRect(
+                    brush = Brush.linearGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            colors[1].copy(alpha = 0.20f * intensity),
+                            Color.White.copy(alpha = 0.34f * intensity),
+                            colors[0].copy(alpha = 0.24f * intensity),
+                            Color.Transparent,
+                        ),
+                        start = androidx.compose.ui.geometry.Offset(bandStart - w * 0.28f, 0f),
+                        end = androidx.compose.ui.geometry.Offset(bandStart + w * 0.17f, h),
                     ),
-                    start = androidx.compose.ui.geometry.Offset(w * (sweep - 0.28f), 0f),
-                    end = androidx.compose.ui.geometry.Offset(w * (sweep + 0.16f), h),
-                ))
+                )
             }
             FlowArtworkStyle.OBSIDIAN -> {
-                // Smoked obsidian surface with a polished silver moving edge-light.
-                drawRect(brush = Brush.linearGradient(
-                    colors = listOf(Color.Black.copy(alpha = 0.20f), Color.Transparent, palette[0].copy(alpha = 0.14f), Color.Black.copy(alpha = 0.18f)),
-                    start = androidx.compose.ui.geometry.Offset(0f, 0f),
-                    end = androidx.compose.ui.geometry.Offset(w, h),
-                ))
-                drawRect(brush = Brush.linearGradient(
-                    colors = listOf(Color.Transparent, Color.White.copy(alpha = 0.26f * motionAlpha), palette[1].copy(alpha = 0.18f * motionAlpha), Color.Transparent),
-                    start = androidx.compose.ui.geometry.Offset(w * (sweep - 0.24f), 0f),
-                    end = androidx.compose.ui.geometry.Offset(w * (sweep + 0.18f), h),
-                ))
+                drawRect(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Black.copy(alpha = 0.10f),
+                            Color.Transparent,
+                            Color.Black.copy(alpha = 0.13f),
+                        ),
+                    ),
+                )
+                drawRect(
+                    brush = Brush.linearGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            colors[0].copy(alpha = 0.30f * intensity),
+                            colors[1].copy(alpha = 0.22f * intensity),
+                            Color.White.copy(alpha = 0.17f * intensity),
+                            Color.Transparent,
+                        ),
+                        start = androidx.compose.ui.geometry.Offset(bandStart - w * 0.24f, 0f),
+                        end = androidx.compose.ui.geometry.Offset(bandStart + w * 0.14f, h),
+                    ),
+                )
             }
         }
 
-        // A fine glass highlight near the perimeter makes the finish readable
-        // without changing the artwork's size, crop, or layout.
+        // Broad, soft specular streak: the primary visible liquid-glass cue.
         drawRect(
             brush = Brush.linearGradient(
                 colors = listOf(
-                    palette[0].copy(alpha = 0.22f),
-                    Color.White.copy(alpha = 0.10f),
-                    palette[1].copy(alpha = 0.20f),
+                    Color.Transparent,
+                    Color.White.copy(alpha = 0.04f * intensity),
+                    Color.White.copy(alpha = 0.30f * intensity),
+                    colors[0].copy(alpha = 0.20f * intensity),
+                    Color.White.copy(alpha = 0.08f * intensity),
                     Color.Transparent,
                 ),
-                start = androidx.compose.ui.geometry.Offset(0f, h * 0.16f),
-                end = androidx.compose.ui.geometry.Offset(w, h * 0.84f),
+                start = androidx.compose.ui.geometry.Offset(bandStart - w * 0.18f, 0f),
+                end = androidx.compose.ui.geometry.Offset(bandStart + w * 0.12f, h),
             ),
-            style = androidx.compose.ui.graphics.drawscope.Stroke(width = 1.15.dp.toPx()),
         )
 
-        // Small, occasional star glints; restrained so they do not obscure cover art.
-        val points = listOf(
-            0.16f to 0.22f, 0.78f to 0.18f, 0.87f to 0.42f,
-            0.24f to 0.58f, 0.69f to 0.72f, 0.43f to 0.84f,
+        // Curved liquid highlight, intentionally thin and elegant.
+        val ribbon = androidx.compose.ui.graphics.Path().apply {
+            moveTo(w * (sweep - 0.22f), 0f)
+            cubicTo(w * (sweep + 0.08f), h * 0.22f, w * (sweep - 0.16f), h * 0.56f, w * (sweep + 0.18f), h)
+            cubicTo(w * (sweep + 0.12f), h * 0.70f, w * (sweep - 0.18f), h * 0.32f, w * (sweep - 0.22f), 0f)
+            close()
+        }
+        drawPath(
+            path = ribbon,
+            brush = Brush.linearGradient(
+                colors = listOf(
+                    Color.Transparent,
+                    colors[0].copy(alpha = 0.14f * intensity),
+                    Color.White.copy(alpha = 0.20f * intensity),
+                    colors[1].copy(alpha = 0.12f * intensity),
+                    Color.Transparent,
+                ),
+                start = androidx.compose.ui.geometry.Offset(bandStart - w * 0.20f, 0f),
+                end = androidx.compose.ui.geometry.Offset(bandStart + w * 0.18f, h),
+            ),
         )
+
+        // Delicate top/bottom glass catches and a subtle prismatic perimeter.
+        drawLine(
+            brush = Brush.horizontalGradient(listOf(Color.Transparent, colors[0].copy(alpha = 0.42f), Color.White.copy(alpha = 0.34f), colors[1].copy(alpha = 0.34f), Color.Transparent)),
+            start = androidx.compose.ui.geometry.Offset(0f, h * 0.012f),
+            end = androidx.compose.ui.geometry.Offset(w, h * 0.012f),
+            strokeWidth = 1.5.dp.toPx(),
+        )
+        drawLine(
+            brush = Brush.horizontalGradient(listOf(Color.Transparent, colors[1].copy(alpha = 0.22f), Color.White.copy(alpha = 0.18f), Color.Transparent)),
+            start = androidx.compose.ui.geometry.Offset(0f, h * 0.988f),
+            end = androidx.compose.ui.geometry.Offset(w, h * 0.988f),
+            strokeWidth = 1.2.dp.toPx(),
+        )
+        drawLine(
+            brush = Brush.verticalGradient(listOf(colors[0].copy(alpha = 0.22f), Color.Transparent, colors[1].copy(alpha = 0.20f))),
+            start = androidx.compose.ui.geometry.Offset(w * 0.006f, 0f),
+            end = androidx.compose.ui.geometry.Offset(w * 0.006f, h),
+            strokeWidth = 1.1.dp.toPx(),
+        )
+        drawLine(
+            brush = Brush.verticalGradient(listOf(Color.Transparent, colors[1].copy(alpha = 0.22f), Color.Transparent)),
+            start = androidx.compose.ui.geometry.Offset(w * 0.994f, 0f),
+            end = androidx.compose.ui.geometry.Offset(w * 0.994f, h),
+            strokeWidth = 1.1.dp.toPx(),
+        )
+
+        // Four restrained star glints with a soft pulse, not scattered dots.
+        val points = listOf(0.18f to 0.20f, 0.82f to 0.31f, 0.72f to 0.68f, 0.30f to 0.82f)
         points.forEachIndexed { index, point ->
-            val phase = (sparkle + index * 0.173f) % 1f
-            val alpha = (kotlin.math.sin(phase * Math.PI).toFloat().coerceAtLeast(0f) * 0.72f) * motionAlpha
-            val radius = if (index % 2 == 0) 2.2.dp.toPx() else 1.6.dp.toPx()
+            val phase = (glintPhase + index * 0.25f) % 1f
+            val pulse = kotlin.math.sin(phase * Math.PI).toFloat().coerceAtLeast(0f)
+            val alpha = pulse * 0.82f * intensity
+            val radius = if (index % 2 == 0) 2.0.dp.toPx() else 1.5.dp.toPx()
             val center = androidx.compose.ui.geometry.Offset(w * point.first, h * point.second)
-            drawCircle(palette[index % palette.size].copy(alpha = alpha), radius, center)
-            if (alpha > 0.16f) {
-                val ray = radius * 3.2f
-                drawLine(Color.White.copy(alpha = alpha * 0.72f), androidx.compose.ui.geometry.Offset(center.x - ray, center.y), androidx.compose.ui.geometry.Offset(center.x + ray, center.y), strokeWidth = 0.9.dp.toPx())
-                drawLine(Color.White.copy(alpha = alpha * 0.72f), androidx.compose.ui.geometry.Offset(center.x, center.y - ray), androidx.compose.ui.geometry.Offset(center.x, center.y + ray), strokeWidth = 0.9.dp.toPx())
+            if (alpha > 0.08f) {
+                drawCircle(Color.White.copy(alpha = alpha * 0.18f), radius * 3.2f, center)
+                drawCircle(colors[index % colors.size].copy(alpha = alpha), radius, center)
+                val ray = radius * 3.4f
+                drawLine(Color.White.copy(alpha = alpha), androidx.compose.ui.geometry.Offset(center.x - ray, center.y), androidx.compose.ui.geometry.Offset(center.x + ray, center.y), strokeWidth = 0.8.dp.toPx())
+                drawLine(Color.White.copy(alpha = alpha), androidx.compose.ui.geometry.Offset(center.x, center.y - ray), androidx.compose.ui.geometry.Offset(center.x, center.y + ray), strokeWidth = 0.8.dp.toPx())
             }
         }
     }
