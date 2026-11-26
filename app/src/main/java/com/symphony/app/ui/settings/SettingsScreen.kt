@@ -3,6 +3,7 @@ package com.symphony.app.ui.settings
 import androidx.compose.material3.HorizontalDivider
 import com.symphony.app.data.scrobbler.ExtraService
 import com.symphony.app.data.local.SeekbarStyle
+import com.symphony.app.data.local.FlowAtmosphereSettings
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
@@ -1239,6 +1240,11 @@ fun SettingsScreen(
                                     currentStyle = theme?.flowArtworkStyle ?: com.symphony.app.data.local.FlowArtworkStyle.TITANIUM,
                                     onSelectStyle = viewModel::setFlowArtworkStyle,
                                     isHighlighted = (highlightedSettingId == "appearance.artwork_border"),
+                                )
+                                FlowAtmosphereSettingsCard(
+                                    settings = theme?.flowAtmosphere ?: FlowAtmosphereSettings.DEFAULT,
+                                    onSettingsChange = viewModel::setFlowAtmosphere,
+                                    isHighlighted = (highlightedSettingId == "appearance.flow_atmosphere"),
                                 )
                             }
                             2 -> SettingsToggleCard(
