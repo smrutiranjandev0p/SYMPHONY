@@ -147,7 +147,4 @@ class ThemePreferences @Inject constructor(
         }
     }
 
-    suspend fun setAppIcon(icon: AppIcon) {
-        dataStore.edit { it[Keys.APP_ICON] = icon.id }
-    }
 }
