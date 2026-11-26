@@ -259,6 +259,7 @@ fun FlowScreen(
                 artworkStyle = artworkStyle,
                 atmosphere = atmosphereSettings,
                 isCurrentPage = page == pagerState.currentPage,
+                isForeground = isForeground,
             )
         }
         menuTrack?.let { track ->
@@ -294,6 +295,7 @@ private fun FlowPage(
     artworkStyle: FlowArtworkStyle,
     atmosphere: FlowAtmosphereSettings,
     isCurrentPage: Boolean,
+    isForeground: Boolean,
 ) {
     val scheme = MaterialTheme.colorScheme
     Box(Modifier.fillMaxSize()) {
