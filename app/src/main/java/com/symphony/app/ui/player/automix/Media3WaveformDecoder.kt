@@ -153,6 +153,7 @@ internal class WaveformAudioSink(private val fromUs: Long, private val untilUs: 
     override fun setListener(listener: AudioSink.Listener) = Unit
     override fun supportsFormat(format: Format) = pcmBytes(format.pcmEncoding) > 0 && format.sampleRate > 0 && format.channelCount > 0
     override fun getFormatSupport(format: Format) = if (supportsFormat(format)) AudioSink.SINK_FORMAT_SUPPORTED_DIRECTLY else AudioSink.SINK_FORMAT_UNSUPPORTED
+    override fun getAudioTrackBufferSizeUs() = C.TIME_UNSET
     override fun getCurrentPositionUs(sourceTimeUs: Boolean) = positionUs
     override fun setOutputStreamOffsetUs(outputStreamOffsetUs: Long) { streamOffsetUs = outputStreamOffsetUs }
 
