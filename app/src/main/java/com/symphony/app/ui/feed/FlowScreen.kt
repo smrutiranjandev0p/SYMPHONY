@@ -54,6 +54,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.symphony.app.data.local.FlowArtworkStyle
+import com.symphony.app.ui.settings.SettingsViewModel
 import com.symphony.app.data.music.HomeShelfItem
 import com.symphony.app.data.music.YouTubeMusicTrack
 import com.symphony.app.playback.toPlayableTrack
@@ -86,6 +88,9 @@ fun FlowScreen(
     val musicPlayer = LocalMusicPlayer.current
     val openPlayerLyrics = LocalOpenPlayerLyrics.current
     val playerViewModel: PlayerViewModel = hiltViewModel()
+    val settingsViewModel: SettingsViewModel = hiltViewModel()
+    val appearanceTheme by settingsViewModel.theme.collectAsStateWithLifecycle()
+    val artworkStyle = appearanceTheme?.flowArtworkStyle ?: FlowArtworkStyle.AURORA
     val likedKeys by playerViewModel.likedTrackKeys.collectAsStateWithLifecycle()
     var menuTrack by remember { mutableStateOf<YouTubeMusicTrack?>(null) }
     var partyTorchEnabled by remember { mutableStateOf(false) }
@@ -213,6 +218,7 @@ fun FlowScreen(
                 partyTorchEnabled = partyTorchEnabled,
                 onPartyTorchEnabledChange = { partyTorchEnabled = it },
                 audioSessionId = musicPlayer.activePlayer?.audioSessionId ?: 0,
+                artworkStyle = artworkStyle,
             )
         }
         menuTrack?.let { track ->
