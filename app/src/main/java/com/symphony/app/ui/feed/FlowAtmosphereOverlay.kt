@@ -5,6 +5,7 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -26,6 +27,8 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.symphony.app.data.local.FlowAtmosphereDensity
 import com.symphony.app.data.local.FlowAtmosphereEffect
 import com.symphony.app.data.local.FlowAtmosphereSettings
@@ -133,8 +136,6 @@ internal fun FlowAtmosphereOverlay(
 ) {
     val activeEffects = settings.effects
     val shouldAnimate = settings.enabled && activeEffects.isNotEmpty() && isCurrentPage && isForeground
-    val audioAuraActive = shouldAnimate && FlowAtmosphereEffect.AUDIO_REACTIVE_AURA in activeEffects
-
     val audioAuraActive = shouldAnimate && FlowAtmosphereEffect.AUDIO_REACTIVE_AURA in activeEffects
 
     val heartSeeds = remember { particleSeeds(24, 0x51A7) }
