@@ -2,34 +2,38 @@
 
 ## [2.0] - 2026-11-26
 
+<https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/2.0>
+
 ### Added
-- **Purple Glass launcher identity:** Added a deep-violet glass adaptive launcher icon with the SYMPHONY treble-clef and waveform mark.
-- **Monochrome launcher artwork:** Added a matching monochrome version for supported themed-icon launchers.
+- **Purple Glass launcher identity:** Added the supplied deep-violet glass adaptive launcher icon with the SYMPHONY treble-clef and waveform mark.
+- **Monochrome launcher artwork:** Added matching monochrome artwork for supported themed-icon launchers.
+- **Launcher editions:** Restored dedicated Desktop, Pure White and Obsidian Black launcher artwork resources.
 
 ### Changed
-- **Appearance icon selector:** Uses the exact supplied Purple Glass artwork in both the selector and selected-icon header; Desktop, Pure White and Obsidian Black previews now point to their own artwork resources.
-- **Icon resource correction:** Replaced the earlier hand-drawn Purple Glass approximation with the supplied artwork. Desktop, Pure White and Obsidian Black no longer share the same adaptive foreground vector; their density-specific launcher artwork is restored.
-- **Adaptive launcher resources:** Updated the adaptive icon foreground and background while retaining Android's existing launcher-alias switching architecture and other selectable icon editions.
-- **Playback stack:** Aligned ExoPlayer, OkHttp datasource, HLS and DASH modules on AndroidX Media3 1.9.0 with Jellyfin FFmpeg decoder 1.9.0+1.
-- **Audio sink compatibility:** Updated custom audio sink implementations and player callbacks for the Media3 1.9.0 API.
-- **Playback resolution:** Retained the existing InnerTubeX-first stream resolution and NewPipe fallback architecture.
-- **Flow live recommendations:** Flow's vertical pager now observes the active live playback queue while Flow owns playback, exposing radio-continuation tracks appended in the background to manual swiping. Existing recommendation ordering, deduplication, radio continuation and stream resolution remain unchanged.
-- **Version metadata:** Set user-facing `versionName` to `2.0` and Android `versionCode` to `40` for the v2.0 icon-correction build.
+- **Appearance icon selector:** Uses the supplied Purple Glass artwork in the selector and selected-icon header; Desktop, Pure White and Obsidian Black previews each reference their own artwork.
+- **Adaptive launcher resources:** Updated adaptive icon foreground/background assets while retaining the existing launcher-alias switching architecture and selectable icon editions.
+- **Playback stack:** Aligned AndroidX Media3 ExoPlayer, OkHttp datasource, HLS and DASH modules on 1.9.0, with Jellyfin FFmpeg decoder 1.9.0+1; updated custom audio sink implementations and player callbacks for the Media3 API.
+- **Flow live recommendations:** Flow's vertical pager observes the active live playback queue while Flow owns playback, exposing radio-continuation tracks appended in the background to manual swiping. Existing recommendation ordering, deduplication, radio continuation and stream resolution remain intact.
+- **Stream resolution:** Retained the InnerTubeX-first stream resolution path and NewPipe fallback architecture.
+- **Version metadata:** Set `versionName` to `2.0` and Android `versionCode` to `40`.
 
-### Validation
-- Playback v2.0 automated CI build and regression checks passed on the playback feature branch before merge.
-- [Combined v2.0 CI workflow #45788255391](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45788255391) completed successfully: regression checks, release APK assembly, signature verification and artifact upload all passed.
-- Android launcher rendering and live icon switching still require physical-device verification.
-- Physical-device installation, in-place upgrade and real-world playback performance remain to be verified.
-- CI success does not replace OEM launcher and hardware testing.
+### Validation and release
+- **Published:** [SYMPHONY 2.0](https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/2.0).
+- **Release workflow:** [#45819793575](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45819793575) completed successfully.
+- The workflow built the Universal, Universal Uncompressed, vivo Origin Island and Android 7 legacy APK variants, verified APK signatures, generated SHA-256 checksums and published the GitHub Release.
+- **Android compatibility:** Universal and uncompressed universal builds target Android 10+; the legacy build targets Android 7.0–9.0. The vivo Origin Island build is a separate package for supported vivo OriginOS configurations.
+- Android 7–11 devices may use a translucent acrylic fallback instead of platform-dependent live-blur effects.
+- CI verifies the automated build and publication steps. Physical-device installation, in-place upgrade, OEM launcher icon switching and device-specific playback/audio behaviour still require testing on the relevant hardware.
 
-### Release artifact
-- The v2.0 source is merged into `main`. A public GitHub Release with verified v2.0 APK assets has not yet been published. Check [GitHub Actions](https://github.com/smrutiranjandev0p/SYMPHONY/actions) for build artifacts.
+### Release assets
+- `SYMPHONY-v2.0-universal.apk` — recommended Android 10+ package.
+- `SYMPHONY-v2.0-universal-uncompressed.apk` — uncompressed Android 10+ package.
+- `SYMPHONY-v2.0-vivo-origin.apk` — separate vivo Origin Island edition.
+- `SYMPHONY-v2.0-android7.apk` — Android 7.0–9.0 legacy package.
+- `SHA256SUMS.txt` — SHA-256 checksums for release assets.
 
 ---
-
-All notable user-facing and project changes are documented here. Release assets and platform-specific installation notes are published on the [GitHub Releases page](https://github.com/smrutiranjandev0p/SYMPHONY/releases).
-
+ 
 ## [1.5] - 2026-11-25
 
 ### Fixed
