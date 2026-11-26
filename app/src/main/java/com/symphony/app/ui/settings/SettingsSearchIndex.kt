@@ -506,7 +506,7 @@ object SettingsSearchIndex {
                         "artwork border", "flow border", "album art frame", "cover frame",
                         "titanium", "crystal", "aurora", "obsidian", "prism"
                     ),
-                    icon = Icons.Filled.Layers,
+                    icon = Icons.Filled.BubbleChart,
                     iconContainer = { MaterialTheme.colorScheme.primaryContainer },
                     iconTint = { MaterialTheme.colorScheme.onPrimaryContainer },
                     parentTab = SettingsTab.APPEARANCE,
