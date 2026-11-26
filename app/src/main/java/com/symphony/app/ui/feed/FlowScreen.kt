@@ -357,7 +357,7 @@ private fun FlowArtworkBorderOverlay(style: FlowArtworkStyle) {
         FlowArtworkStyle.NONE -> emptyList()
         FlowArtworkStyle.TITANIUM -> listOf(Color(0xFFE7EDF5), Color(0xFF778397), Color(0xFFF8FAFC))
         FlowArtworkStyle.CRYSTAL -> listOf(Color(0xFFB9F2FF), Color(0xFF6AC8F2), Color(0xFFE4D9FF))
-        FlowArtworkStyle.TITANIUM -> listOf(Color(0xFF9C75FF), Color(0xFF54DDF2), Color(0xFFE0B7FF))
+        FlowArtworkStyle.AURORA -> listOf(Color(0xFF9C75FF), Color(0xFF54DDF2), Color(0xFFE0B7FF))
         FlowArtworkStyle.OBSIDIAN -> listOf(Color(0xFF151922), Color(0xFF8D98AA), Color(0xFF303846))
         FlowArtworkStyle.PRISM -> listOf(Color(0xFF67E8F9), Color(0xFFB58AFF), Color(0xFFFFA6C9))
     }
