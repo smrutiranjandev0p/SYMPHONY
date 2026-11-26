@@ -276,9 +276,6 @@ private fun FlowPage(
                     ),
                 ),
         )
-        // Keep the animated glass treatment above the artwork and its readability scrim,
-        // but below every interactive Flow control.
-        FlowArtworkGlassOverlay(style = artworkStyle, isPlaying = isPlaying)
         if (isPlaying) FlowFloatingHearts()
         Column(
             modifier = Modifier
