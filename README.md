@@ -184,16 +184,6 @@ SYMPHONY/
 - **Validation:** Release APK build, automated playback/download/scrobbler regression tests, APK signature verification and artifact upload passed in [GitHub Actions #112](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45773501166).
 - **Device verification:** Physical-device installation, in-place upgrade and real-world playback performance remain to be verified.
 
-## Current release and verification
-
-- **Release:** [SYMPHONY 2.0](https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/2.0)
-- **Android version metadata:** `versionName 2.0`, `versionCode 39`
-- **Build workflow:** [#45563020342](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45563020342) — completed successfully.
-- **Release publication workflow:** [#45563020178](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45563020178) — completed successfully.
-- **Device verification:** CI completion does not confirm physical-device installation, upgrade behaviour, launcher refresh or OEM-specific features. Those still need to be checked on real hardware.
-
-See [CHANGELOG.md](CHANGELOG.md) for the version history.
-
 ## Project principles
 
 - Keep the listening experience central.
