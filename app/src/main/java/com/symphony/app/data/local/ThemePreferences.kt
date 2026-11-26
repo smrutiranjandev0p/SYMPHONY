@@ -22,13 +22,16 @@ enum class AccentMode(val storageValue: String) {
 }
 
 enum class FlowArtworkStyle(val storageValue: String, val title: String, val description: String) {
-    CRYSTAL("crystal", "Crystal Glass", "Clear glass edges with cool iridescent reflections"),
-    AURORA("aurora", "Aurora Glass", "Purple-violet liquid edges with ambient glow"),
-    OBSIDIAN("obsidian", "Obsidian Glass", "Deep black glass with subtle polished reflections");
+    NONE("none", "No Border", "Show the original artwork without a frame"),
+    TITANIUM("titanium", "Titanium", "Precision-cut silver frame with a soft metallic edge"),
+    CRYSTAL("crystal", "Crystal", "Clear polished glass with cool refracted highlights"),
+    AURORA("aurora", "Aurora", "Violet and cyan luminous edge accents"),
+    OBSIDIAN("obsidian", "Obsidian", "Deep graphite frame with a restrained inner sheen"),
+    PRISM("prism", "Prism", "Subtle multi-tone spectrum along the artwork edge");
 
     companion object {
         fun fromStorage(value: String?): FlowArtworkStyle =
-            entries.firstOrNull { it.storageValue == value } ?: AURORA
+            entries.firstOrNull { it.storageValue == value } ?: TITANIUM
     }
 }
 
@@ -61,7 +64,7 @@ data class ThemePrefs(
     val symphonyTheme: Boolean = false,
     val useLegacyColors: Boolean = false,
     val appIcon: AppIcon = AppIcon.DEFAULT,
-    val flowArtworkStyle: FlowArtworkStyle = FlowArtworkStyle.AURORA,
+    val flowArtworkStyle: FlowArtworkStyle = FlowArtworkStyle.TITANIUM,
 )
 
 @Singleton
