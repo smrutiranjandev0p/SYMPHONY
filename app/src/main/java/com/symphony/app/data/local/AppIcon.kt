@@ -5,6 +5,10 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.symphony.app.R
 
+/**
+ * SYMPHONY has one official visual identity. Kept as an enum so saved
+ * preferences from older releases migrate safely to the single DEFAULT icon.
+ */
 enum class AppIcon(
     val id: String,
     @StringRes val titleRes: Int,
@@ -20,34 +24,10 @@ enum class AppIcon(
         componentName = "com.symphony.app.MainActivity",
         logoRes = R.drawable.ic_launcher_purple_glass,
         backgroundRes = R.color.ic_launcher_background,
-    ),
-    DESKTOP(
-        id = "desktop",
-        titleRes = R.string.app_icon_desktop,
-        subtitleRes = R.string.app_icon_desktop_sub,
-        componentName = "com.symphony.app.MainActivityDesktop",
-        logoRes = R.mipmap.ic_launcher_desktop,
-        backgroundRes = R.color.ic_launcher_background_desktop,
-    ),
-    WHITE(
-        id = "white",
-        titleRes = R.string.app_icon_white,
-        subtitleRes = R.string.app_icon_white_sub,
-        componentName = "com.symphony.app.MainActivityWhite",
-        logoRes = R.mipmap.ic_launcher_white,
-        backgroundRes = R.color.ic_launcher_background_white,
-    ),
-    BLACK(
-        id = "black",
-        titleRes = R.string.app_icon_black,
-        subtitleRes = R.string.app_icon_black_sub,
-        componentName = "com.symphony.app.MainActivityBlack",
-        logoRes = R.mipmap.ic_launcher_black,
-        backgroundRes = R.color.ic_launcher_background_black,
     );
 
     companion object {
-        fun fromId(id: String?): AppIcon =
-            entries.firstOrNull { it.id == id } ?: DEFAULT
+        /** Any legacy saved choice (Desktop/White/Black) resolves to Purple Glass. */
+        fun fromId(id: String?): AppIcon = DEFAULT
     }
 }
