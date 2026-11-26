@@ -7,16 +7,18 @@
 - **Monochrome launcher artwork:** Added a matching monochrome version for supported themed-icon launchers.
 
 ### Changed
-- **Appearance icon selector:** Updated the Glass Wave option to Purple Glass and refreshed the selector preview and related in-app icon presentation to match the new artwork.
+- **Appearance icon selector:** Uses the exact supplied Purple Glass artwork in both the selector and selected-icon header; Desktop, Pure White and Obsidian Black previews now point to their own artwork resources.
+- **Icon resource correction:** Replaced the earlier hand-drawn Purple Glass approximation with the supplied artwork. Desktop, Pure White and Obsidian Black no longer share the same adaptive foreground vector; their density-specific launcher artwork is restored.
 - **Adaptive launcher resources:** Updated the adaptive icon foreground and background while retaining Android's existing launcher-alias switching architecture and other selectable icon editions.
 - **Playback stack:** Aligned ExoPlayer, OkHttp datasource, HLS and DASH modules on AndroidX Media3 1.9.0 with Jellyfin FFmpeg decoder 1.9.0+1.
 - **Audio sink compatibility:** Updated custom audio sink implementations and player callbacks for the Media3 1.9.0 API.
 - **Playback resolution:** Retained the existing InnerTubeX-first stream resolution and NewPipe fallback architecture.
-- **Version metadata:** Set user-facing `versionName` to `2.0` and Android `versionCode` to `39`.
+- **Version metadata:** Set user-facing `versionName` to `2.0` and Android `versionCode` to `40` for the v2.0 icon-correction build.
 
 ### Validation
 - Playback v2.0 automated CI build and regression checks passed on the playback feature branch before merge.
-- Purple Glass icon resource changes were merged to `main`; Android launcher rendering and live icon switching still require physical-device verification.
+- Exact-artwork correction and per-variant launcher resource fixes are being validated in CI on a follow-up v2.0 build.
+- Android launcher rendering and live icon switching still require physical-device verification.
 - Physical-device installation, in-place upgrade and real-world playback performance remain to be verified.
 - CI success does not replace OEM launcher and hardware testing.
 
