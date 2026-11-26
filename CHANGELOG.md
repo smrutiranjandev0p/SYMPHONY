@@ -13,11 +13,12 @@
 - **Playback stack:** Aligned ExoPlayer, OkHttp datasource, HLS and DASH modules on AndroidX Media3 1.9.0 with Jellyfin FFmpeg decoder 1.9.0+1.
 - **Audio sink compatibility:** Updated custom audio sink implementations and player callbacks for the Media3 1.9.0 API.
 - **Playback resolution:** Retained the existing InnerTubeX-first stream resolution and NewPipe fallback architecture.
+- **Flow live recommendations:** Flow's vertical pager now observes the active live playback queue while Flow owns playback, exposing radio-continuation tracks appended in the background to manual swiping. Existing recommendation ordering, deduplication, radio continuation and stream resolution remain unchanged.
 - **Version metadata:** Set user-facing `versionName` to `2.0` and Android `versionCode` to `40` for the v2.0 icon-correction build.
 
 ### Validation
 - Playback v2.0 automated CI build and regression checks passed on the playback feature branch before merge.
-- Exact-artwork correction and per-variant launcher resource fixes are being validated in CI on a follow-up v2.0 build.
+- [Combined v2.0 CI workflow #45788255391](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45788255391) completed successfully: regression checks, release APK assembly, signature verification and artifact upload all passed.
 - Android launcher rendering and live icon switching still require physical-device verification.
 - Physical-device installation, in-place upgrade and real-world playback performance remain to be verified.
 - CI success does not replace OEM launcher and hardware testing.
