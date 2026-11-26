@@ -1229,11 +1229,18 @@ fun SettingsScreen(
                                 position = position,
                                 isHighlighted = (highlightedSettingId == "appearance.theme_mode"),
                             )
-                            1 -> AppIconSelectorCard(
-                                currentIcon = theme?.appIcon ?: AppIcon.DEFAULT,
-                                onSelectAppIcon = viewModel::setAppIcon,
-                                isHighlighted = (highlightedSettingId == "appearance.app_icon"),
-                            )
+                            1 -> Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                                AppIconSelectorCard(
+                                    currentIcon = theme?.appIcon ?: AppIcon.DEFAULT,
+                                    onSelectAppIcon = viewModel::setAppIcon,
+                                    isHighlighted = (highlightedSettingId == "appearance.app_icon"),
+                                )
+                                FlowArtworkEffectsCard(
+                                    currentStyle = theme?.flowArtworkStyle ?: com.symphony.app.data.local.FlowArtworkStyle.AURORA,
+                                    onSelectStyle = viewModel::setFlowArtworkStyle,
+                                    isHighlighted = (highlightedSettingId == "appearance.flow_artwork_effects"),
+                                )
+                            }
                             2 -> SettingsToggleCard(
                                 icon = Icons.Filled.AutoAwesome,
                                 iconContainer = MaterialTheme.colorScheme.primaryContainer,
