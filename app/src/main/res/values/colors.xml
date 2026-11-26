@@ -5,10 +5,10 @@
          never flashes a mismatched color. -->
     <color name="splash_background">#FF100F0F</color>
 
-    <!-- SYMPHONY app icon (Aug 2026 restore): the lime circle behind the
-         four bars in the official logo. Used as the adaptive icon's
+    <!-- SYMPHONY app icon (Aug 2026 restore): the purple glass disc behind the
+         treble-clef and waveform mark. Used as the adaptive icon's
          background layer, paired with ic_launcher_foreground for the bars. -->
-    <color name="ic_launcher_background">#FF111A2C</color>
+    <color name="ic_launcher_background">#FF35106B</color>
     <color name="ic_launcher_background_desktop">#FFBFF30C</color>
     <color name="ic_launcher_background_white">#FFFFFFFF</color>
     <color name="ic_launcher_background_black">#FF000000</color>
