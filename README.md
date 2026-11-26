@@ -69,7 +69,7 @@ A place to revisit local songs, downloads, liked tracks, playlists and connected
 
 ### Personalisation
 - System, Light and Dark appearance modes.
-- Purple Glass, Desktop, Pure White and Obsidian Black launcher icon editions.
+- Purple Glass, Desktop, Pure White and Obsidian Black launcher icon editions, each backed by its own launcher artwork.
 - SYMPHONY Signature Theme, AMOLED appearance and Dynamic Color options.
 - Liquid Glass surfaces with platform-aware fallbacks.
 - Floating Navigation Dock option.
