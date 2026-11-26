@@ -219,7 +219,6 @@ fun FlowScreen(
                 onPartyTorchEnabledChange = { partyTorchEnabled = it },
                 audioSessionId = musicPlayer.activePlayer?.audioSessionId ?: 0,
                 artworkStyle = artworkStyle,
-                artworkStyle = artworkStyle,
             )
         }
         menuTrack?.let { track ->
