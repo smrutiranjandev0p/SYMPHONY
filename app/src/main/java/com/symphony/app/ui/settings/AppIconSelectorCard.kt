@@ -28,12 +28,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.symphony.app.data.local.AppIcon
 
@@ -60,20 +60,14 @@ internal fun AppIconSelectorCard(
     ) {
         Column(Modifier.padding(horizontal = 18.dp, vertical = 18.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Surface(
-                    shape = RoundedCornerShape(16.dp),
-                    color = MaterialTheme.colorScheme.primaryContainer,
-                    modifier = Modifier.size(48.dp),
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Icon(
-                            painter = painterResource(currentIcon.logoRes),
-                            contentDescription = null,
-                            tint = Color.Unspecified,
-                            modifier = Modifier.size(30.dp),
-                        )
-                    }
-                }
+                Image(
+                    painter = painterResource(currentIcon.logoRes),
+                    contentDescription = null,
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(14.dp)),
+                )
                 Column(Modifier.padding(start = 14.dp).weight(1f)) {
                     Text(
                         stringResource(com.symphony.app.R.string.settings_section_app_icon),
@@ -89,14 +83,17 @@ internal fun AppIconSelectorCard(
             }
             Spacer(Modifier.height(18.dp))
             Row(
-                modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+                    .padding(horizontal = 4.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 AppIcon.entries.forEach { icon ->
                     val selected = icon == currentIcon
                     Column(
                         modifier = Modifier
-                            .width(104.dp)
+                            .width(124.dp)
                             .clip(RoundedCornerShape(20.dp))
                             .clickable { onSelectAppIcon(icon) }
                             .then(
@@ -111,19 +108,15 @@ internal fun AppIconSelectorCard(
                     ) {
                         Box(
                             modifier = Modifier
-                                .size(78.dp)
-                                .clip(RoundedCornerShape(24.dp)),
+                                .size(82.dp)
+                                .clip(RoundedCornerShape(22.dp)),
                             contentAlignment = Alignment.Center,
                         ) {
-                            Surface(
-                                modifier = Modifier.matchParentSize(),
-                                color = colorResource(icon.backgroundRes),
-                                shape = RoundedCornerShape(24.dp),
-                            ) {}
                             Image(
                                 painter = painterResource(icon.logoRes),
                                 contentDescription = stringResource(icon.titleRes),
-                                modifier = Modifier.size(68.dp),
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier.fillMaxWidth(),
                             )
                             if (selected) {
                                 Surface(
@@ -149,14 +142,18 @@ internal fun AppIconSelectorCard(
                             fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
                             color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
                             textAlign = TextAlign.Center,
-                            maxLines = 1,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                            minLines = 2,
                         )
                         Text(
                             stringResource(icon.subtitleRes),
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center,
-                            minLines = 2,
+                            minLines = 3,
+                            maxLines = 3,
+                            overflow = TextOverflow.Ellipsis,
                         )
                     }
                 }
