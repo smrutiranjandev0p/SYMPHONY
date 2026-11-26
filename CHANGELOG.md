@@ -3,30 +3,29 @@
 ## [2.0] - 2026-11-26
 
 ### Added
-- **Purple Glass launcher identity:** Added a deep-violet glass adaptive launcher icon with the SYMPHONY treble-clef and waveform mark.
-- **Monochrome launcher artwork:** Added a matching monochrome version for supported themed-icon launchers.
+- **Single official SYMPHONY identity:** The supplied Purple Glass artwork is now the only app icon used by the Android launcher and the Appearance screen.
 
 ### Changed
-- **Appearance icon selector:** Uses the exact supplied Purple Glass artwork in both the selector and selected-icon header; Desktop, Pure White and Obsidian Black previews now point to their own artwork resources.
-- **Icon resource correction:** Replaced the earlier hand-drawn Purple Glass approximation with the supplied artwork. Desktop, Pure White and Obsidian Black no longer share the same adaptive foreground vector; their density-specific launcher artwork is restored.
-- **Adaptive launcher resources:** Updated the adaptive icon foreground and background while retaining Android's existing launcher-alias switching architecture and other selectable icon editions.
+- **Appearance screen:** Replaced the multi-option icon carousel with one non-selectable official-brand preview. The preview uses the same Purple Glass artwork resource as the app identity.
+- **Launcher architecture:** Removed the Desktop, Pure White, Obsidian Black and legacy default launcher aliases. The manifest now exposes only the single MainActivity launcher alias.
+- **Legacy icon migration:** Startup reconciliation re-enables the one surviving launcher alias, repairing devices that previously selected one of the removed variants.
+- **Resource cleanup:** Deleted obsolete alternate icon PNG/XML artwork and their unused background colours and labels.
 - **Playback stack:** Aligned ExoPlayer, OkHttp datasource, HLS and DASH modules on AndroidX Media3 1.9.0 with Jellyfin FFmpeg decoder 1.9.0+1.
 - **Audio sink compatibility:** Updated custom audio sink implementations and player callbacks for the Media3 1.9.0 API.
 - **Playback resolution:** Retained the existing InnerTubeX-first stream resolution and NewPipe fallback architecture.
-- **Flow live recommendations:** Flow's vertical pager now observes the active live playback queue while Flow owns playback, exposing radio-continuation tracks appended in the background to manual swiping. Existing recommendation ordering, deduplication, radio continuation and stream resolution remain unchanged.
-- **Version metadata:** Set user-facing `versionName` to `2.0` and Android `versionCode` to `40` for the v2.0 icon-correction build.
+- **Flow live recommendations:** Flow's vertical pager observes the active live playback queue while Flow owns playback, exposing radio-continuation tracks appended in the background to manual swiping.
+- **Version metadata:** Set user-facing `versionName` to `2.0` and Android `versionCode` to `41`.
 
 ### Validation
-- Playback v2.0 automated CI build and regression checks passed on the playback feature branch before merge.
-- [Combined v2.0 CI workflow #45788255391](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45788255391) completed successfully: regression checks, release APK assembly, signature verification and artifact upload all passed.
-- Android launcher rendering and live icon switching still require physical-device verification.
-- Physical-device installation, in-place upgrade and real-world playback performance remain to be verified.
-- CI success does not replace OEM launcher and hardware testing.
+- Automated download, playback and scrobbler regression checks passed in [workflow #45788255391](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45788255391) for the previous combined v2.0 changes.
+- The single-icon cleanup is awaiting its own release build and regression workflow.
+- Physical-device installation, launcher refresh and Flow swipe behaviour still require verification on an Android device.
 
 ### Release artifact
-- The v2.0 source is merged into `main`. A public GitHub Release with verified v2.0 APK assets has not yet been published. Check [GitHub Actions](https://github.com/smrutiranjandev0p/SYMPHONY/actions) for build artifacts.
+- The v2.0 source is merged into `main`. The updated single-icon build will be published as a new v2.0 artifact after CI succeeds; the public GitHub Release is still pending.
 
 ---
+
 
 All notable user-facing and project changes are documented here. Release assets and platform-specific installation notes are published on the [GitHub Releases page](https://github.com/smrutiranjandev0p/SYMPHONY/releases).
 
