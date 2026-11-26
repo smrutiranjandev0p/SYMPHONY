@@ -499,6 +499,41 @@ object SettingsSearchIndex {
             )
             add(
                 SettingsEntry(
+                    id = "appearance.artwork_border",
+                    title = "Artwork Border",
+                    subtitle = "Choose a premium frame for the Flow song artwork",
+                    keywords = listOf(
+                        "artwork border", "flow border", "album art frame", "cover frame",
+                        "titanium", "crystal", "aurora", "obsidian", "prism"
+                    ),
+                    icon = Icons.Filled.Layers,
+                    iconContainer = { MaterialTheme.colorScheme.primaryContainer },
+                    iconTint = { MaterialTheme.colorScheme.onPrimaryContainer },
+                    parentTab = SettingsTab.APPEARANCE,
+                    section = "Appearance",
+                    type = EntryType.ACTION,
+                )
+            )
+            add(
+                SettingsEntry(
+                    id = "appearance.flow_atmosphere",
+                    title = "Flow Atmosphere",
+                    subtitle = "Ambient hearts, audio-reactive aura, cinematic motion and particles",
+                    keywords = listOf(
+                        "flow atmosphere", "heartfall", "floating hearts", "audio reactive aura",
+                        "cinematic motion", "stardust", "aurora flow", "light sweep", "dreamy bokeh",
+                        "particles", "music visualizer"
+                    ),
+                    icon = Icons.Filled.AutoAwesome,
+                    iconContainer = { MaterialTheme.colorScheme.secondaryContainer },
+                    iconTint = { MaterialTheme.colorScheme.onSecondaryContainer },
+                    parentTab = SettingsTab.APPEARANCE,
+                    section = "Appearance",
+                    type = EntryType.ACTION,
+                )
+            )
+            add(
+                SettingsEntry(
                     id = "appearance.symphony_theme",
                     title = "SYMPHONY Signature Theme",
                     subtitle = "Bespoke logo palette with Electric Lime and Obsidian Teal",
