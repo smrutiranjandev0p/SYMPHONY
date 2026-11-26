@@ -427,6 +427,11 @@ android {
 
     testOptions {
         unitTests.isReturnDefaultValues = true
+        // Robolectric otherwise uses repo1.maven.org at test runtime. The canonical
+        // Maven Central host is more reliable on hosted CI runners.
+        unitTests.all {
+            it.systemProperty("robolectric.dependency.repo.url", "https://repo.maven.apache.org/maven2")
+        }
     }
 }
 
