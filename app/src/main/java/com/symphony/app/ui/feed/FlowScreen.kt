@@ -36,6 +36,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,12 +55,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.symphony.app.data.local.FlowArtworkStyle
 import com.symphony.app.data.local.FlowAtmosphereEffect
 import com.symphony.app.data.local.FlowAtmosphereSettings
 import com.symphony.app.ui.settings.SettingsViewModel
+import com.symphony.app.playback.rhythm.FluidRhythmEngine
 import com.symphony.app.data.music.HomeShelfItem
 import com.symphony.app.data.music.YouTubeMusicTrack
 import com.symphony.app.playback.toPlayableTrack
@@ -96,6 +101,34 @@ fun FlowScreen(
     val appearanceTheme by settingsViewModel.theme.collectAsStateWithLifecycle()
     val artworkStyle = appearanceTheme?.flowArtworkStyle ?: FlowArtworkStyle.TITANIUM
     val atmosphereSettings = appearanceTheme?.flowAtmosphere ?: FlowAtmosphereSettings.DEFAULT
+    val lifecycleOwner = LocalLifecycleOwner.current
+    var isForeground by remember(lifecycleOwner) {
+        mutableStateOf(lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
+    }
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_START -> isForeground = true
+                Lifecycle.Event.ON_STOP -> isForeground = false
+                else -> Unit
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+    val flowAudioAuraActive = isForeground &&
+        atmosphereSettings.enabled &&
+        FlowAtmosphereEffect.AUDIO_REACTIVE_AURA in atmosphereSettings.effects
+    DisposableEffect(flowAudioAuraActive) {
+        val previousEnabled = FluidRhythmEngine.isEnabled
+        if (flowAudioAuraActive) FluidRhythmEngine.isEnabled = true
+        onDispose {
+            if (flowAudioAuraActive) {
+                FluidRhythmEngine.isEnabled = previousEnabled
+                if (!previousEnabled) FluidRhythmEngine.tick(0.016f, false)
+            }
+        }
+    }
     val likedKeys by playerViewModel.likedTrackKeys.collectAsStateWithLifecycle()
     var menuTrack by remember { mutableStateOf<YouTubeMusicTrack?>(null) }
     var partyTorchEnabled by remember { mutableStateOf(false) }
@@ -293,6 +326,7 @@ private fun FlowPage(
             settings = atmosphere,
             isPlaying = isPlaying,
             isCurrentPage = isCurrentPage,
+            isForeground = isForeground,
             primaryColor = scheme.primary,
             secondaryColor = scheme.secondary,
         )
