@@ -14,7 +14,7 @@ A native Android music player built around immersive Flow discovery, flexible pl
 </p>
 
 <p align="center">
-  <a href="https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/2.0"><strong>⬇ Download v1.5</strong></a>
+  <a href="https://github.com/smrutiranjandev0p/SYMPHONY/actions"><strong>View build artifacts</strong></a>
   &nbsp;·&nbsp;
   <a href="#features"><strong>Explore features</strong></a>
   &nbsp;·&nbsp;
@@ -25,11 +25,11 @@ A native Android music player built around immersive Flow discovery, flexible pl
 
 ## About SYMPHONY
 
-**SYMPHONY 1.5** is an independent, native Android music player designed around an artwork-first listening experience. Its four primary destinations are **Flow, Home, Statistics and Library**. The Flow experience uses swipe-led, full-screen music discovery inspired by the interaction style popularised by Resso, while keeping SYMPHONY's own visual identity, playback system and feature set.
+**SYMPHONY 2.0** is an independent, native Android music player designed around an artwork-first listening experience. Its four primary destinations are **Flow, Home, Statistics and Library**. The Flow experience uses swipe-led, full-screen music discovery inspired by the interaction style popularised by Resso, while keeping SYMPHONY's own visual identity, playback system and feature set.
 
 ## Download
 
-The official stable release is **v1.5**.
+The v2.0 source is merged into `main`. A GitHub Release with verified v2.0 APK assets has not yet been published; use the repository Actions artifacts until release publication.
 
 | APK | Choose this when |
 | --- | --- |
@@ -80,7 +80,7 @@ A place to revisit local songs, downloads, liked tracks, playlists and connected
 
 ### Personalisation
 - System, Light and Dark appearance modes.
-- Glass Wave, Desktop, Pure White and Obsidian Black launcher icon editions.
+- Purple Glass, Desktop, Pure White and Obsidian Black launcher icon editions.
 - SYMPHONY Signature Theme, AMOLED appearance and Dynamic Color options.
 - Liquid Glass surfaces with platform-aware fallbacks.
 - Floating Navigation Dock option.
@@ -176,13 +176,14 @@ SYMPHONY/
 └── README.md
 ```
 
-## Current release and verification
+## Current version and verification
 
-- **Release:** [SYMPHONY 2.0](https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/2.0)
+- **Version:** SYMPHONY 2.0 source merged into `main`; GitHub Release publication is pending.
 - **Android version metadata:** `versionName 2.0`, `versionCode 39`
 - **Playback stack:** AndroidX Media3 1.9.0 with matching Jellyfin FFmpeg decoder 1.9.0+1; InnerTubeX and NewPipe fallback paths retained.
-- **Validation:** Release APK build, automated playback/download/scrobbler regression tests, APK signature verification and artifact upload passed in [GitHub Actions #112](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45773501166).
-- **Device verification:** Physical-device installation, in-place upgrade and real-world playback performance remain to be verified.
+- **Playback validation:** Playback v2.0 CI build and automated regression checks passed on the playback feature branch before merge. See [GitHub Actions](https://github.com/smrutiranjandev0p/SYMPHONY/actions) for current runs.
+- **Icon validation:** Adaptive launcher foreground, background and monochrome artwork were updated; actual OEM launcher refresh and icon switching still require physical-device verification.
+- **Device verification:** Physical-device installation, in-place upgrade, icon switching and real-world playback performance remain to be verified.
 
 ## Project principles
 
