@@ -111,7 +111,7 @@ data class FlowAtmosphereSettings(
             density: String?,
             audioSensitivity: String?,
         ): FlowAtmosphereSettings {
-            val parsedEffects = effects?.mapNotNull(FlowAtmosphereEffect::fromStorage)?.toSet()
+            val parsedEffects = effects?.mapNotNull { FlowAtmosphereEffect.fromStorage(it) }?.toSet()
                 ?: DEFAULT_EFFECTS
             return FlowAtmosphereSettings(
                 enabled = enabled ?: true,
