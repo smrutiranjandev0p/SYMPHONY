@@ -1235,10 +1235,10 @@ fun SettingsScreen(
                                     onSelectAppIcon = viewModel::setAppIcon,
                                     isHighlighted = (highlightedSettingId == "appearance.app_icon"),
                                 )
-                                FlowArtworkEffectsCard(
-                                    currentStyle = theme?.flowArtworkStyle ?: com.symphony.app.data.local.FlowArtworkStyle.AURORA,
+                                FlowArtworkBorderCard(
+                                    currentStyle = theme?.flowArtworkStyle ?: com.symphony.app.data.local.FlowArtworkStyle.TITANIUM,
                                     onSelectStyle = viewModel::setFlowArtworkStyle,
-                                    isHighlighted = (highlightedSettingId == "appearance.flow_artwork_effects"),
+                                    isHighlighted = (highlightedSettingId == "appearance.artwork_border"),
                                 )
                             }
                             2 -> SettingsToggleCard(
