@@ -26,7 +26,7 @@ enum class AppIcon(
         titleRes = R.string.app_icon_desktop,
         subtitleRes = R.string.app_icon_desktop_sub,
         componentName = "com.symphony.app.MainActivityDesktop",
-        logoRes = R.mipmap.ic_launcher_desktop,
+        logoRes = R.drawable.ic_launcher_desktop_art,
         backgroundRes = R.color.ic_launcher_background_desktop,
     ),
     WHITE(
@@ -34,7 +34,7 @@ enum class AppIcon(
         titleRes = R.string.app_icon_white,
         subtitleRes = R.string.app_icon_white_sub,
         componentName = "com.symphony.app.MainActivityWhite",
-        logoRes = R.mipmap.ic_launcher_white,
+        logoRes = R.drawable.ic_launcher_white_art,
         backgroundRes = R.color.ic_launcher_background_white,
     ),
     BLACK(
@@ -42,7 +42,7 @@ enum class AppIcon(
         titleRes = R.string.app_icon_black,
         subtitleRes = R.string.app_icon_black_sub,
         componentName = "com.symphony.app.MainActivityBlack",
-        logoRes = R.mipmap.ic_launcher_black,
+        logoRes = R.drawable.ic_launcher_black_art,
         backgroundRes = R.color.ic_launcher_background_black,
     );
 
