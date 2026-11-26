@@ -39,6 +39,7 @@ The **v2.0 source code is merged into `main`**. A public v2.0 GitHub Release and
 - Prominent playback controls, track actions and lyrics access.
 - Party Torch entry point with opt-in audio-reactive flash behaviour and Light Studio on compatible hardware.
 - Flow follows queue auto-advance while retaining manual swipe selection.
+- **Live radio discovery:** When Flow is the active playback source, its vertical pager observes the live playback queue, including recommendations appended by radio continuation, so manually swiping can reach tracks added after playback starts.
 
 ### Home
 A home surface for discovery, recommendations and music entry points. Available cards and content depend on configured sources, network access and account state.
@@ -168,10 +169,10 @@ SYMPHONY/
 ## Current version and verification
 
 - **Version:** SYMPHONY 2.0 source merged into `main`; GitHub Release publication is pending.
-- **Android version metadata:** `versionName 2.0`, `versionCode 39`
+- **Android version metadata:** `versionName 2.0`, `versionCode 40`
 - **Playback stack:** AndroidX Media3 1.9.0 with matching Jellyfin FFmpeg decoder 1.9.0+1; InnerTubeX and NewPipe fallback paths retained.
-- **Playback validation:** Playback v2.0 CI build and automated regression checks passed on the playback feature branch before merge. See [GitHub Actions](https://github.com/smrutiranjandev0p/SYMPHONY/actions) for current runs.
-- **Icon validation:** Adaptive launcher foreground, background and monochrome artwork were updated; actual OEM launcher refresh and icon switching still require physical-device verification.
+- **Playback and Flow validation:** Release build and automated download, playback and scrobbler regression checks passed in [workflow #45788255391](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45788255391) for the combined v2.0 icon and Flow queue changes.
+- **Icon validation:** Exact supplied Purple Glass artwork and separate Desktop, Pure White and Obsidian Black launcher resources are included. Actual OEM launcher refresh and switching still require physical-device verification.
 - **Device verification:** Physical-device installation, in-place upgrade, icon switching and real-world playback performance remain to be verified.
 
 ## Project principles
