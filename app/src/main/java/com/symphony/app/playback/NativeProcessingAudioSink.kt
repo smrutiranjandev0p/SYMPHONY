@@ -992,6 +992,9 @@ class NativeProcessingAudioSink(
         fallbackDelegate.setPlaybackParameters(playbackParameters)
     }
 
+    override fun getAudioTrackBufferSizeUs(): Long =
+        if (usbExclusive || internalActive) C.TIME_UNSET else activeDelegate.getAudioTrackBufferSizeUs()
+
     override fun getPlaybackParameters(): PlaybackParameters =
         activeDelegate.getPlaybackParameters()
 
