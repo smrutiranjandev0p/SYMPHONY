@@ -1231,7 +1231,6 @@ fun SettingsScreen(
                             )
                             1 -> AppIconSelectorCard(
                                 currentIcon = theme?.appIcon ?: AppIcon.DEFAULT,
-                                onSelectAppIcon = viewModel::setAppIcon,
                                 isHighlighted = (highlightedSettingId == "appearance.app_icon"),
                             )
                             2 -> SettingsToggleCard(
