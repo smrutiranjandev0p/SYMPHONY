@@ -70,7 +70,7 @@ A place to revisit local songs, downloads, liked tracks, playlists and connected
 
 ### Personalisation
 - System, Light and Dark appearance modes.
-- Purple Glass, Desktop, Pure White and Obsidian Black launcher icon editions, each backed by its own launcher artwork.
+- Four coordinated launcher editions: Purple Glass, cyan-glass Desktop, pearl-glass Pure White and violet-rimmed Obsidian Black.
 - SYMPHONY Signature Theme, AMOLED appearance and Dynamic Color options.
 - Liquid Glass surfaces with platform-aware fallbacks.
 - Floating Navigation Dock option.
@@ -169,7 +169,7 @@ SYMPHONY/
 ## Current version and verification
 
 - **Version:** SYMPHONY 2.0 source merged into `main`; GitHub Release publication is pending.
-- **Android version metadata:** `versionName 2.0`, `versionCode 40`
+- **Android version metadata:** `versionName 2.0`, `versionCode 41`
 - **Playback stack:** AndroidX Media3 1.9.0 with matching Jellyfin FFmpeg decoder 1.9.0+1; InnerTubeX and NewPipe fallback paths retained.
 - **Playback and Flow validation:** Release build and automated download, playback and scrobbler regression checks passed in [workflow #45788255391](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45788255391) for the combined v2.0 icon and Flow queue changes.
 - **Icon validation:** Exact supplied Purple Glass artwork and separate Desktop, Pure White and Obsidian Black launcher resources are included. Actual OEM launcher refresh and switching still require physical-device verification.

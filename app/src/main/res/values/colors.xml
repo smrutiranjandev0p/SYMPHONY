@@ -9,7 +9,7 @@
          treble-clef and waveform mark. Used as the adaptive icon's
          background layer, paired with ic_launcher_foreground for the bars. -->
     <color name="ic_launcher_background">#FF35106B</color>
-    <color name="ic_launcher_background_desktop">#FFBFF30C</color>
-    <color name="ic_launcher_background_white">#FFFFFFFF</color>
-    <color name="ic_launcher_background_black">#FF000000</color>
+    <color name="ic_launcher_background_desktop">#FF062A48</color>
+    <color name="ic_launcher_background_white">#FFF4F1FF</color>
+    <color name="ic_launcher_background_black">#FF080711</color>
 </resources>

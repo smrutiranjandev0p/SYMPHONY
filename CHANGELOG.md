@@ -7,14 +7,14 @@
 - **Monochrome launcher artwork:** Added a matching monochrome version for supported themed-icon launchers.
 
 ### Changed
-- **Appearance icon selector:** Uses the exact supplied Purple Glass artwork in both the selector and selected-icon header; Desktop, Pure White and Obsidian Black previews now point to their own artwork resources.
-- **Icon resource correction:** Replaced the earlier hand-drawn Purple Glass approximation with the supplied artwork. Desktop, Pure White and Obsidian Black no longer share the same adaptive foreground vector; their density-specific launcher artwork is restored.
+- **Appearance icon selector:** Uses the exact supplied Purple Glass artwork in both the selector and selected-icon header; Desktop, Pure White and Obsidian Black previews now point to newly generated cyan-glass, pearl-glass and obsidian-glass artwork derived from the Purple Glass visual language.
+- **Icon resource correction:** Replaced the earlier hand-drawn Purple Glass approximation with the supplied artwork. Desktop, Pure White and Obsidian Black no longer share the same adaptive foreground vector; their individual launcher artwork is rebuilt around the same treble-clef, waveform and layered glass design as Purple Glass.
 - **Adaptive launcher resources:** Updated the adaptive icon foreground and background while retaining Android's existing launcher-alias switching architecture and other selectable icon editions.
 - **Playback stack:** Aligned ExoPlayer, OkHttp datasource, HLS and DASH modules on AndroidX Media3 1.9.0 with Jellyfin FFmpeg decoder 1.9.0+1.
 - **Audio sink compatibility:** Updated custom audio sink implementations and player callbacks for the Media3 1.9.0 API.
 - **Playback resolution:** Retained the existing InnerTubeX-first stream resolution and NewPipe fallback architecture.
 - **Flow live recommendations:** Flow's vertical pager now observes the active live playback queue while Flow owns playback, exposing radio-continuation tracks appended in the background to manual swiping. Existing recommendation ordering, deduplication, radio continuation and stream resolution remain unchanged.
-- **Version metadata:** Set user-facing `versionName` to `2.0` and Android `versionCode` to `40` for the v2.0 icon-correction build.
+- **Version metadata:** Set user-facing `versionName` to `2.0` and Android `versionCode` to `41` for the v2.0 icon-correction build.
 
 ### Validation
 - Playback v2.0 automated CI build and regression checks passed on the playback feature branch before merge.

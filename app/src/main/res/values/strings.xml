@@ -112,11 +112,11 @@
     <string name="app_icon_default">Purple Glass</string>
     <string name="app_icon_default_sub">Purple glass disc with a luminous treble clef and audio waveform</string>
     <string name="app_icon_desktop">Desktop</string>
-    <string name="app_icon_desktop_sub">SYMPHONY Desktop Player edition</string>
+    <string name="app_icon_desktop_sub">Cyan glass with a deep-blue music core</string>
     <string name="app_icon_white">Pure White</string>
-    <string name="app_icon_white_sub">White logo with black strip lines</string>
+    <string name="app_icon_white_sub">Pearl glass with violet music accents</string>
     <string name="app_icon_black">Obsidian Black</string>
-    <string name="app_icon_black_sub">Black logo with white strip lines</string>
+    <string name="app_icon_black_sub">Obsidian glass with neon-violet glow</string>
     <string name="settings_symphony_theme">SYMPHONY Signature Theme</string>
     <string name="settings_symphony_theme_sub">Bespoke logo palette • Electric Lime &amp; Obsidian Teal</string>
     <string name="settings_amoled">AMOLED Mode</string>
