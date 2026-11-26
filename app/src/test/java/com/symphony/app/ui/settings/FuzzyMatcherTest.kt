@@ -111,6 +111,18 @@ class FuzzyMatcherTest {
     }
 
     @Test
+    fun artworkBorderAndFlowAtmosphereAreSearchable() {
+        val borderResults = FuzzyMatcher.search("artwork border", allEntries)
+        assertThat(borderResults.any { it.entry.id == "appearance.artwork_border" }).isTrue()
+
+        val heartResults = FuzzyMatcher.search("floating hearts", allEntries)
+        assertThat(heartResults.any { it.entry.id == "appearance.flow_atmosphere" }).isTrue()
+
+        val audioAuraResults = FuzzyMatcher.search("audio reactive aura", allEntries)
+        assertThat(audioAuraResults.any { it.entry.id == "appearance.flow_atmosphere" }).isTrue()
+    }
+
+    @Test
     fun unrelatedQueryReturnsEmptyList() {
         val results = FuzzyMatcher.search("zyxwvutsrqp12345", allEntries)
         assertThat(results).isEmpty()
