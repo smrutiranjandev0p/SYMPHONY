@@ -5,7 +5,6 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -27,8 +26,6 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.symphony.app.data.local.FlowAtmosphereDensity
 import com.symphony.app.data.local.FlowAtmosphereEffect
 import com.symphony.app.data.local.FlowAtmosphereSettings
@@ -129,45 +126,16 @@ internal fun FlowAtmosphereOverlay(
     settings: FlowAtmosphereSettings,
     isPlaying: Boolean,
     isCurrentPage: Boolean,
+    isForeground: Boolean,
     primaryColor: Color,
     secondaryColor: Color,
     modifier: Modifier = Modifier,
 ) {
-    val lifecycleOwner = LocalLifecycleOwner.current
-    var foreground by remember(lifecycleOwner) {
-        mutableStateOf(lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
-    }
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            when (event) {
-                Lifecycle.Event.ON_START -> foreground = true
-                Lifecycle.Event.ON_STOP -> foreground = false
-                else -> Unit
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
-    }
-
     val activeEffects = settings.effects
-    val shouldAnimate = settings.enabled && activeEffects.isNotEmpty() && isCurrentPage && foreground
+    val shouldAnimate = settings.enabled && activeEffects.isNotEmpty() && isCurrentPage && isForeground
     val audioAuraActive = shouldAnimate && FlowAtmosphereEffect.AUDIO_REACTIVE_AURA in activeEffects
 
-    // The PCM tap is enabled only while the visible Flow page needs Audio Aura.
-    // It reuses the active player's sink and is restored to its previous state
-    // when the effect is switched off or Flow leaves the foreground.
-    DisposableEffect(audioAuraActive) {
-        val wasEnabled = FluidRhythmEngine.isEnabled
-        if (audioAuraActive) FluidRhythmEngine.isEnabled = true
-        onDispose {
-            if (audioAuraActive && !wasEnabled) {
-                FluidRhythmEngine.isEnabled = false
-                FluidRhythmEngine.tick(0.016f, false)
-            } else if (audioAuraActive) {
-                FluidRhythmEngine.isEnabled = wasEnabled
-            }
-        }
-    }
+    val audioAuraActive = shouldAnimate && FlowAtmosphereEffect.AUDIO_REACTIVE_AURA in activeEffects
 
     val heartSeeds = remember { particleSeeds(24, 0x51A7) }
     val dustSeeds = remember { particleSeeds(52, 0xD057) }
