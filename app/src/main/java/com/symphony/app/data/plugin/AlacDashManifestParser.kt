@@ -7,7 +7,7 @@ import androidx.media3.common.Format
 import androidx.media3.exoplayer.dash.manifest.DashManifestParser
 import androidx.media3.exoplayer.dash.manifest.Descriptor
 
-/** Media3 1.2.x does not derive a sample MIME type from DASH codec `alac`. */
+/** Media3 does not derive a sample MIME type from DASH codec `alac`. */
 internal class AlacDashManifestParser : DashManifestParser() {
     override fun buildFormat(
         id: String?,
@@ -22,6 +22,8 @@ internal class AlacDashManifestParser : DashManifestParser() {
         roleDescriptors: List<Descriptor>,
         accessibilityDescriptors: List<Descriptor>,
         codecs: String?,
+        supplementalCodecs: String?,
+        supplementalProfiles: String?,
         essentialProperties: List<Descriptor>,
         supplementalProperties: List<Descriptor>,
     ): Format {
@@ -38,6 +40,8 @@ internal class AlacDashManifestParser : DashManifestParser() {
             roleDescriptors,
             accessibilityDescriptors,
             codecs,
+            supplementalCodecs,
+            supplementalProfiles,
             essentialProperties,
             supplementalProperties,
         )

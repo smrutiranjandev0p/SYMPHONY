@@ -1,5 +1,27 @@
 # SYMPHONY Changelog
 
+## [2.0] - 2026-11-26
+
+### Added
+- **Media3 playback stack update:** Aligned ExoPlayer, OkHttp datasource, HLS and DASH modules on AndroidX Media3 1.9.0 with Jellyfin FFmpeg decoder 1.9.0+1.
+- **Audio sink compatibility:** Updated custom audio sink implementations and player callbacks for the Media3 1.9.0 API.
+
+### Changed
+- **Playback resolution:** Retained the existing InnerTubeX-first stream resolution and NewPipe fallback architecture.
+- **Version metadata:** Set user-facing `versionName` to `2.0` and Android `versionCode` to `39`.
+- **UI and product experience:** No intentional UI, navigation, theme, queue or playback-control redesign in this release.
+
+### Validation
+- GitHub Actions [build #112](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45773501166) completed successfully.
+- Automated download, playback and scrobbler regression tests passed.
+- Release APK assembly, APK signature verification and artifact upload passed.
+- Physical-device installation, in-place upgrade and real-world playback performance still require device testing.
+
+### Release artifact
+- CI artifact: `SYMPHONY-v2.0-APK` from workflow run #112. GitHub Actions artifact is available from the workflow run and is not yet a published GitHub Release.
+
+---
+
 All notable user-facing and project changes are documented here. Release assets and platform-specific installation notes are published on the [GitHub Releases page](https://github.com/smrutiranjandev0p/SYMPHONY/releases).
 
 ## [1.5] - 2026-11-25

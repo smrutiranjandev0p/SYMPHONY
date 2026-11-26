@@ -52,6 +52,8 @@ class CapturingAudioSink(
         if (isPcm(format)) AudioSink.SINK_FORMAT_SUPPORTED_DIRECTLY
         else AudioSink.SINK_FORMAT_UNSUPPORTED
 
+    override fun getAudioTrackBufferSizeUs(): Long = C.TIME_UNSET
+
     override fun getCurrentPositionUs(sourceTimeUs: Boolean): Long {
         val rate = sampleRate
         if (rate <= 0) return 0L
