@@ -29,18 +29,7 @@ A native Android music player built around immersive Flow discovery, flexible pl
 
 ## Download
 
-The v2.0 source is merged into `main`. A GitHub Release with verified v2.0 APK assets has not yet been published; use the repository Actions artifacts until release publication.
-
-| APK | Choose this when |
-| --- | --- |
-| [Universal APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/2.0/SYMPHONY-v2.0-universal.apk) | Recommended build for Android 10 and newer |
-| [vivo Origin APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/2.0/SYMPHONY-v2.0-vivo-origin.apk) | For compatible vivo OriginOS features; installs as a separate app |
-| [Android 7 legacy APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/2.0/SYMPHONY-v2.0-android7.apk) | For Android 7–9 devices |
-| [Universal uncompressed APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/2.0/SYMPHONY-v2.0-universal-uncompressed.apk) | Raw/unminified universal package for troubleshooting |
-
-See the [full v2.0 release page](https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/2.0) for compatibility notes and all assets. The release includes [SHA256SUMS.txt](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/2.0/SHA256SUMS.txt) for integrity checks. If you are unsure which package to install, choose the standard universal APK.
-
-**vivo Origin edition note:** This edition uses a package identity intended for vivo OriginOS integration. It installs separately from the standard app, does not share app data with it, and cannot coexist with the genuine QQ Music package. Install the standard universal build unless you specifically need the vivo integration.
+The **v2.0 source code is merged into `main`**. A public v2.0 GitHub Release and verified APK download links are not yet available. Check [GitHub Actions](https://github.com/smrutiranjandev0p/SYMPHONY/actions) for completed build workflows and their downloadable artifacts. Do not install an artifact until its workflow run and APK variant are confirmed.
 
 ## The experience
 
