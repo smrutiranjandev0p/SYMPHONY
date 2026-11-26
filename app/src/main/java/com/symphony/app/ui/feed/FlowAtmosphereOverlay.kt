@@ -190,7 +190,7 @@ internal fun FlowAtmosphereOverlay(
                 val progress = (time * particle.speed + particle.phase) % 1f
                 val x = (particle.x + sin(time * 0.34f + particle.phase * 6.28f) * particle.drift) * width
                 val y = height * (1f - progress)
-                val heartSize = (10f + particle.size * 12f) * intensity
+                val heartSize = ((10f + particle.size * 12f) * intensity).dp.toPx()
                 val fade = (sin(progress * PI).toFloat().coerceAtLeast(0f) * 0.58f + 0.08f)
                 val alpha = (fade * (0.56f + particle.size * 0.34f) * intensity).coerceIn(0f, 0.62f)
                 val rotation = sin(time * 0.52f + particle.phase * 6.28f) * 9f
