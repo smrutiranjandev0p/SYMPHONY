@@ -94,33 +94,57 @@ fun FlowScreen(
     // Settings. A Home/library track may not be part of the recommendation
     // feed, so pin the currently playing YouTube track into Flow's visual
     // catalogue instead of showing an unrelated first recommendation.
-    val tracks = remember(state.feedData, playback.current) {
-        buildList {
-            addAll(state.feedData.quickPicks)
-            addAll(state.feedData.charts)
-            addAll(state.feedData.freshFinds)
-            addAll(state.feedData.ytRecentSongs)
-            addAll(state.feedData.ytLikedSongs)
-            addAll(state.feedData.becauseYouListenTo?.items.orEmpty())
-            addAll(
-                state.feedData.nativeShelves.flatMap { shelf ->
-                    shelf.items.filterIsInstance<HomeShelfItem.Track>().map { it.track }
-                },
-            )
-            playback.current?.takeIf { !it.videoId.isNullOrBlank() }?.let { current ->
-                add(
-                    0,
+    val tracks = remember(state.feedData, playback.current, playback.queue, playback.sourceLabel) {
+        // While Flow owns playback, its live queue is the catalogue—not the
+        // finite Home feed snapshot. Radio continuation appends recommendations
+        // to this queue in the background; observing it here makes those songs
+        // available to manual vertical swipes as soon as they arrive.
+        val liveFlowQueue = if (playback.sourceLabel == "Flow") {
+            playback.queue.mapNotNull { queued ->
+                queued.videoId?.takeIf(String::isNotBlank)?.let { videoId ->
                     YouTubeMusicTrack(
-                        videoId = current.videoId!!,
-                        title = current.title,
-                        artist = current.artist,
-                        album = current.album,
-                        artworkUrl = current.artworkUrl,
-                        durationSeconds = current.durationMs?.div(1_000L)?.toInt(),
-                    ),
+                        videoId = videoId,
+                        title = queued.title,
+                        artist = queued.artist,
+                        album = queued.album,
+                        artworkUrl = queued.artworkUrl,
+                        durationSeconds = queued.durationMs?.div(1_000L)?.toInt(),
+                    )
+                }
+            }.distinctBy(YouTubeMusicTrack::videoId)
+        } else {
+            emptyList()
+        }
+        if (liveFlowQueue.isNotEmpty()) {
+            liveFlowQueue
+        } else {
+            buildList {
+                addAll(state.feedData.quickPicks)
+                addAll(state.feedData.charts)
+                addAll(state.feedData.freshFinds)
+                addAll(state.feedData.ytRecentSongs)
+                addAll(state.feedData.ytLikedSongs)
+                addAll(state.feedData.becauseYouListenTo?.items.orEmpty())
+                addAll(
+                    state.feedData.nativeShelves.flatMap { shelf ->
+                        shelf.items.filterIsInstance<HomeShelfItem.Track>().map { it.track }
+                    },
                 )
-            }
-        }.filter { it.videoId.isNotBlank() }.distinctBy(YouTubeMusicTrack::videoId)
+                playback.current?.takeIf { !it.videoId.isNullOrBlank() }?.let { current ->
+                    add(
+                        0,
+                        YouTubeMusicTrack(
+                            videoId = current.videoId!!,
+                            title = current.title,
+                            artist = current.artist,
+                            album = current.album,
+                            artworkUrl = current.artworkUrl,
+                            durationSeconds = current.durationMs?.div(1_000L)?.toInt(),
+                        ),
+                    )
+                }
+            }.filter { it.videoId.isNotBlank() }.distinctBy(YouTubeMusicTrack::videoId)
+        }
     }
 
     if (state.isLoading && tracks.isEmpty()) {
