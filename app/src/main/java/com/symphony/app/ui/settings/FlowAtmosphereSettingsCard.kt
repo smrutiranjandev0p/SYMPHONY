@@ -4,6 +4,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,6 +31,7 @@ import com.symphony.app.data.local.FlowAtmosphereIntensity
 import com.symphony.app.data.local.FlowAtmosphereSettings
 import com.symphony.app.data.local.FlowAudioSensitivity
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun FlowAtmosphereSettingsCard(
     settings: FlowAtmosphereSettings,
