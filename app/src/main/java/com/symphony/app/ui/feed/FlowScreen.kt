@@ -331,6 +331,7 @@ private fun FlowPage(
             isForeground = isForeground,
             primaryColor = scheme.primary,
             secondaryColor = scheme.secondary,
+            modifier = Modifier.fillMaxSize(),
         )
         Column(
             modifier = Modifier
