@@ -102,79 +102,66 @@ half4 main(float2 fragCoord) {
     float2 uv = clamp(fragCoord / resolution, float2(0.0, 0.0), float2(1.0, 1.0));
     half4 original = content.eval(fragCoord);
 
+    // Preserve the original poster's luminance and colour. Refraction is
+    // confined to the glass perimeter rather than washing the full image.
     float edgeDistance = min(
         min(uv.x, 1.0 - uv.x),
         min(uv.y, 1.0 - uv.y)
     );
-    float fresnel = pow(1.0 - smoothstep(0.0, 0.105, edgeDistance), 2.0);
+    float rim = 1.0 - smoothstep(0.0, 0.028, edgeDistance);
+    float innerRim = exp(-edgeDistance * 28.0);
 
-    // A broad, slow lens field bends the original image by only a few pixels.
-    // It is smooth and continuous, not a visible diagonal colour stripe.
-    float waveA = sin(uv.y * 5.2 + uTime * 0.62 + sin(uv.x * 4.0) * 0.58);
-    float waveB = cos(uv.x * 4.6 - uTime * 0.46 + cos(uv.y * 3.2) * 0.52);
-    float lensCenterX = 0.50 + 0.10 * sin(uTime * 0.19);
-    float lensCenterY = 0.48 + 0.12 * cos(uTime * 0.16);
-    float2 lensDelta = (uv - float2(lensCenterX, lensCenterY)) / float2(0.72, 0.88);
-    float lensField = exp(-dot(lensDelta, lensDelta) * 1.35);
-
-    float bendScale = 0.30 + fresnel * 0.85 + lensField * 0.62;
-    float2 displacement = float2(waveA, waveB) * bendScale;
+    float2 centered = uv - float2(0.5, 0.5);
+    float radius = length(centered * float2(0.88, 1.0));
+    float lensZone = smoothstep(0.22, 0.70, radius);
+    float bend = sin(uv.y * 4.8 + uTime * 0.34 + cos(uv.x * 3.0) * 0.42);
+    float2 radial = centered / max(length(centered), 0.001);
     float2 samplePosition = clamp(
-        fragCoord + displacement,
+        fragCoord + radial * bend * lensZone * 3.2,
         float2(0.5, 0.5),
         resolution - float2(0.5, 0.5)
     );
     half4 refracted = content.eval(samplePosition);
+    float refractionAmount = (0.06 + 0.12 * rim) * lensZone;
+    half4 opticalImage = mix(original, refracted, refractionAmount);
 
-    // Very light optical diffusion, weighted toward the lens and perimeter.
-    half4 blurA = content.eval(clamp(fragCoord + float2(1.15, 0.0), float2(0.5, 0.5), resolution - float2(0.5, 0.5)));
-    half4 blurB = content.eval(clamp(fragCoord + float2(-1.15, 0.0), float2(0.5, 0.5), resolution - float2(0.5, 0.5)));
-    half4 blurC = content.eval(clamp(fragCoord + float2(0.0, 1.15), float2(0.5, 0.5), resolution - float2(0.5, 0.5)));
-    half4 blurD = content.eval(clamp(fragCoord + float2(0.0, -1.15), float2(0.5, 0.5), resolution - float2(0.5, 0.5)));
-    half4 diffused = (blurA + blurB + blurC + blurD) * 0.25;
-
-    float refractionMix = 0.22 + fresnel * 0.20 + lensField * 0.13;
-    float diffusionMix = 0.025 + fresnel * 0.075 + lensField * 0.035;
-    half4 surface = mix(original, refracted, refractionMix);
-    surface = mix(surface, diffused, diffusionMix);
-
-    // Style changes only the glass light, never the source image palette.
-    float3 rimPrimary;
-    float3 rimSecondary;
+    // The three styles differ only in their glass reflections.
+    float3 primary;
+    float3 secondary;
     if (uStyle < 0.5) {
-        rimPrimary = float3(0.70, 0.90, 1.00);  // Crystal: cool optical glass
-        rimSecondary = float3(0.78, 0.72, 1.00);
+        primary = float3(0.76, 0.94, 1.00);
+        secondary = float3(0.88, 0.84, 1.00);
     } else if (uStyle < 1.5) {
-        rimPrimary = float3(0.72, 0.52, 1.00);  // Aurora: restrained violet
-        rimSecondary = float3(0.40, 0.84, 1.00);
+        primary = float3(0.72, 0.54, 1.00);
+        secondary = float3(0.42, 0.86, 1.00);
     } else {
-        rimPrimary = float3(0.82, 0.88, 0.98);  // Obsidian: polished graphite
-        rimSecondary = float3(0.55, 0.66, 0.82);
+        primary = float3(0.84, 0.89, 0.98);
+        secondary = float3(0.55, 0.63, 0.77);
     }
 
-    float topRim = exp(-uv.y * 78.0);
-    float bottomRim = exp(-(1.0 - uv.y) * 70.0);
-    float leftRim = exp(-uv.x * 72.0);
-    float rightRim = exp(-(1.0 - uv.x) * 72.0);
+    // Narrow Fresnel edge and soft inner reflection; no broad haze.
+    float3 reflection = primary * (rim * 0.105 + innerRim * 0.012);
+    reflection += secondary * (rim * 0.035);
 
-    float perimeterLight = fresnel * 0.095;
-    float directionalLight =
-        topRim * (0.035 + 0.025 * (0.5 + 0.5 * sin(uv.x * 5.0 + uTime * 0.24))) +
-        bottomRim * 0.018 +
-        leftRim * 0.025 +
-        rightRim * 0.022;
+    float topEdge = exp(-uv.y * 190.0);
+    float bottomEdge = exp(-(1.0 - uv.y) * 180.0);
+    float sideEdge = exp(-uv.x * 190.0) + exp(-(1.0 - uv.x) * 190.0);
+    float edgeLight = topEdge * (0.045 + 0.035 * (0.5 + 0.5 * sin(uv.x * 5.2 + uTime * 0.22)));
+    edgeLight += bottomEdge * 0.018 + sideEdge * 0.016;
+    reflection += primary * edgeLight;
 
-    float3 reflection = rimPrimary * (perimeterLight + directionalLight);
-    reflection += rimSecondary * (fresnel * 0.035 + (leftRim + rightRim) * 0.012);
+    // One compact glint moves along the upper edge.
+    float glintX = 0.5 + 0.34 * sin(uTime * 0.24);
+    float2 glintDelta = (uv - float2(glintX, 0.022)) / float2(0.034, 0.0055);
+    float glint = exp(-dot(glintDelta, glintDelta)) * (0.13 + 0.12 * uPlaying);
+    reflection += float3(1.0, 1.0, 1.0) * glint;
 
-    // A single elongated highlight glides around the upper glass edge.
-    // It is intentionally soft and intermittent, not a row of sparkles.
-    float glintX = 0.50 + 0.34 * sin(uTime * 0.28);
-    float glintY = 0.028 + 0.012 * sin(uTime * 0.43);
-    float2 glintDelta = (uv - float2(glintX, glintY)) / float2(0.026, 0.0065);
-    float glint = exp(-dot(glintDelta, glintDelta)) * (0.18 + 0.20 * uPlaying);
+    float3 base = float3(opticalImage.rgb);
+    if (uStyle > 1.5) {
+        base *= (1.0 - rim * 0.035);
+    }
 
-    float3 result = float3(surface.rgb) + reflection + float3(1.0, 1.0, 1.0) * glint;
-    return half4(clamp(result, 0.0, 1.0), original.a);
+    float3 result = clamp(base + reflection, 0.0, 1.0);
+    return half4(result, original.a);
 }
 """
