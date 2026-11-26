@@ -3,22 +3,25 @@
 ## [2.0] - 2026-11-26
 
 ### Added
-- **Media3 playback stack update:** Aligned ExoPlayer, OkHttp datasource, HLS and DASH modules on AndroidX Media3 1.9.0 with Jellyfin FFmpeg decoder 1.9.0+1.
-- **Audio sink compatibility:** Updated custom audio sink implementations and player callbacks for the Media3 1.9.0 API.
+- **Purple Glass launcher identity:** Added a deep-violet glass adaptive launcher icon with the SYMPHONY treble-clef and waveform mark.
+- **Monochrome launcher artwork:** Added a matching monochrome version for supported themed-icon launchers.
 
 ### Changed
+- **Appearance icon selector:** Updated the Glass Wave option to Purple Glass and refreshed the selector preview and related in-app icon presentation to match the new artwork.
+- **Adaptive launcher resources:** Updated the adaptive icon foreground and background while retaining Android's existing launcher-alias switching architecture and other selectable icon editions.
+- **Playback stack:** Aligned ExoPlayer, OkHttp datasource, HLS and DASH modules on AndroidX Media3 1.9.0 with Jellyfin FFmpeg decoder 1.9.0+1.
+- **Audio sink compatibility:** Updated custom audio sink implementations and player callbacks for the Media3 1.9.0 API.
 - **Playback resolution:** Retained the existing InnerTubeX-first stream resolution and NewPipe fallback architecture.
 - **Version metadata:** Set user-facing `versionName` to `2.0` and Android `versionCode` to `39`.
-- **UI and product experience:** No intentional UI, navigation, theme, queue or playback-control redesign in this release.
 
 ### Validation
-- GitHub Actions [build #112](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45773501166) completed successfully.
-- Automated download, playback and scrobbler regression tests passed.
-- Release APK assembly, APK signature verification and artifact upload passed.
-- Physical-device installation, in-place upgrade and real-world playback performance still require device testing.
+- Playback v2.0 automated CI build and regression checks passed on the playback feature branch before merge.
+- Purple Glass icon resource changes were merged to `main`; Android launcher rendering and live icon switching still require physical-device verification.
+- Physical-device installation, in-place upgrade and real-world playback performance remain to be verified.
+- CI success does not replace OEM launcher and hardware testing.
 
 ### Release artifact
-- CI artifact: `SYMPHONY-v2.0-APK` from workflow run #112. GitHub Actions artifact is available from the workflow run and is not yet a published GitHub Release.
+- The v2.0 source is merged into `main`. A public GitHub Release with verified v2.0 APK assets has not yet been published. Check [GitHub Actions](https://github.com/smrutiranjandev0p/SYMPHONY/actions) for build artifacts.
 
 ---
 
