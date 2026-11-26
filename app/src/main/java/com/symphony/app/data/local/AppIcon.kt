@@ -42,7 +42,7 @@ enum class AppIcon(
         titleRes = R.string.app_icon_black,
         subtitleRes = R.string.app_icon_black_sub,
         componentName = "com.symphony.app.MainActivityBlack",
-        logoRes = R.drawable.ic_launcher_obsidian_art,
+        logoRes = R.drawable.ic_launcher_black_art,
         backgroundRes = R.color.ic_launcher_background_black,
     );
 
