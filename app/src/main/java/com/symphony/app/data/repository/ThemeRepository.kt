@@ -68,6 +68,7 @@ data class ThemeUiState(
     val useLegacyColors: Boolean = false,
     val appIcon: AppIcon = AppIcon.DEFAULT,
     val flowArtworkStyle: com.symphony.app.data.local.FlowArtworkStyle = com.symphony.app.data.local.FlowArtworkStyle.AURORA,
+    val flowAtmosphere: FlowAtmosphereSettings = FlowAtmosphereSettings.DEFAULT,
 )
 
 @Singleton
@@ -305,6 +306,7 @@ class ThemeRepository @Inject constructor(
             useLegacyColors = useLegacy,
             appIcon = prefs.appIcon,
             flowArtworkStyle = prefs.flowArtworkStyle,
+            flowAtmosphere = prefs.flowAtmosphere,
         )
     }.stateIn(
         applicationScope,
@@ -337,6 +339,10 @@ class ThemeRepository @Inject constructor(
 
     suspend fun setFlowArtworkStyle(style: com.symphony.app.data.local.FlowArtworkStyle) {
         themePreferences.setFlowArtworkStyle(style)
+    }
+
+    suspend fun setFlowAtmosphere(settings: FlowAtmosphereSettings) {
+        themePreferences.setFlowAtmosphere(settings)
     }
 
     suspend fun setAppIcon(icon: AppIcon) {
