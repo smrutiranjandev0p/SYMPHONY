@@ -2,10 +2,7 @@ package com.symphony.app.ui.settings
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,8 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -32,15 +27,17 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.symphony.app.data.local.AppIcon
 
+/**
+ * A brand identity preview, not an icon picker: SYMPHONY ships one official
+ * Purple Glass launcher icon so the in-app preview cannot drift from the
+ * actual Android launcher artwork.
+ */
 @Composable
 internal fun AppIconSelectorCard(
     currentIcon: AppIcon,
-    onSelectAppIcon: (AppIcon) -> Unit,
     isHighlighted: Boolean,
 ) {
     Card(
@@ -58,17 +55,21 @@ internal fun AppIconSelectorCard(
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
         ),
     ) {
-        Column(Modifier.padding(horizontal = 18.dp, vertical = 18.dp)) {
+        Column(Modifier.padding(18.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
                     painter = painterResource(currentIcon.logoRes),
-                    contentDescription = null,
+                    contentDescription = stringResource(currentIcon.titleRes),
                     contentScale = ContentScale.Fit,
                     modifier = Modifier
-                        .size(48.dp)
-                        .clip(RoundedCornerShape(14.dp)),
+                        .size(56.dp)
+                        .clip(RoundedCornerShape(16.dp)),
                 )
-                Column(Modifier.padding(start = 14.dp).weight(1f)) {
+                Column(
+                    modifier = Modifier
+                        .padding(start = 14.dp)
+                        .weight(1f),
+                ) {
                     Text(
                         stringResource(com.symphony.app.R.string.settings_section_app_icon),
                         style = MaterialTheme.typography.titleMedium,
@@ -81,80 +82,57 @@ internal fun AppIconSelectorCard(
                     )
                 }
             }
-            Spacer(Modifier.height(18.dp))
+
+            Spacer(Modifier.height(16.dp))
+
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-                    .padding(horizontal = 4.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                AppIcon.entries.forEach { icon ->
-                    val selected = icon == currentIcon
-                    Column(
-                        modifier = Modifier
-                            .width(124.dp)
-                            .clip(RoundedCornerShape(20.dp))
-                            .clickable { onSelectAppIcon(icon) }
-                            .then(
-                                if (selected) Modifier.border(
-                                    1.5.dp,
-                                    MaterialTheme.colorScheme.primary,
-                                    RoundedCornerShape(20.dp),
-                                ) else Modifier,
-                            )
-                            .padding(8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
+                Image(
+                    painter = painterResource(currentIcon.logoRes),
+                    contentDescription = stringResource(currentIcon.titleRes),
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .size(104.dp)
+                        .clip(RoundedCornerShape(24.dp)),
+                )
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        stringResource(currentIcon.titleRes),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        stringResource(currentIcon.subtitleRes),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Spacer(Modifier.height(10.dp))
+                    Surface(
+                        shape = RoundedCornerShape(50),
+                        color = MaterialTheme.colorScheme.primaryContainer,
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .size(82.dp)
-                                .clip(RoundedCornerShape(22.dp)),
-                            contentAlignment = Alignment.Center,
+                        Row(
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
                         ) {
-                            Image(
-                                painter = painterResource(icon.logoRes),
-                                contentDescription = stringResource(icon.titleRes),
-                                contentScale = ContentScale.Fit,
-                                modifier = Modifier.fillMaxWidth(),
+                            Icon(
+                                imageVector = Icons.Filled.Check,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                                modifier = Modifier.size(15.dp),
                             )
-                            if (selected) {
-                                Surface(
-                                    modifier = Modifier.align(Alignment.TopEnd).padding(5.dp).size(21.dp),
-                                    shape = RoundedCornerShape(50),
-                                    color = MaterialTheme.colorScheme.primary,
-                                ) {
-                                    Box(contentAlignment = Alignment.Center) {
-                                        Icon(
-                                            Icons.Filled.Check,
-                                            contentDescription = "Selected",
-                                            tint = MaterialTheme.colorScheme.onPrimary,
-                                            modifier = Modifier.size(14.dp),
-                                        )
-                                    }
-                                }
-                            }
+                            Text(
+                                "OFFICIAL APP ICON",
+                                style = MaterialTheme.typography.labelSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            )
                         }
-                        Spacer(Modifier.height(8.dp))
-                        Text(
-                            stringResource(icon.titleRes),
-                            style = MaterialTheme.typography.labelMedium,
-                            fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
-                            color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
-                            textAlign = TextAlign.Center,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
-                            minLines = 2,
-                        )
-                        Text(
-                            stringResource(icon.subtitleRes),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = TextAlign.Center,
-                            minLines = 3,
-                            maxLines = 3,
-                            overflow = TextOverflow.Ellipsis,
-                        )
                     }
                 }
             }
