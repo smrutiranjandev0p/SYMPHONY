@@ -8,6 +8,7 @@ import com.symphony.app.data.backup.RestoreResult
 import com.symphony.app.data.generate.GenerateRepository
 import com.symphony.app.data.local.AccentMode
 import com.symphony.app.data.local.ThemeMode
+import com.symphony.app.data.local.FlowAtmosphereSettings
 import com.symphony.app.data.local.AppIcon
 import com.symphony.app.data.local.AppLanguage
 import com.symphony.app.data.local.EqualizerSettings
@@ -577,6 +578,7 @@ class SettingsViewModel @Inject constructor(
     fun setSYMPHONYTheme(enabled: Boolean) = launchSettingsAction("update SYMPHONY signature theme") { themeRepository.setSYMPHONYTheme(enabled) }
     fun setAppIcon(icon: AppIcon) = launchSettingsAction("update app icon") { themeRepository.setAppIcon(icon) }
     fun setFlowArtworkStyle(style: com.symphony.app.data.local.FlowArtworkStyle) = launchSettingsAction("update Flow artwork border") { themeRepository.setFlowArtworkStyle(style) }
+    fun setFlowAtmosphere(settings: FlowAtmosphereSettings) = launchSettingsAction("update Flow Atmosphere") { themeRepository.setFlowAtmosphere(settings) }
     fun setAmoled(enabled: Boolean) = launchSettingsAction("update AMOLED mode") { themeRepository.setAmoled(enabled) }
     fun setLegacyColors(enabled: Boolean) = launchSettingsAction("update legacy colors") { themeRepository.setLegacyColors(enabled) }
     fun setLiquidGlass(enabled: Boolean) = launchSettingsAction("update Liquid Glass") { themeRepository.setLiquidGlass(enabled) }
