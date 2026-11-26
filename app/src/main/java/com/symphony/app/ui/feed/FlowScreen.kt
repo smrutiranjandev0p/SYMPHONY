@@ -261,7 +261,6 @@ private fun FlowPage(
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize().alpha(0.94f),
         )
-        FlowArtworkGlassOverlay(style = artworkStyle, isPlaying = isPlaying)
         Box(
             Modifier
                 .fillMaxSize()
@@ -274,6 +273,9 @@ private fun FlowPage(
                     ),
                 ),
         )
+        // Keep the animated glass treatment above the artwork and its readability scrim,
+        // but below every interactive Flow control.
+        FlowArtworkGlassOverlay(style = artworkStyle, isPlaying = isPlaying)
         if (isPlaying) FlowFloatingHearts()
         Column(
             modifier = Modifier
@@ -350,72 +352,139 @@ private fun FlowArtworkGlassOverlay(
     style: FlowArtworkStyle,
     isPlaying: Boolean,
 ) {
+    // The selected finish animates only over the full-bleed song artwork.
+    // Interactive controls are composed after this layer and remain untouched.
     val transition = androidx.compose.animation.core.rememberInfiniteTransition(label = "flowArtworkGlass")
-    val shimmer by transition.animateFloat(
-        initialValue = 0.10f,
-        targetValue = if (isPlaying) 0.34f else 0.18f,
+    val sweep by transition.animateFloat(
+        initialValue = -0.35f,
+        targetValue = 1.35f,
         animationSpec = androidx.compose.animation.core.infiniteRepeatable(
             animation = androidx.compose.animation.core.tween(
-                durationMillis = if (isPlaying) 5200 else 9000,
+                durationMillis = if (isPlaying) 6200 else 11000,
                 easing = androidx.compose.animation.core.LinearEasing,
             ),
-            repeatMode = androidx.compose.animation.core.RepeatMode.Reverse,
+            repeatMode = androidx.compose.animation.core.RepeatMode.Restart,
         ),
-        label = "flowArtworkShimmer",
+        label = "flowArtworkSweep",
     )
     val sparkle by transition.animateFloat(
-        initialValue = 0.12f,
-        targetValue = if (isPlaying) 0.9f else 0.28f,
+        initialValue = 0f,
+        targetValue = 1f,
         animationSpec = androidx.compose.animation.core.infiniteRepeatable(
-            animation = androidx.compose.animation.core.tween(2600, easing = androidx.compose.animation.core.LinearEasing),
-            repeatMode = androidx.compose.animation.core.RepeatMode.Reverse,
+            animation = androidx.compose.animation.core.tween(
+                durationMillis = if (isPlaying) 3400 else 6200,
+                easing = androidx.compose.animation.core.LinearEasing,
+            ),
+            repeatMode = androidx.compose.animation.core.RepeatMode.Restart,
         ),
         label = "flowArtworkSparkle",
     )
     val palette = when (style) {
         FlowArtworkStyle.CRYSTAL -> listOf(Color(0xFFBDEBFF), Color(0xFF9C8CFF), Color.White)
-        FlowArtworkStyle.AURORA -> listOf(Color(0xFF9C72FF), Color(0xFF55D9FF), Color(0xFFFF83D5))
+        FlowArtworkStyle.AURORA -> listOf(Color(0xFFB36BFF), Color(0xFF55DFFF), Color(0xFFFF83D5))
         FlowArtworkStyle.OBSIDIAN -> listOf(Color(0xFFCBD5E1), Color(0xFF64748B), Color.White)
     }
+
     androidx.compose.foundation.Canvas(Modifier.fillMaxSize()) {
         val w = size.width
         val h = size.height
+        val motionAlpha = if (isPlaying) 1f else 0.52f
+
         when (style) {
             FlowArtworkStyle.CRYSTAL -> {
+                // Cool crystal tint with a clearly visible moving specular reflection.
                 drawRect(brush = Brush.linearGradient(
-                    colors = listOf(palette[0].copy(alpha = shimmer * 0.12f), Color.Transparent, palette[1].copy(alpha = shimmer * 0.10f)),
+                    colors = listOf(
+                        palette[0].copy(alpha = 0.12f),
+                        Color.Transparent,
+                        palette[1].copy(alpha = 0.10f),
+                    ),
                     start = androidx.compose.ui.geometry.Offset(0f, 0f),
                     end = androidx.compose.ui.geometry.Offset(w, h),
                 ))
-                drawRect(brush = Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.045f), Color.Transparent, palette[0].copy(alpha = 0.07f))))
+                drawRect(brush = Brush.linearGradient(
+                    colors = listOf(
+                        Color.Transparent,
+                        Color.White.copy(alpha = 0.32f * motionAlpha),
+                        palette[0].copy(alpha = 0.18f * motionAlpha),
+                        Color.Transparent,
+                    ),
+                    start = androidx.compose.ui.geometry.Offset(w * (sweep - 0.32f), 0f),
+                    end = androidx.compose.ui.geometry.Offset(w * (sweep + 0.20f), h),
+                ))
+                drawRect(brush = Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.09f), Color.Transparent, palette[0].copy(alpha = 0.11f))))
             }
             FlowArtworkStyle.AURORA -> {
+                // Purple/cyan aurora ribbons sweep diagonally across the cover.
                 drawRect(brush = Brush.linearGradient(
-                    colors = listOf(palette[0].copy(alpha = shimmer * 0.22f), Color.Transparent, palette[1].copy(alpha = shimmer * 0.16f), Color.Transparent, palette[2].copy(alpha = shimmer * 0.12f)),
-                    start = androidx.compose.ui.geometry.Offset(w * (0.15f + shimmer * 0.12f), 0f),
-                    end = androidx.compose.ui.geometry.Offset(w * 0.85f, h),
+                    colors = listOf(
+                        palette[0].copy(alpha = 0.24f),
+                        Color.Transparent,
+                        palette[1].copy(alpha = 0.20f),
+                        Color.Transparent,
+                        palette[2].copy(alpha = 0.15f),
+                    ),
+                    start = androidx.compose.ui.geometry.Offset(w * (0.10f + sweep * 0.12f), 0f),
+                    end = androidx.compose.ui.geometry.Offset(w * (0.72f + sweep * 0.10f), h),
                 ))
-                drawRect(brush = Brush.verticalGradient(listOf(Color.Transparent, palette[0].copy(alpha = 0.045f), Color.Transparent)))
+                drawRect(brush = Brush.linearGradient(
+                    colors = listOf(
+                        Color.Transparent,
+                        palette[1].copy(alpha = 0.30f * motionAlpha),
+                        Color.White.copy(alpha = 0.20f * motionAlpha),
+                        palette[0].copy(alpha = 0.24f * motionAlpha),
+                        Color.Transparent,
+                    ),
+                    start = androidx.compose.ui.geometry.Offset(w * (sweep - 0.28f), 0f),
+                    end = androidx.compose.ui.geometry.Offset(w * (sweep + 0.16f), h),
+                ))
             }
             FlowArtworkStyle.OBSIDIAN -> {
+                // Smoked obsidian surface with a polished silver moving edge-light.
                 drawRect(brush = Brush.linearGradient(
-                    colors = listOf(Color.Black.copy(alpha = 0.16f), Color.Transparent, palette[0].copy(alpha = shimmer * 0.10f), Color.Black.copy(alpha = 0.20f)),
+                    colors = listOf(Color.Black.copy(alpha = 0.20f), Color.Transparent, palette[0].copy(alpha = 0.14f), Color.Black.copy(alpha = 0.18f)),
                     start = androidx.compose.ui.geometry.Offset(0f, 0f),
                     end = androidx.compose.ui.geometry.Offset(w, h),
                 ))
-                drawRect(brush = Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.035f), Color.Transparent, Color.Black.copy(alpha = 0.10f))))
+                drawRect(brush = Brush.linearGradient(
+                    colors = listOf(Color.Transparent, Color.White.copy(alpha = 0.26f * motionAlpha), palette[1].copy(alpha = 0.18f * motionAlpha), Color.Transparent),
+                    start = androidx.compose.ui.geometry.Offset(w * (sweep - 0.24f), 0f),
+                    end = androidx.compose.ui.geometry.Offset(w * (sweep + 0.18f), h),
+                ))
             }
         }
-        val points = listOf(0.16f to 0.22f, 0.78f to 0.18f, 0.87f to 0.42f, 0.24f to 0.58f, 0.69f to 0.72f, 0.43f to 0.84f)
+
+        // A fine glass highlight near the perimeter makes the finish readable
+        // without changing the artwork's size, crop, or layout.
+        drawRect(
+            brush = Brush.linearGradient(
+                colors = listOf(
+                    palette[0].copy(alpha = 0.22f),
+                    Color.White.copy(alpha = 0.10f),
+                    palette[1].copy(alpha = 0.20f),
+                    Color.Transparent,
+                ),
+                start = androidx.compose.ui.geometry.Offset(0f, h * 0.16f),
+                end = androidx.compose.ui.geometry.Offset(w, h * 0.84f),
+            ),
+            style = androidx.compose.ui.graphics.drawscope.Stroke(width = 1.15.dp.toPx()),
+        )
+
+        // Small, occasional star glints; restrained so they do not obscure cover art.
+        val points = listOf(
+            0.16f to 0.22f, 0.78f to 0.18f, 0.87f to 0.42f,
+            0.24f to 0.58f, 0.69f to 0.72f, 0.43f to 0.84f,
+        )
         points.forEachIndexed { index, point ->
-            val phase = (sparkle + index * 0.17f) % 1f
-            val alpha = kotlin.math.sin(phase * Math.PI).toFloat().coerceAtLeast(0f) * 0.42f
-            val radius = if (index % 2 == 0) 1.6.dp.toPx() else 1.1.dp.toPx()
+            val phase = (sparkle + index * 0.173f) % 1f
+            val alpha = (kotlin.math.sin(phase * Math.PI).toFloat().coerceAtLeast(0f) * 0.72f) * motionAlpha
+            val radius = if (index % 2 == 0) 2.2.dp.toPx() else 1.6.dp.toPx()
             val center = androidx.compose.ui.geometry.Offset(w * point.first, h * point.second)
             drawCircle(palette[index % palette.size].copy(alpha = alpha), radius, center)
-            if (alpha > 0.18f) {
-                drawLine(Color.White.copy(alpha = alpha * 0.45f), androidx.compose.ui.geometry.Offset(center.x - radius * 2.4f, center.y), androidx.compose.ui.geometry.Offset(center.x + radius * 2.4f, center.y), strokeWidth = 0.7.dp.toPx())
-                drawLine(Color.White.copy(alpha = alpha * 0.45f), androidx.compose.ui.geometry.Offset(center.x, center.y - radius * 2.4f), androidx.compose.ui.geometry.Offset(center.x, center.y + radius * 2.4f), strokeWidth = 0.7.dp.toPx())
+            if (alpha > 0.16f) {
+                val ray = radius * 3.2f
+                drawLine(Color.White.copy(alpha = alpha * 0.72f), androidx.compose.ui.geometry.Offset(center.x - ray, center.y), androidx.compose.ui.geometry.Offset(center.x + ray, center.y), strokeWidth = 0.9.dp.toPx())
+                drawLine(Color.White.copy(alpha = alpha * 0.72f), androidx.compose.ui.geometry.Offset(center.x, center.y - ray), androidx.compose.ui.geometry.Offset(center.x, center.y + ray), strokeWidth = 0.9.dp.toPx())
             }
         }
     }
