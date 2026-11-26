@@ -67,7 +67,7 @@ internal fun AppIconSelectorCard(
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         Icon(
-                            painter = painterResource(AppIcon.DEFAULT.logoRes),
+                            painter = painterResource(currentIcon.logoRes),
                             contentDescription = null,
                             tint = Color.Unspecified,
                             modifier = Modifier.size(30.dp),
