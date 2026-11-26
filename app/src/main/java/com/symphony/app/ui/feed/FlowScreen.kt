@@ -57,6 +57,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.symphony.app.data.local.FlowArtworkStyle
+import com.symphony.app.data.local.FlowAtmosphereEffect
+import com.symphony.app.data.local.FlowAtmosphereSettings
 import com.symphony.app.ui.settings.SettingsViewModel
 import com.symphony.app.data.music.HomeShelfItem
 import com.symphony.app.data.music.YouTubeMusicTrack
@@ -93,6 +95,7 @@ fun FlowScreen(
     val settingsViewModel: SettingsViewModel = hiltViewModel()
     val appearanceTheme by settingsViewModel.theme.collectAsStateWithLifecycle()
     val artworkStyle = appearanceTheme?.flowArtworkStyle ?: FlowArtworkStyle.TITANIUM
+    val atmosphereSettings = appearanceTheme?.flowAtmosphere ?: FlowAtmosphereSettings.DEFAULT
     val likedKeys by playerViewModel.likedTrackKeys.collectAsStateWithLifecycle()
     var menuTrack by remember { mutableStateOf<YouTubeMusicTrack?>(null) }
     var partyTorchEnabled by remember { mutableStateOf(false) }
@@ -221,6 +224,8 @@ fun FlowScreen(
                 onPartyTorchEnabledChange = { partyTorchEnabled = it },
                 audioSessionId = musicPlayer.activePlayer?.audioSessionId ?: 0,
                 artworkStyle = artworkStyle,
+                atmosphere = atmosphereSettings,
+                isCurrentPage = page == pagerState.currentPage,
             )
         }
         menuTrack?.let { track ->
@@ -254,6 +259,8 @@ private fun FlowPage(
     onPartyTorchEnabledChange: (Boolean) -> Unit,
     audioSessionId: Int,
     artworkStyle: FlowArtworkStyle,
+    atmosphere: FlowAtmosphereSettings,
+    isCurrentPage: Boolean,
 ) {
     val scheme = MaterialTheme.colorScheme
     Box(Modifier.fillMaxSize()) {
@@ -263,6 +270,10 @@ private fun FlowPage(
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxSize()
+                .flowCinematicMotion(
+                    enabled = atmosphere.enabled && FlowAtmosphereEffect.CINEMATIC_MOTION in atmosphere.effects,
+                    isCurrentPage = isCurrentPage,
+                )
                 .alpha(0.94f),
         )
         Box(
@@ -278,7 +289,13 @@ private fun FlowPage(
                 ),
         )
         FlowArtworkBorderOverlay(style = artworkStyle)
-        if (isPlaying) FlowFloatingHearts()
+        FlowAtmosphereOverlay(
+            settings = atmosphere,
+            isPlaying = isPlaying,
+            isCurrentPage = isCurrentPage,
+            primaryColor = scheme.primary,
+            secondaryColor = scheme.secondary,
+        )
         Column(
             modifier = Modifier
                 .align(Alignment.BottomStart)
@@ -422,43 +439,6 @@ private fun FlowEmptyState(onOpenSearch: () -> Unit, onOpenSettings: () -> Unit)
         Row(Modifier.padding(top = 20.dp)) {
             IconButton(onClick = onOpenSearch) { Icon(Icons.Filled.Search, "Search") }
             IconButton(onClick = onOpenSettings) { Icon(Icons.Filled.Settings, "Settings") }
-        }
-    }
-}
-
-@Composable
-private fun FlowFloatingHearts() {
-    val transition = androidx.compose.animation.core.rememberInfiniteTransition(label = "flowHearts")
-    val phases = listOf(0, 620, 1240)
-    Box(
-        modifier = Modifier.fillMaxSize().padding(end = 22.dp, bottom = 150.dp),
-        contentAlignment = Alignment.BottomEnd,
-    ) {
-        phases.forEachIndexed { index, delayMs ->
-            val progress by transition.animateFloat(
-                initialValue = 0f,
-                targetValue = 1f,
-                animationSpec = androidx.compose.animation.core.infiniteRepeatable(
-                    animation = androidx.compose.animation.core.tween(
-                        durationMillis = 2900,
-                        delayMillis = delayMs,
-                        easing = androidx.compose.animation.core.LinearEasing,
-                    ),
-                ),
-                label = "flowHeart$index",
-            )
-            Text(
-                text = if (index == 1) "♥" else "❤",
-                color = Color(0xFFFF6B81),
-                fontSize = (20 + index * 4).sp,
-                modifier = Modifier.graphicsLayer {
-                    translationY = -progress * 285.dp.toPx()
-                    translationX = (index - 1) * 18.dp.toPx() + kotlin.math.sin(progress * Math.PI * 2).toFloat() * 10.dp.toPx()
-                    alpha = (1f - progress).coerceIn(0f, 1f)
-                    scaleX = 0.75f + progress * 0.35f
-                    scaleY = 0.75f + progress * 0.35f
-                },
-            )
         }
     }
 }
