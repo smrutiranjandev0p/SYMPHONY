@@ -21,6 +21,17 @@ enum class AccentMode(val storageValue: String) {
     }
 }
 
+enum class FlowArtworkStyle(val storageValue: String, val title: String, val description: String) {
+    CRYSTAL("crystal", "Crystal Glass", "Clear glass edges with cool iridescent reflections"),
+    AURORA("aurora", "Aurora Glass", "Purple-violet liquid edges with ambient glow"),
+    OBSIDIAN("obsidian", "Obsidian Glass", "Deep black glass with subtle polished reflections");
+
+    companion object {
+        fun fromStorage(value: String?): FlowArtworkStyle =
+            entries.firstOrNull { it.storageValue == value } ?: AURORA
+    }
+}
+
 enum class ThemeMode(val storageValue: String) {
     SYSTEM("system"),
     LIGHT("light"),
@@ -50,6 +61,7 @@ data class ThemePrefs(
     val symphonyTheme: Boolean = false,
     val useLegacyColors: Boolean = false,
     val appIcon: AppIcon = AppIcon.DEFAULT,
+    val flowArtworkStyle: FlowArtworkStyle = FlowArtworkStyle.AURORA,
 )
 
 @Singleton
@@ -69,6 +81,7 @@ class ThemePreferences @Inject constructor(
         val SYMPHONY_THEME = booleanPreferencesKey("lw_symphony_theme")
         val USE_LEGACY_COLORS = booleanPreferencesKey("lw_useLegacyColors")
         val APP_ICON = stringPreferencesKey("lw_app_icon")
+        val FLOW_ARTWORK_STYLE = stringPreferencesKey("lw_flow_artwork_style")
     }
 
     val prefs: Flow<ThemePrefs> = dataStore.data
@@ -87,6 +100,7 @@ class ThemePreferences @Inject constructor(
                 symphonyTheme = p.readSafely(Keys.SYMPHONY_THEME) ?: false,
                 useLegacyColors = p.readSafely(Keys.USE_LEGACY_COLORS) ?: false,
                 appIcon = AppIcon.fromId(p.readSafely(Keys.APP_ICON)),
+                flowArtworkStyle = FlowArtworkStyle.fromStorage(p.readSafely(Keys.FLOW_ARTWORK_STYLE)),
             )
         }
 
@@ -145,6 +159,10 @@ class ThemePreferences @Inject constructor(
                 it[Keys.ACCENT_MODE] = AccentMode.MANUAL.storageValue
             }
         }
+    }
+
+    suspend fun setFlowArtworkStyle(style: FlowArtworkStyle) {
+        dataStore.edit { it[Keys.FLOW_ARTWORK_STYLE] = style.storageValue }
     }
 
     suspend fun setAppIcon(icon: AppIcon) {
