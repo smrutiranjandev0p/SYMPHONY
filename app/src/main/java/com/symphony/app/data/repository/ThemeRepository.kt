@@ -333,11 +333,6 @@ class ThemeRepository @Inject constructor(
 
     suspend fun setLegacyColors(enabled: Boolean) = themePreferences.setLegacyColors(enabled)
 
-    suspend fun setAppIcon(icon: AppIcon) {
-        themePreferences.setAppIcon(icon)
-        AppIconManager.applyIcon(context, icon)
-    }
-
     /** Startup heal: leaves exactly the saved icon's launcher alias enabled. */
     suspend fun reconcileAppIcon() {
         val icon = themePreferences.prefs.first().appIcon
