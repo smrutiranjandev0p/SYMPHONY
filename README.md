@@ -29,7 +29,19 @@ A native Android music player built around immersive Flow discovery, flexible pl
 
 ## Download
 
-The **v2.0 source code is merged into `main`**. A public v2.0 GitHub Release and verified APK download links are not yet available. Check [GitHub Actions](https://github.com/smrutiranjandev0p/SYMPHONY/actions) for completed build workflows and their downloadable artifacts. Do not install an artifact until its workflow run and APK variant are confirmed.
+**SYMPHONY 2.0 is released.** Download the recommended package for your device below, or open the [v2.0 release page](https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/2.0) for release notes and all assets.
+
+| Package | Compatibility | Download |
+| --- | --- | --- |
+| Universal (recommended) | Android 10–16+ | [Download APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/2.0/SYMPHONY-v2.0-universal.apk) |
+| vivo Origin Island edition | vivo phones running supported OriginOS builds | [Download APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/2.0/SYMPHONY-v2.0-vivo-origin.apk) |
+| Android 7 legacy | Android 7.0–9.0 | [Download APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/2.0/SYMPHONY-v2.0-android7.apk) |
+| Universal uncompressed | Android 10–16+ | [Download APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/2.0/SYMPHONY-v2.0-universal-uncompressed.apk) |
+| SHA-256 checksums | Verify downloaded release assets | [SHA256SUMS.txt](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/2.0/SHA256SUMS.txt) |
+
+**Which should I install?** Use the Universal APK on most Android 10+ devices. The vivo Origin Island package is a separate build for supported vivo OriginOS integrations; it installs as a separate app and does not share app data with the universal package. Use the Android 7 legacy package only on Android 7–9. The uncompressed universal package is provided as an alternative build, not as the default recommendation.
+
+On Android 7–11, some Liquid Glass/live-blur effects fall back to a translucent acrylic surface because the platform does not support the same rendering path.
 
 ## The experience
 
@@ -168,12 +180,12 @@ SYMPHONY/
 
 ## Current version and verification
 
-- **Version:** SYMPHONY 2.0 source merged into `main`; GitHub Release publication is pending.
-- **Android version metadata:** `versionName 2.0`, `versionCode 40`
-- **Playback stack:** AndroidX Media3 1.9.0 with matching Jellyfin FFmpeg decoder 1.9.0+1; InnerTubeX and NewPipe fallback paths retained.
-- **Playback and Flow validation:** Release build and automated download, playback and scrobbler regression checks passed in [workflow #45788255391](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45788255391) for the combined v2.0 icon and Flow queue changes.
-- **Icon validation:** Exact supplied Purple Glass artwork and separate Desktop, Pure White and Obsidian Black launcher resources are included. Actual OEM launcher refresh and switching still require physical-device verification.
-- **Device verification:** Physical-device installation, in-place upgrade, icon switching and real-world playback performance remain to be verified.
+- **Version:** SYMPHONY 2.0 — published on 2026-11-26.
+- **Android version metadata:** `versionName 2.0`, `versionCode 40`.
+- **Release workflow:** [#45819793575](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45819793575) completed successfully, including universal, uncompressed universal, vivo Origin Island and Android 7 legacy APK builds, signature verification, checksum generation and GitHub Release publication.
+- **Playback stack:** AndroidX Media3 1.9.0 with Jellyfin FFmpeg decoder 1.9.0+1; InnerTubeX and NewPipe fallback paths retained.
+- **Launcher editions:** Purple Glass, Desktop, Pure White and Obsidian Black artwork resources are included. OEM launcher refresh and icon switching should still be checked on the target device.
+- **Device verification:** CI build and publication succeeded. Physical-device installation, in-place upgrade, icon switching and real-world playback performance remain device-specific checks.
 
 ## Project principles
 
