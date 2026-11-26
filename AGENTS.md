@@ -6,8 +6,8 @@ For any UI or visual work, also read [DESIGN.md](DESIGN.md).
 ## 0. App overview
 
 SYMPHONY is an independent native Android music player written in Kotlin and Jetpack
-Compose (`com.symphony.app`). The current release target is `1.5` (Android
-`versionCode 38`); v1.4 remains the previous published release. Its four primary destinations are Flow, Home, Statistics and
+Compose (`com.symphony.app`). The current release target is `2.0` (Android
+`versionCode 40`); v1.5 remains the previous published release. Its four primary destinations are Flow, Home, Statistics and
 Library. Alongside YouTube Music browsing and playback, it includes offline
 downloads, local device audio, Spotify playlist imports/Canvas, Last.fm
 scrobbling and statistics, podcasts, Listen Together (`jam`), Discord Rich
