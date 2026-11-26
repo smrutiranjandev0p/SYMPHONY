@@ -6,8 +6,8 @@ For any UI or visual work, also read [DESIGN.md](DESIGN.md).
 ## 0. App overview
 
 SYMPHONY is an independent native Android music player written in Kotlin and Jetpack
-Compose (`com.symphony.app`). The current release target is `2.0` (Android
-`versionCode 40`); v1.5 remains the previous published release. Its four primary destinations are Flow, Home, Statistics and
+Compose (`com.symphony.app`). The current published release is `2.0` (Android
+`versionCode 40`); v1.5 is the previous release. Its four primary destinations are Flow, Home, Statistics and
 Library. Alongside YouTube Music browsing and playback, it includes offline
 downloads, local device audio, Spotify playlist imports/Canvas, Last.fm
 scrobbling and statistics, podcasts, Listen Together (`jam`), Discord Rich
@@ -35,8 +35,8 @@ and bit-perfect USB DAC output).
 - **Stream resolution:** NewPipe Extractor + local InnerTube API, with
   `innertubex` (`runtimeOnly`, Ktor OkHttp/CIO) invoked via reflection for
   playback resolution.
-- **Playback & native audio:** Media3 ExoPlayer `1.2.1` (OkHttp, HLS, DASH) +
-  Jellyfin `media3-ffmpeg-decoder:1.2.1+1`, `androidx.media:media:1.7.0`
+- **Playback & native audio:** Media3 ExoPlayer `1.9.0` (OkHttp, HLS, DASH) +
+  Jellyfin `media3-ffmpeg-decoder:1.9.0+1`, `androidx.media:media:1.7.0`
   (`MediaBrowserServiceCompat` / `MediaSessionCompat`), Google Oboe `1.10.0`,
   and C++20 JNI (`app/src/main/cpp/`, 16 KB page-aligned) bundling `libsoxr`
   `0.1.3`, `DspProcessor`, `ParametricEq`, `DirectOutputStream`, and `automix/`.
