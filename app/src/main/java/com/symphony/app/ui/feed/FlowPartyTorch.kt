@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
+import java.util.concurrent.atomic.AtomicBoolean
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -35,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -97,6 +99,8 @@ internal fun FlowPartyTorch(
     var sensitivity by remember {
         mutableIntStateOf(preferences.getInt("sensitivity", 34).coerceIn(18, 80))
     }
+    val latestStrength by rememberUpdatedState(strength)
+    val latestSensitivity by rememberUpdatedState(sensitivity)
 
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions(),
@@ -109,15 +113,17 @@ internal fun FlowPartyTorch(
     }
     val mainHandler = remember { Handler(Looper.getMainLooper()) }
 
-    DisposableEffect(enabled, isPlaying, audioSessionId, permissionGranted, flashCameraId, strength, sensitivity) {
+    DisposableEffect(enabled, isPlaying, audioSessionId, permissionGranted, flashCameraId) {
         visualizerReady = false
         torchError = false
         if (!enabled || !isPlaying || !permissionGranted || audioSessionId <= 0 || flashCameraId == null) {
             flashCameraId?.let { id -> runCatching { cameraManager.setTorchMode(id, false) } }
             onDispose { }
         } else {
+            val effectActive = AtomicBoolean(true)
             var lastPulseAt = 0L
             var torchOn = false
+            var pulseTask: Runnable? = null
             var releaseTask: Runnable? = null
             val visualizer = runCatching { Visualizer(audioSessionId) }.getOrNull()
             val listener = object : Visualizer.OnDataCaptureListener {
@@ -130,18 +136,19 @@ internal fun FlowPartyTorch(
                     }
                     val rms = sqrt(sum / waveform.size)
                     val now = SystemClock.elapsedRealtime()
-                    if (rms >= sensitivity && now - lastPulseAt >= 420L) {
+                    if (effectActive.get() && rms >= latestSensitivity && now - lastPulseAt >= 420L) {
                         lastPulseAt = now
-                        mainHandler.post {
+                        val pulse = Runnable {
+                            if (!effectActive.get()) return@Runnable
                             releaseTask?.let(mainHandler::removeCallbacks)
                             val turnedOn = runCatching {
                                 if (adjustableFlash) {
-                                    cameraManager.turnOnTorchWithStrengthLevel(flashCameraId, strength.coerceIn(1, maxStrength))
+                                    cameraManager.turnOnTorchWithStrengthLevel(flashCameraId, latestStrength.coerceIn(1, maxStrength))
                                 } else {
                                     cameraManager.setTorchMode(flashCameraId, true)
                                 }
                             }.isSuccess
-                            if (turnedOn) {
+                            if (turnedOn && effectActive.get()) {
                                 torchOn = true
                                 pulseCount += 1
                                 releaseTask = Runnable {
@@ -149,9 +156,12 @@ internal fun FlowPartyTorch(
                                     torchOn = false
                                 }.also { mainHandler.postDelayed(it, 110L) }
                             } else {
+                                runCatching { cameraManager.setTorchMode(flashCameraId, false) }
                                 torchError = true
                             }
                         }
+                        pulseTask = pulse
+                        mainHandler.post(pulse)
                     }
                 }
 
@@ -167,6 +177,8 @@ internal fun FlowPartyTorch(
             if (!started) runCatching { visualizer?.release() }
 
             onDispose {
+                effectActive.set(false)
+                pulseTask?.let(mainHandler::removeCallbacks)
                 releaseTask?.let(mainHandler::removeCallbacks)
                 if (torchOn) runCatching { cameraManager.setTorchMode(flashCameraId, false) }
                 runCatching { visualizer?.enabled = false }
