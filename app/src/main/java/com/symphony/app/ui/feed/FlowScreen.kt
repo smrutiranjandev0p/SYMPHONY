@@ -415,12 +415,12 @@ private fun FlowArtworkBorderOverlay(style: FlowArtworkStyle) {
         FlowArtworkStyle.OBSIDIAN -> listOf(Color(0xFF151922), Color(0xFF8D98AA), Color(0xFF303846))
         FlowArtworkStyle.PRISM -> listOf(Color(0xFF67E8F9), Color(0xFFB58AFF), Color(0xFFFFA6C9))
     }
-    Box(Modifier.fillMaxSize().padding(7.dp)) {
+    Box(Modifier.fillMaxSize().padding(2.dp)) {
         Box(
             Modifier.fillMaxSize()
-                .border(1.35.dp, Brush.linearGradient(colors), RoundedCornerShape(25.dp))
-                .padding(3.dp)
-                .border(0.65.dp, Color.White.copy(alpha = 0.42f), RoundedCornerShape(22.dp)),
+                .border(1.35.dp, Brush.linearGradient(colors), RoundedCornerShape(29.dp))
+                .padding(2.dp)
+                .border(0.65.dp, Color.White.copy(alpha = 0.42f), RoundedCornerShape(25.dp)),
         )
     }
 }
