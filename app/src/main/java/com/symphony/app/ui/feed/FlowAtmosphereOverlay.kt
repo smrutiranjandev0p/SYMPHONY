@@ -83,13 +83,13 @@ internal fun Modifier.flowCinematicMotion(
 ): Modifier {
     val lifecycleOwner = LocalLifecycleOwner.current
     var foreground by remember(lifecycleOwner) {
-        mutableStateOf(lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
+        mutableStateOf(lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED))
     }
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
-                Lifecycle.Event.ON_START -> foreground = true
-                Lifecycle.Event.ON_STOP -> foreground = false
+                Lifecycle.Event.ON_RESUME -> foreground = true
+                Lifecycle.Event.ON_PAUSE, Lifecycle.Event.ON_STOP -> foreground = false
                 else -> Unit
             }
         }
