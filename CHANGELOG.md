@@ -15,7 +15,10 @@
 
 ### Validation
 - Merged Flow Atmosphere/artwork-border work and repository documentation organization into `main`.
-- CI release build, APK signature verification and release publication are being run for this version. Physical-device behaviour should be evaluated on the target device.
+- **Release published:** [SYMPHONY 2.1](https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/2.1) is live with Universal, Universal Uncompressed, vivo Origin Island and Android 7 legacy APK variants plus `SHA256SUMS.txt`.
+- **Release workflow:** [#45943681827](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45943681827) completed successfully, including APK builds, signer-certificate verification, checksum generation and GitHub Release publication.
+- **Build workflows:** [Build SYMPHONY APK #45943681807](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45943681807) and [Android Debug APK #45943681925](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45943681925) completed successfully.
+- CI confirms the automated build and publication steps. Physical-device installation, in-place upgrade, Flow effects, icon switching and hardware-specific playback behaviour still require testing on the target device.
 
 ---
 
