@@ -191,10 +191,10 @@ jobs:
 
           | Package | Recommended OS | Description |
           | :--- | :--- | :--- |
-          | **`SYMPHONY-v__TAG__-universal.apk`** (~22 MB) | **Android 10+ (Android 10 – 16+)** | **Standard Recommended Release.** R8-optimized with uncompressed page-aligned native libraries for instant memory mapping. |
-          | **`SYMPHONY-v__TAG__-universal-uncompressed.apk`** (~89 MB) | **Android 10+ (Android 10 – 16+)** | **Raw Release.** Unminified debuggable variant with uncompressed native libraries. |
-          | **`SYMPHONY-v__TAG__-android7.apk`** (~17 MB) | **Android 7.0 – 9.0 (Legacy)** | **Legacy Android 7.0+ Variant.** Built with compressed native libraries for older package managers. |
-          | **`SYMPHONY-v__TAG__-vivo-origin.apk`** (~22 MB) | **vivo phones (OriginOS)** | **vivo Origin Island & music widget build.** Separate APK so vivo's Origin Island and music widget show SYMPHONY. |
+          | **`SYMPHONY-v__TAG__-universal.apk`** | **Android 10+ (Android 10 – 16+)** | **Standard Recommended Release.** R8-optimized with uncompressed page-aligned native libraries for instant memory mapping. |
+          | **`SYMPHONY-v__TAG__-universal-uncompressed.apk`** | **Android 10+ (Android 10 – 16+)** | **Raw Release.** Unminified debuggable variant with uncompressed native libraries. |
+          | **`SYMPHONY-v__TAG__-android7.apk`** | **Android 7.0 – 9.0 (Legacy)** | **Legacy Android 7.0+ Variant.** Built with compressed native libraries for older package managers. |
+          | **`SYMPHONY-v__TAG__-vivo-origin.apk`** | **vivo phones (OriginOS)** | **vivo Origin Island & music widget build.** Separate APK so vivo's Origin Island and music widget show SYMPHONY. |
 
           > [!NOTE]
           > **vivo users (`SYMPHONY-v__TAG__-vivo-origin.apk`):** OriginOS only shows apps from vivo's own allowlist in Origin Island and the music widget, so this build uses an allowlisted package name. It installs as a **separate app** next to regular SYMPHONY (data is not shared), it **cannot be installed alongside the real QQ Music app**, and it updates itself from this vivo APK only. If you installed an older vivo build (shown as Spotify), uninstall it first.
