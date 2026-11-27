@@ -1,13 +1,13 @@
 <p align="center">
   <!-- LOCKED BRAND ASSET: Keep this exact banner path unless the owner explicitly requests a replacement. -->
-  <img src="assets/symphony-v1.4-banner.jpg.png" alt="SYMPHONY v2.0 product showcase — Flow, Appearance, Listening Statistics and Library" width="100%" />
+  <img src="assets/symphony-v1.4-banner.jpg.png" alt="SYMPHONY v2.1 product showcase — Flow, Appearance, Listening Statistics and Library" width="100%" />
 </p>
 
 <p align="center"><strong>Your music. In motion.</strong><br/>
 A native Android music player built around immersive Flow discovery, flexible playback and personalisation.</p>
 
 <p align="center">
-  <a href="https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/2.0"><img alt="Latest release" src="https://img.shields.io/badge/release-v2.0-e7b8bd?style=for-the-badge" /></a>
+  <a href="https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/2.1"><img alt="Latest release" src="https://img.shields.io/badge/release-v2.1-e7b8bd?style=for-the-badge" /></a>
   <a href="https://github.com/smrutiranjandev0p/SYMPHONY/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/smrutiranjandev0p/SYMPHONY?style=for-the-badge&color=F5C451" /></a>
   <a href="https://github.com/smrutiranjandev0p/SYMPHONY/network/members"><img alt="GitHub forks" src="https://img.shields.io/github/forks/smrutiranjandev0p/SYMPHONY?style=for-the-badge&color=64748B" /></a>
   <a href="https://github.com/smrutiranjandev0p/SYMPHONY/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/smrutiranjandev0p/SYMPHONY?style=for-the-badge&color=38BDF8" /></a>
@@ -25,19 +25,19 @@ A native Android music player built around immersive Flow discovery, flexible pl
 
 ## About SYMPHONY
 
-**SYMPHONY 2.0** is an independent, native Android music player designed around an artwork-first listening experience. Its four primary destinations are **Flow, Home, Statistics and Library**. The Flow experience uses swipe-led, full-screen music discovery inspired by the interaction style popularised by Resso, while keeping SYMPHONY's own visual identity, playback system and feature set.
+**SYMPHONY 2.1** is an independent, native Android music player designed around an artwork-first listening experience. Its four primary destinations are **Flow, Home, Statistics and Library**. The Flow experience uses swipe-led, full-screen music discovery inspired by the interaction style popularised by Resso, while keeping SYMPHONY's own visual identity, playback system and feature set.
 
 ## Download
 
-**SYMPHONY 2.0 is released.** Download the recommended package for your device below, or open the [v2.0 release page](https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/2.0) for release notes and all assets.
+**SYMPHONY 2.1 is released.** Download the recommended package for your device below, or open the [v2.1 release page](https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/2.1) for release notes and all assets.
 
 | Package | Compatibility | Download |
 | --- | --- | --- |
-| Universal (recommended) | Android 10–16+ | [Download APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/2.0/SYMPHONY-v2.0-universal.apk) |
-| vivo Origin Island edition | vivo phones running supported OriginOS builds | [Download APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/2.0/SYMPHONY-v2.0-vivo-origin.apk) |
-| Android 7 legacy | Android 7.0–9.0 | [Download APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/2.0/SYMPHONY-v2.0-android7.apk) |
-| Universal uncompressed | Android 10–16+ | [Download APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/2.0/SYMPHONY-v2.0-universal-uncompressed.apk) |
-| SHA-256 checksums | Verify downloaded release assets | [SHA256SUMS.txt](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/2.0/SHA256SUMS.txt) |
+| Universal (recommended) | Android 10–16+ | [Download APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/2.1/SYMPHONY-v2.1-universal.apk) |
+| vivo Origin Island edition | vivo phones running supported OriginOS builds | [Download APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/2.1/SYMPHONY-v2.1-vivo-origin.apk) |
+| Android 7 legacy | Android 7.0–9.0 | [Download APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/2.1/SYMPHONY-v2.1-android7.apk) |
+| Universal uncompressed | Android 10–16+ | [Download APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/2.1/SYMPHONY-v2.1-universal-uncompressed.apk) |
+| SHA-256 checksums | Verify downloaded release assets | [SHA256SUMS.txt](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/2.1/SHA256SUMS.txt) |
 
 **Which should I install?** Use the Universal APK on most Android 10+ devices. The vivo Origin Island package is a separate build for supported vivo OriginOS integrations; it installs as a separate app and does not share app data with the universal package. Use the Android 7 legacy package only on Android 7–9. The uncompressed universal package is provided as an alternative build, not as the default recommendation.
 
@@ -180,8 +180,8 @@ SYMPHONY/
 
 ## Current version and verification
 
-- **Version:** SYMPHONY 2.0 — published on 2026-11-26.
-- **Android version metadata:** `versionName 2.0`, `versionCode 40`.
+- **Version:** SYMPHONY 2.1 — published on 2026-11-26.
+- **Android version metadata:** `versionName 2.1`, `versionCode 40`.
 - **Release workflow:** [#45819793575](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45819793575) completed successfully, including universal, uncompressed universal, vivo Origin Island and Android 7 legacy APK builds, signature verification, checksum generation and GitHub Release publication.
 - **Playback stack:** AndroidX Media3 1.9.0 with Jellyfin FFmpeg decoder 1.9.0+1; InnerTubeX and NewPipe fallback paths retained.
 - **Launcher editions:** Purple Glass, Desktop, Pure White and Obsidian Black artwork resources are included. OEM launcher refresh and icon switching should still be checked on the target device.

@@ -4,17 +4,17 @@ on:
   push:
     branches: [main]
     paths:
-      - ".release-trigger-2.0"
+      - ".release-trigger-2.1"
   workflow_dispatch:
     inputs:
       tag_name:
-        description: 'Git Tag (e.g., 2.0)'
+        description: 'Git Tag (e.g., 2.1)'
         required: true
-        default: '2.0'
+        default: '2.1'
       release_name:
-        description: 'Release Title (e.g., SYMPHONY 2.0)'
+        description: 'Release Title (e.g., SYMPHONY 2.1)'
         required: true
-        default: 'SYMPHONY 2.0'
+        default: 'SYMPHONY 2.1'
       release_notes:
         description: 'Changelog / Release Notes'
         required: false
@@ -76,7 +76,7 @@ jobs:
       - name: Stage Android 10 Final APKs
         run: |
           mkdir -p final_apk
-          TAG="${{ inputs.tag_name || '2.0' }}"
+          TAG="${{ inputs.tag_name || '2.1' }}"
           # Universal release (Android 10+, R8 + ProGuard + shrinkResources)
           if [ -f "app/build/outputs/apk/release/app-release-signed.apk" ]; then
             cp app/build/outputs/apk/release/app-release-signed.apk final_apk/SYMPHONY-v${TAG}-universal.apk
@@ -106,7 +106,7 @@ jobs:
 
       - name: Stage vivo Origin Island APK
         run: |
-          TAG="${{ inputs.tag_name || '2.0' }}"
+          TAG="${{ inputs.tag_name || '2.1' }}"
           if [ -f "app/build/outputs/apk/release/app-release-signed.apk" ]; then
             cp app/build/outputs/apk/release/app-release-signed.apk final_apk/SYMPHONY-v${TAG}-vivo-origin.apk
           else
@@ -140,7 +140,7 @@ jobs:
 
       - name: Stage Android 7 Final APK
         run: |
-          TAG="${{ inputs.tag_name || '2.0' }}"
+          TAG="${{ inputs.tag_name || '2.1' }}"
           if [ -f "app/build/outputs/apk/release/app-release-signed.apk" ]; then
             cp app/build/outputs/apk/release/app-release-signed.apk final_apk/SYMPHONY-v${TAG}-android7.apk
           else
@@ -183,7 +183,7 @@ jobs:
 
       - name: Prepare Release Notes & Compatibility Notice
         env:
-          TAG: ${{ inputs.tag_name || '2.0' }}
+          TAG: ${{ inputs.tag_name || '2.1' }}
           NOTES: ${{ inputs.release_notes }}
         run: |
           cat << 'EOF' | sed 's/^ *//' > notice.md
@@ -220,8 +220,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@8a0cd651e5b2365bd640854a3fa5dfc70e4875f3 # v3.0.4
         with:
-          tag_name: ${{ inputs.tag_name || '2.0' }}
-          name: ${{ inputs.release_name || 'SYMPHONY 2.0' }}
+          tag_name: ${{ inputs.tag_name || '2.1' }}
+          name: ${{ inputs.release_name || 'SYMPHONY 2.1' }}
           body_path: release_body.md
           files: |
             final_apk/*.apk

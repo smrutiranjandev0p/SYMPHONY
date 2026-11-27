@@ -1,5 +1,24 @@
 # SYMPHONY Changelog
 
+## [2.1] - 2026-11-27
+
+### Added
+- **Flow Atmosphere:** Added seven independently selectable Flow visual effects: Heartfall, Audio Reactive Aura, Cinematic Motion, Stardust, Aurora Flow, Light Sweep and Dreamy Bokeh.
+- **Atmosphere controls:** Added intensity, particle density and audio-sensitivity controls with persistent preferences.
+- **Premium artwork borders:** Added No Border, Titanium, Crystal, Aurora, Obsidian and Prism styles, with the original slim border restored as the baseline treatment.
+- **Documentation index:** Organized project documentation into design, architecture and development sections.
+
+### Changed
+- **Flow lifecycle:** Atmosphere effects are scoped to the visible Flow screen and pause when Flow is not in the foreground.
+- **Audio reactivity:** Audio Reactive Aura uses the existing playback analyser; it does not request microphone permission.
+- **Version metadata:** Set `versionName` to `2.1` and Android `versionCode` to `41`.
+
+### Validation
+- Merged Flow Atmosphere/artwork-border work and repository documentation organization into `main`.
+- CI release build, APK signature verification and release publication are being run for this version. Physical-device behaviour should be evaluated on the target device.
+
+---
+
 ## [2.0] - 2026-11-26
 
 <https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/2.0>
