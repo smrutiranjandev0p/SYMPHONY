@@ -180,12 +180,12 @@ SYMPHONY/
 
 ## Current version and verification
 
-- **Version:** SYMPHONY 2.1 — published on 2026-11-26.
-- **Android version metadata:** `versionName 2.1`, `versionCode 40`.
-- **Release workflow:** [#45819793575](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45819793575) completed successfully, including universal, uncompressed universal, vivo Origin Island and Android 7 legacy APK builds, signature verification, checksum generation and GitHub Release publication.
+- **Version:** SYMPHONY 2.1 — published on 2026-11-27.
+- **Android version metadata:** `versionName 2.1`, `versionCode 41`.
+- **Release workflow:** [#45819793575](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45943681827) completed successfully, including universal, uncompressed universal, vivo Origin Island and Android 7 legacy APK builds, signature verification, checksum generation and GitHub Release publication. The separate [Build SYMPHONY APK workflow](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45943681807) and [Android Debug APK workflow](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/45943681925) also completed successfully.
 - **Playback stack:** AndroidX Media3 1.9.0 with Jellyfin FFmpeg decoder 1.9.0+1; InnerTubeX and NewPipe fallback paths retained.
 - **Launcher editions:** Purple Glass, Desktop, Pure White and Obsidian Black artwork resources are included. OEM launcher refresh and icon switching should still be checked on the target device.
-- **Device verification:** CI build and publication succeeded. Physical-device installation, in-place upgrade, icon switching and real-world playback performance remain device-specific checks.
+- **Device verification:** CI build, APK signature checks and release publication succeeded. Physical-device installation, in-place upgrade, icon switching and real-world playback performance remain device-specific checks.
 
 ## Project principles
 
