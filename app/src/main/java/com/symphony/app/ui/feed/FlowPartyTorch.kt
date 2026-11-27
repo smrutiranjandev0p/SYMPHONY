@@ -55,6 +55,8 @@ internal fun FlowPartyTorch(
     enabled: Boolean,
     isPlaying: Boolean,
     audioSessionId: Int,
+    isCurrentPage: Boolean,
+    isForeground: Boolean,
     onEnabledChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -113,10 +115,10 @@ internal fun FlowPartyTorch(
     }
     val mainHandler = remember { Handler(Looper.getMainLooper()) }
 
-    DisposableEffect(enabled, isPlaying, audioSessionId, permissionGranted, flashCameraId) {
+    DisposableEffect(enabled, isPlaying, isCurrentPage, isForeground, audioSessionId, permissionGranted, flashCameraId) {
         visualizerReady = false
         torchError = false
-        if (!enabled || !isPlaying || !permissionGranted || audioSessionId <= 0 || flashCameraId == null) {
+        if (!enabled || !isPlaying || !isCurrentPage || !isForeground || !permissionGranted || audioSessionId <= 0 || flashCameraId == null) {
             flashCameraId?.let { id -> runCatching { cameraManager.setTorchMode(id, false) } }
             onDispose { }
         } else {
@@ -216,7 +218,7 @@ internal fun FlowPartyTorch(
                 text = when {
                     flashCameraId == null -> "No flash"
                     permissionDenied -> "Torch permission needed"
-                    enabled && isPlaying -> "Party Torch"
+                    enabled && isPlaying && isCurrentPage && isForeground -> "Party Torch"
                     enabled -> "Torch paused"
                     else -> "Party Torch"
                 },
