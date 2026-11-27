@@ -420,9 +420,9 @@ private fun FlowArtworkBorderOverlay(style: FlowArtworkStyle) {
     Box(Modifier.fillMaxSize().padding(2.dp)) {
         Box(
             Modifier.fillMaxSize()
-                .border(1.35.dp, Brush.linearGradient(colors), RoundedCornerShape(29.dp))
+                .border(3.dp, Brush.linearGradient(colors), RoundedCornerShape(29.dp))
                 .padding(2.dp)
-                .border(0.65.dp, Color.White.copy(alpha = 0.42f), RoundedCornerShape(25.dp)),
+                .border(1.25.dp, Color.White.copy(alpha = 0.52f), RoundedCornerShape(25.dp)),
         )
     }
 }
