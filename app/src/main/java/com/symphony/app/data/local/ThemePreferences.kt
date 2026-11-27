@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -22,13 +23,104 @@ enum class AccentMode(val storageValue: String) {
 }
 
 enum class FlowArtworkStyle(val storageValue: String, val title: String, val description: String) {
-    CRYSTAL("crystal", "Crystal Glass", "Clear glass edges with cool iridescent reflections"),
-    AURORA("aurora", "Aurora Glass", "Purple-violet liquid edges with ambient glow"),
-    OBSIDIAN("obsidian", "Obsidian Glass", "Deep black glass with subtle polished reflections");
+    NONE("none", "No Border", "Show the original artwork without a frame"),
+    TITANIUM("titanium", "Titanium", "Precision-cut silver frame with a soft metallic edge"),
+    CRYSTAL("crystal", "Crystal", "Clear polished glass with cool refracted highlights"),
+    AURORA("aurora", "Aurora", "Violet and cyan luminous edge accents"),
+    OBSIDIAN("obsidian", "Obsidian", "Deep graphite frame with a restrained inner sheen"),
+    PRISM("prism", "Prism", "Subtle multi-tone spectrum along the artwork edge");
 
     companion object {
         fun fromStorage(value: String?): FlowArtworkStyle =
-            entries.firstOrNull { it.storageValue == value } ?: AURORA
+            entries.firstOrNull { it.storageValue == value } ?: TITANIUM
+    }
+}
+
+enum class FlowAtmosphereEffect(
+    val storageId: String,
+    val title: String,
+    val description: String,
+) {
+    HEARTFALL("heartfall", "Heartfall", "Slow floating red hearts across the Flow screen"),
+    AUDIO_REACTIVE_AURA("audio_aura", "Audio Reactive Aura", "Subtle edge light that follows the music rhythm"),
+    CINEMATIC_MOTION("cinematic_motion", "Cinematic Motion", "Slow, gentle artwork zoom with smooth track changes"),
+    STARDUST("stardust", "Stardust", "Tiny drifting light particles and occasional glints"),
+    AURORA_GLOW("aurora_glow", "Aurora Flow", "Soft violet and cyan light near the screen edges"),
+    LIGHT_SWEEP("light_sweep", "Light Sweep", "An occasional soft cinematic highlight across the artwork"),
+    DREAMY_BOKEH("dreamy_bokeh", "Dreamy Bokeh", "Slow, translucent ambient light circles");
+
+    companion object {
+        fun fromStorage(value: String): FlowAtmosphereEffect? =
+            entries.firstOrNull { it.storageId == value }
+    }
+}
+
+enum class FlowAtmosphereIntensity(val storageId: String, val title: String, val multiplier: Float) {
+    LOW("low", "Low", 0.72f),
+    BALANCED("balanced", "Balanced", 1f),
+    HIGH("high", "High", 1.22f);
+
+    companion object {
+        fun fromStorage(value: String?): FlowAtmosphereIntensity =
+            entries.firstOrNull { it.storageId == value } ?: BALANCED
+    }
+}
+
+enum class FlowAtmosphereDensity(val storageId: String, val title: String, val multiplier: Float) {
+    LOW("low", "Low", 0.65f),
+    MEDIUM("medium", "Medium", 1f),
+    HIGH("high", "High", 1.45f);
+
+    companion object {
+        fun fromStorage(value: String?): FlowAtmosphereDensity =
+            entries.firstOrNull { it.storageId == value } ?: MEDIUM
+    }
+}
+
+enum class FlowAudioSensitivity(val storageId: String, val title: String, val multiplier: Float) {
+    LOW("low", "Low", 0.72f),
+    BALANCED("balanced", "Balanced", 1f),
+    HIGH("high", "High", 1.3f);
+
+    companion object {
+        fun fromStorage(value: String?): FlowAudioSensitivity =
+            entries.firstOrNull { it.storageId == value } ?: BALANCED
+    }
+}
+
+data class FlowAtmosphereSettings(
+    val enabled: Boolean = true,
+    val effects: Set<FlowAtmosphereEffect> = DEFAULT_EFFECTS,
+    val intensity: FlowAtmosphereIntensity = FlowAtmosphereIntensity.BALANCED,
+    val density: FlowAtmosphereDensity = FlowAtmosphereDensity.MEDIUM,
+    val audioSensitivity: FlowAudioSensitivity = FlowAudioSensitivity.BALANCED,
+) {
+    companion object {
+        val DEFAULT_EFFECTS: Set<FlowAtmosphereEffect> = setOf(
+            FlowAtmosphereEffect.HEARTFALL,
+            FlowAtmosphereEffect.AUDIO_REACTIVE_AURA,
+            FlowAtmosphereEffect.CINEMATIC_MOTION,
+            FlowAtmosphereEffect.STARDUST,
+        )
+        val DEFAULT = FlowAtmosphereSettings()
+
+        fun fromStorage(
+            enabled: Boolean?,
+            effects: Set<String>?,
+            intensity: String?,
+            density: String?,
+            audioSensitivity: String?,
+        ): FlowAtmosphereSettings {
+            val parsedEffects = effects?.mapNotNull { FlowAtmosphereEffect.fromStorage(it) }?.toSet()
+                ?: DEFAULT_EFFECTS
+            return FlowAtmosphereSettings(
+                enabled = enabled ?: true,
+                effects = parsedEffects,
+                intensity = FlowAtmosphereIntensity.fromStorage(intensity),
+                density = FlowAtmosphereDensity.fromStorage(density),
+                audioSensitivity = FlowAudioSensitivity.fromStorage(audioSensitivity),
+            )
+        }
     }
 }
 
@@ -61,7 +153,8 @@ data class ThemePrefs(
     val symphonyTheme: Boolean = false,
     val useLegacyColors: Boolean = false,
     val appIcon: AppIcon = AppIcon.DEFAULT,
-    val flowArtworkStyle: FlowArtworkStyle = FlowArtworkStyle.AURORA,
+    val flowArtworkStyle: FlowArtworkStyle = FlowArtworkStyle.TITANIUM,
+    val flowAtmosphere: FlowAtmosphereSettings = FlowAtmosphereSettings.DEFAULT,
 )
 
 @Singleton
@@ -82,6 +175,11 @@ class ThemePreferences @Inject constructor(
         val USE_LEGACY_COLORS = booleanPreferencesKey("lw_useLegacyColors")
         val APP_ICON = stringPreferencesKey("lw_app_icon")
         val FLOW_ARTWORK_STYLE = stringPreferencesKey("lw_flow_artwork_style")
+        val FLOW_ATMOSPHERE_ENABLED = booleanPreferencesKey("lw_flow_atmosphere_enabled")
+        val FLOW_ATMOSPHERE_EFFECTS = stringSetPreferencesKey("lw_flow_atmosphere_effects")
+        val FLOW_ATMOSPHERE_INTENSITY = stringPreferencesKey("lw_flow_atmosphere_intensity")
+        val FLOW_ATMOSPHERE_DENSITY = stringPreferencesKey("lw_flow_atmosphere_density")
+        val FLOW_ATMOSPHERE_SENSITIVITY = stringPreferencesKey("lw_flow_atmosphere_sensitivity")
     }
 
     val prefs: Flow<ThemePrefs> = dataStore.data
@@ -101,6 +199,13 @@ class ThemePreferences @Inject constructor(
                 useLegacyColors = p.readSafely(Keys.USE_LEGACY_COLORS) ?: false,
                 appIcon = AppIcon.fromId(p.readSafely(Keys.APP_ICON)),
                 flowArtworkStyle = FlowArtworkStyle.fromStorage(p.readSafely(Keys.FLOW_ARTWORK_STYLE)),
+                flowAtmosphere = FlowAtmosphereSettings.fromStorage(
+                    enabled = p[Keys.FLOW_ATMOSPHERE_ENABLED],
+                    effects = p[Keys.FLOW_ATMOSPHERE_EFFECTS],
+                    intensity = p.readSafely(Keys.FLOW_ATMOSPHERE_INTENSITY),
+                    density = p.readSafely(Keys.FLOW_ATMOSPHERE_DENSITY),
+                    audioSensitivity = p.readSafely(Keys.FLOW_ATMOSPHERE_SENSITIVITY),
+                ),
             )
         }
 
@@ -163,6 +268,16 @@ class ThemePreferences @Inject constructor(
 
     suspend fun setFlowArtworkStyle(style: FlowArtworkStyle) {
         dataStore.edit { it[Keys.FLOW_ARTWORK_STYLE] = style.storageValue }
+    }
+
+    suspend fun setFlowAtmosphere(settings: FlowAtmosphereSettings) {
+        dataStore.edit { preferences ->
+            preferences[Keys.FLOW_ATMOSPHERE_ENABLED] = settings.enabled
+            preferences[Keys.FLOW_ATMOSPHERE_EFFECTS] = settings.effects.map { it.storageId }.toSet()
+            preferences[Keys.FLOW_ATMOSPHERE_INTENSITY] = settings.intensity.storageId
+            preferences[Keys.FLOW_ATMOSPHERE_DENSITY] = settings.density.storageId
+            preferences[Keys.FLOW_ATMOSPHERE_SENSITIVITY] = settings.audioSensitivity.storageId
+        }
     }
 
     suspend fun setAppIcon(icon: AppIcon) {

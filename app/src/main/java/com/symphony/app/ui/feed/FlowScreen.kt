@@ -3,6 +3,7 @@ package com.symphony.app.ui.feed
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -34,6 +36,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,10 +55,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.symphony.app.data.local.FlowArtworkStyle
+import com.symphony.app.data.local.FlowAtmosphereEffect
+import com.symphony.app.data.local.FlowAtmosphereSettings
 import com.symphony.app.ui.settings.SettingsViewModel
+import com.symphony.app.playback.rhythm.FluidRhythmEngine
 import com.symphony.app.data.music.HomeShelfItem
 import com.symphony.app.data.music.YouTubeMusicTrack
 import com.symphony.app.playback.toPlayableTrack
@@ -90,7 +99,36 @@ fun FlowScreen(
     val playerViewModel: PlayerViewModel = hiltViewModel()
     val settingsViewModel: SettingsViewModel = hiltViewModel()
     val appearanceTheme by settingsViewModel.theme.collectAsStateWithLifecycle()
-    val artworkStyle = appearanceTheme?.flowArtworkStyle ?: FlowArtworkStyle.AURORA
+    val artworkStyle = appearanceTheme?.flowArtworkStyle ?: FlowArtworkStyle.TITANIUM
+    val atmosphereSettings = appearanceTheme?.flowAtmosphere ?: FlowAtmosphereSettings.DEFAULT
+    val lifecycleOwner = LocalLifecycleOwner.current
+    var isForeground by remember(lifecycleOwner) {
+        mutableStateOf(lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED))
+    }
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_RESUME -> isForeground = true
+                Lifecycle.Event.ON_PAUSE, Lifecycle.Event.ON_STOP -> isForeground = false
+                else -> Unit
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+    val flowAudioAuraActive = isForeground &&
+        atmosphereSettings.enabled &&
+        FlowAtmosphereEffect.AUDIO_REACTIVE_AURA in atmosphereSettings.effects
+    DisposableEffect(flowAudioAuraActive) {
+        val previousEnabled = FluidRhythmEngine.isEnabled
+        if (flowAudioAuraActive) FluidRhythmEngine.isEnabled = true
+        onDispose {
+            if (flowAudioAuraActive) {
+                FluidRhythmEngine.isEnabled = previousEnabled
+                if (!previousEnabled) FluidRhythmEngine.tick(0.016f, false)
+            }
+        }
+    }
     val likedKeys by playerViewModel.likedTrackKeys.collectAsStateWithLifecycle()
     var menuTrack by remember { mutableStateOf<YouTubeMusicTrack?>(null) }
     var partyTorchEnabled by remember { mutableStateOf(false) }
@@ -219,6 +257,9 @@ fun FlowScreen(
                 onPartyTorchEnabledChange = { partyTorchEnabled = it },
                 audioSessionId = musicPlayer.activePlayer?.audioSessionId ?: 0,
                 artworkStyle = artworkStyle,
+                atmosphere = atmosphereSettings,
+                isCurrentPage = page == pagerState.currentPage,
+                isForeground = isForeground,
             )
         }
         menuTrack?.let { track ->
@@ -252,6 +293,9 @@ private fun FlowPage(
     onPartyTorchEnabledChange: (Boolean) -> Unit,
     audioSessionId: Int,
     artworkStyle: FlowArtworkStyle,
+    atmosphere: FlowAtmosphereSettings,
+    isCurrentPage: Boolean,
+    isForeground: Boolean,
 ) {
     val scheme = MaterialTheme.colorScheme
     Box(Modifier.fillMaxSize()) {
@@ -261,8 +305,11 @@ private fun FlowPage(
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxSize()
-                .alpha(0.94f)
-                .flowLiquidGlassEffect(style = artworkStyle, isPlaying = isPlaying),
+                .flowCinematicMotion(
+                    enabled = atmosphere.enabled && FlowAtmosphereEffect.CINEMATIC_MOTION in atmosphere.effects,
+                    isCurrentPage = isCurrentPage,
+                )
+                .alpha(0.94f),
         )
         Box(
             Modifier
@@ -276,7 +323,16 @@ private fun FlowPage(
                     ),
                 ),
         )
-        if (isPlaying) FlowFloatingHearts()
+        FlowArtworkBorderOverlay(style = artworkStyle)
+        FlowAtmosphereOverlay(
+            settings = atmosphere,
+            isPlaying = isPlaying,
+            isCurrentPage = isCurrentPage,
+            isForeground = isForeground,
+            primaryColor = scheme.primary,
+            secondaryColor = scheme.secondary,
+            modifier = Modifier.fillMaxSize(),
+        )
         Column(
             modifier = Modifier
                 .align(Alignment.BottomStart)
@@ -323,6 +379,8 @@ private fun FlowPage(
                 enabled = partyTorchEnabled,
                 isPlaying = isPlaying,
                 audioSessionId = audioSessionId,
+                isCurrentPage = isCurrentPage,
+                isForeground = isForeground,
                 onEnabledChange = onPartyTorchEnabledChange,
                 modifier = Modifier.padding(top = 8.dp),
             )
@@ -347,6 +405,27 @@ private fun FlowPage(
 }
 
 
+
+@Composable
+private fun FlowArtworkBorderOverlay(style: FlowArtworkStyle) {
+    if (style == FlowArtworkStyle.NONE) return
+    val colors = when (style) {
+        FlowArtworkStyle.NONE -> emptyList()
+        FlowArtworkStyle.TITANIUM -> listOf(Color(0xFFE7EDF5), Color(0xFF778397), Color(0xFFF8FAFC))
+        FlowArtworkStyle.CRYSTAL -> listOf(Color(0xFFB9F2FF), Color(0xFF6AC8F2), Color(0xFFE4D9FF))
+        FlowArtworkStyle.AURORA -> listOf(Color(0xFF9C75FF), Color(0xFF54DDF2), Color(0xFFE0B7FF))
+        FlowArtworkStyle.OBSIDIAN -> listOf(Color(0xFF151922), Color(0xFF8D98AA), Color(0xFF303846))
+        FlowArtworkStyle.PRISM -> listOf(Color(0xFF67E8F9), Color(0xFFB58AFF), Color(0xFFFFA6C9))
+    }
+    Box(Modifier.fillMaxSize().padding(2.dp)) {
+        Box(
+            Modifier.fillMaxSize()
+                .border(1.35.dp, Brush.linearGradient(colors), RoundedCornerShape(29.dp))
+                .padding(2.dp)
+                .border(0.65.dp, Color.White.copy(alpha = 0.42f), RoundedCornerShape(25.dp)),
+        )
+    }
+}
 
 @Composable
 private fun FlowTopBar(
@@ -399,43 +478,6 @@ private fun FlowEmptyState(onOpenSearch: () -> Unit, onOpenSettings: () -> Unit)
         Row(Modifier.padding(top = 20.dp)) {
             IconButton(onClick = onOpenSearch) { Icon(Icons.Filled.Search, "Search") }
             IconButton(onClick = onOpenSettings) { Icon(Icons.Filled.Settings, "Settings") }
-        }
-    }
-}
-
-@Composable
-private fun FlowFloatingHearts() {
-    val transition = androidx.compose.animation.core.rememberInfiniteTransition(label = "flowHearts")
-    val phases = listOf(0, 620, 1240)
-    Box(
-        modifier = Modifier.fillMaxSize().padding(end = 22.dp, bottom = 150.dp),
-        contentAlignment = Alignment.BottomEnd,
-    ) {
-        phases.forEachIndexed { index, delayMs ->
-            val progress by transition.animateFloat(
-                initialValue = 0f,
-                targetValue = 1f,
-                animationSpec = androidx.compose.animation.core.infiniteRepeatable(
-                    animation = androidx.compose.animation.core.tween(
-                        durationMillis = 2900,
-                        delayMillis = delayMs,
-                        easing = androidx.compose.animation.core.LinearEasing,
-                    ),
-                ),
-                label = "flowHeart$index",
-            )
-            Text(
-                text = if (index == 1) "♥" else "❤",
-                color = Color(0xFFFF6B81),
-                fontSize = (20 + index * 4).sp,
-                modifier = Modifier.graphicsLayer {
-                    translationY = -progress * 285.dp.toPx()
-                    translationX = (index - 1) * 18.dp.toPx() + kotlin.math.sin(progress * Math.PI * 2).toFloat() * 10.dp.toPx()
-                    alpha = (1f - progress).coerceIn(0f, 1f)
-                    scaleX = 0.75f + progress * 0.35f
-                    scaleY = 0.75f + progress * 0.35f
-                },
-            )
         }
     }
 }

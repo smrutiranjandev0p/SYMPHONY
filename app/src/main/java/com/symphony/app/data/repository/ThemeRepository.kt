@@ -15,6 +15,7 @@ import com.symphony.app.data.local.MiscSettings
 import com.symphony.app.data.local.SettingsPreferences
 import com.symphony.app.data.local.ThemePreferences
 import com.symphony.app.data.local.ThemePrefs
+import com.symphony.app.data.local.FlowAtmosphereSettings
 import com.symphony.app.ui.theme.Md3SchemeBuilder
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CancellationException
@@ -67,7 +68,8 @@ data class ThemeUiState(
     val isSYMPHONYTheme: Boolean = false,
     val useLegacyColors: Boolean = false,
     val appIcon: AppIcon = AppIcon.DEFAULT,
-    val flowArtworkStyle: com.symphony.app.data.local.FlowArtworkStyle = com.symphony.app.data.local.FlowArtworkStyle.AURORA,
+    val flowArtworkStyle: com.symphony.app.data.local.FlowArtworkStyle = com.symphony.app.data.local.FlowArtworkStyle.TITANIUM,
+    val flowAtmosphere: FlowAtmosphereSettings = FlowAtmosphereSettings.DEFAULT,
 )
 
 @Singleton
@@ -305,6 +307,7 @@ class ThemeRepository @Inject constructor(
             useLegacyColors = useLegacy,
             appIcon = prefs.appIcon,
             flowArtworkStyle = prefs.flowArtworkStyle,
+            flowAtmosphere = prefs.flowAtmosphere,
         )
     }.stateIn(
         applicationScope,
@@ -337,6 +340,10 @@ class ThemeRepository @Inject constructor(
 
     suspend fun setFlowArtworkStyle(style: com.symphony.app.data.local.FlowArtworkStyle) {
         themePreferences.setFlowArtworkStyle(style)
+    }
+
+    suspend fun setFlowAtmosphere(settings: FlowAtmosphereSettings) {
+        themePreferences.setFlowAtmosphere(settings)
     }
 
     suspend fun setAppIcon(icon: AppIcon) {
