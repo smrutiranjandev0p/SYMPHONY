@@ -103,13 +103,13 @@ fun FlowScreen(
     val atmosphereSettings = appearanceTheme?.flowAtmosphere ?: FlowAtmosphereSettings.DEFAULT
     val lifecycleOwner = LocalLifecycleOwner.current
     var isForeground by remember(lifecycleOwner) {
-        mutableStateOf(lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
+        mutableStateOf(lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED))
     }
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
-                Lifecycle.Event.ON_START -> isForeground = true
-                Lifecycle.Event.ON_STOP -> isForeground = false
+                Lifecycle.Event.ON_RESUME -> isForeground = true
+                Lifecycle.Event.ON_PAUSE, Lifecycle.Event.ON_STOP -> isForeground = false
                 else -> Unit
             }
         }
@@ -256,6 +256,7 @@ fun FlowScreen(
                 partyTorchEnabled = partyTorchEnabled,
                 onPartyTorchEnabledChange = { partyTorchEnabled = it },
                 audioSessionId = musicPlayer.activePlayer?.audioSessionId ?: 0,
+                isForeground = isForeground,
                 artworkStyle = artworkStyle,
                 atmosphere = atmosphereSettings,
                 isCurrentPage = page == pagerState.currentPage,
@@ -292,6 +293,7 @@ private fun FlowPage(
     partyTorchEnabled: Boolean,
     onPartyTorchEnabledChange: (Boolean) -> Unit,
     audioSessionId: Int,
+    isForeground: Boolean,
     artworkStyle: FlowArtworkStyle,
     atmosphere: FlowAtmosphereSettings,
     isCurrentPage: Boolean,
@@ -379,6 +381,8 @@ private fun FlowPage(
                 enabled = partyTorchEnabled,
                 isPlaying = isPlaying,
                 audioSessionId = audioSessionId,
+                isCurrentPage = isCurrentPage,
+                isForeground = isForeground,
                 onEnabledChange = onPartyTorchEnabledChange,
                 modifier = Modifier.padding(top = 8.dp),
             )
