@@ -136,7 +136,8 @@ internal fun FlowPartyTorch(
                     }
                     val rms = sqrt(sum / waveform.size)
                     val now = SystemClock.elapsedRealtime()
-                    val pulseThreshold = (98 - latestSensitivity).coerceIn(18, 80)\n                    if (effectActive.get() && rms >= pulseThreshold && now - lastPulseAt >= 420L) {
+                    val pulseThreshold = (98 - latestSensitivity).coerceIn(18, 80)
+                    if (effectActive.get() && rms >= pulseThreshold && now - lastPulseAt >= 420L) {
                         lastPulseAt = now
                         val pulse = Runnable {
                             if (!effectActive.get()) return@Runnable
@@ -260,7 +261,8 @@ internal fun FlowPartyTorch(
                     visualizerReady -> "Audio analyser active"
                     else -> "Audio analyser unavailable"
                 }
-                Text("Sensitivity $sensitivity · $analyserStatus", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)\n                Text("Higher values react to quieter parts of the music.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("Sensitivity $sensitivity · $analyserStatus", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("Higher values react to quieter parts of the music.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Slider(
                     value = sensitivity.toFloat(),
                     onValueChange = { value ->
