@@ -218,6 +218,7 @@ internal fun FlowPartyTorch(
                 text = when {
                     flashCameraId == null -> "No flash"
                     permissionDenied -> "Torch permission needed"
+                    enabled && isPlaying && isCurrentPage && isForeground && !visualizerReady -> "Audio unavailable"
                     enabled && isPlaying && isCurrentPage && isForeground -> "Party Torch"
                     enabled -> "Torch paused"
                     else -> "Party Torch"
