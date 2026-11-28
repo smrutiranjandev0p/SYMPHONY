@@ -1,5 +1,21 @@
 # SYMPHONY Changelog
 
+## [2.2] - 2026-11-28
+
+### Fixed
+- **Android launch splash identity:** Replaced the system splash animated icon reference to the legacy launcher mipmap with the current dedicated SYMPHONY Glass Wave logo drawable, preventing the outdated icon from appearing during the initial launch frame.
+- **Flow Heartfall lighting:** Reworked floating hearts with a brighter pink/red gradient, ambient glow, subtle depth shadow and glossy specular highlights to improve visibility and create a dimensional glass-like appearance.
+
+### Changed
+- **Heartfall rendering:** Preserved the existing particle movement, density settings, Flow lifecycle gating and Canvas-based rendering while upgrading the heart finish.
+- **Version metadata:** Set `versionName` to `2.2` and Android `versionCode` to `42`.
+
+### Validation
+- **Android Debug APK:** [Workflow #106](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/46145547303) completed successfully for the splash and Heartfall changes.
+- Automated CI build passed. The updated splash appearance, Heartfall visuals and upgrade behaviour still require physical-device verification.
+
+---
+
 ## [2.1] - 2026-11-27
 
 ### Added
