@@ -193,16 +193,54 @@ internal fun FlowAtmosphereOverlay(
                 val y = height * (1f - progress)
                 val heartSize = ((10f + particle.size * 12f) * intensity).dp.toPx()
                 val fade = (sin(progress * PI).toFloat().coerceAtLeast(0f) * 0.58f + 0.08f)
-                val alpha = (fade * (0.56f + particle.size * 0.34f) * intensity).coerceIn(0f, 0.62f)
+                // Brighter, dimensional glass hearts: a soft bloom, a lifted
+                // shadow, a saturated gradient body and a small specular glint.
+                val alpha = (fade * (0.78f + particle.size * 0.22f) * intensity).coerceIn(0f, 0.88f)
                 val rotation = sin(time * 0.52f + particle.phase * 6.28f) * 9f
                 val color = heartColors[index % heartColors.size]
+                val heartBounds = Size(100f, 100f)
+                val highlight = Path().apply {
+                    moveTo(24f, 29f)
+                    cubicTo(24f, 17f, 40f, 12f, 49f, 25f)
+                }
                 withTransform({
                     translate(x - heartSize / 2f, y - heartSize / 2f)
                     rotate(rotation, pivot = Offset(heartSize / 2f, heartSize / 2f))
                     scale(heartSize / 100f, heartSize / 100f, pivot = Offset.Zero)
                 }) {
-                    drawPath(FLOW_HEART_PATH, color.copy(alpha = alpha * 0.18f))
-                    drawPath(FLOW_HEART_PATH, color.copy(alpha = alpha))
+                    // Ambient pink bloom keeps the hearts visible over dark artwork.
+                    drawPath(
+                        FLOW_HEART_PATH,
+                        color.copy(alpha = alpha * 0.22f),
+                        style = Stroke(width = 9f),
+                    )
+                    // Slightly offset shadow gives the particle physical depth.
+                    withTransform({ translate(0f, 3.5f) }) {
+                        drawPath(FLOW_HEART_PATH, Color(0xFF4A1028).copy(alpha = alpha * 0.72f))
+                    }
+                    drawPath(
+                        FLOW_HEART_PATH,
+                        brush = Brush.linearGradient(
+                            colors = listOf(
+                                Color(0xFFFFD2DC).copy(alpha = alpha),
+                                color.copy(alpha = alpha),
+                                Color(0xFFB91549).copy(alpha = alpha * 0.96f),
+                            ),
+                            start = Offset(22f, 8f),
+                            end = Offset(76f, 96f),
+                        ),
+                    )
+                    // Fine glossy highlight, like a curved reflection on glass.
+                    drawPath(
+                        highlight,
+                        color = Color.White.copy(alpha = (alpha * 0.72f).coerceAtMost(0.72f)),
+                        style = Stroke(width = 4.2f),
+                    )
+                    drawCircle(
+                        Color.White.copy(alpha = (alpha * 0.52f).coerceAtMost(0.58f)),
+                        radius = 2.2f,
+                        center = Offset(30f, 27f),
+                    )
                 }
             }
         }
