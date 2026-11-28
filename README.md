@@ -37,7 +37,7 @@ A native Android music player built around immersive Flow discovery, flexible pl
 | vivo Origin Island edition | vivo phones running supported OriginOS builds | [Download APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/2.2/SYMPHONY-v2.2-vivo-origin.apk) |
 | Android 7 legacy | Android 7.0–9.0 | [Download APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/2.2/SYMPHONY-v2.2-android7.apk) |
 | Universal uncompressed | Android 10–16+ | [Download APK](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/2.2/SYMPHONY-v2.2-universal-uncompressed.apk) |
-| SHA-256 checksums | Verify downloaded release assets | [SHA256SUMS.txt](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/2.1/SHA256SUMS.txt) |
+| SHA-256 checksums | Verify downloaded release assets | [SHA256SUMS.txt](https://github.com/smrutiranjandev0p/SYMPHONY/releases/download/2.2/SHA256SUMS.txt) |
 
 **Which should I install?** Use the Universal APK on most Android 10+ devices. The vivo Origin Island package is a separate build for supported vivo OriginOS integrations; it installs as a separate app and does not share app data with the universal package. Use the Android 7 legacy package only on Android 7–9. The uncompressed universal package is provided as an alternative build, not as the default recommendation.
 
