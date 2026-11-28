@@ -26,9 +26,9 @@
          flash before Compose draws. -->
     <style name="Theme.SYMPHONY.Splash" parent="Theme.SYMPHONY">
         <item name="android:windowSplashScreenBackground" tools:targetApi="s">@color/splash_background</item>
-        <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="s">@drawable/ic_launcher_logo</item>
+        <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="s">@drawable/ic_launcher_purple_glass</item>
         <item name="postSplashScreenTheme">@style/Theme.SYMPHONY</item>
         <item name="windowSplashScreenBackground">@color/splash_background</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_logo</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_purple_glass</item>
     </style>
 </resources>
