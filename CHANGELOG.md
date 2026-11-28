@@ -11,8 +11,10 @@
 - **Version metadata:** Set `versionName` to `2.2` and Android `versionCode` to `42`.
 
 ### Validation
-- **Android Debug APK:** [Workflow #106](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/46145547303) completed successfully for the splash and Heartfall changes.
-- Automated CI build passed. The updated splash appearance, Heartfall visuals and upgrade behaviour still require physical-device verification.
+- **Release published:** [SYMPHONY 2.2](https://github.com/smrutiranjandev0p/SYMPHONY/releases/tag/2.2) is live with Universal, Universal Uncompressed, vivo Origin Island and Android 7 legacy APK variants plus SHA-256 checksums.
+- **Release workflow:** [#46159199537](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/46159199537) completed successfully, including all APK builds, signature verification, checksum generation and GitHub Release publication.
+- **Build workflows:** [Build SYMPHONY APK #235](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/46159199520) and [Android Debug APK #107](https://github.com/smrutiranjandev0p/SYMPHONY/actions/runs/46159180065) completed successfully.
+- CI confirms automated build, signing verification and publication. The updated splash appearance, Heartfall visuals, installation and upgrade behaviour still require physical-device verification.
 
 ---
 
